@@ -3,7 +3,10 @@ import {Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown, Layers} from 
 import { useState,useEffect } from "react";
 import "../styles/header_appearance.css"
 import { categories_data } from "../data/data";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 export default function Header(){
+    const navigate=useNavigate()
     const styles = {
         active: {
           visibility: "visible",
@@ -14,7 +17,8 @@ export default function Header(){
           transition: "all 0.5s",
           transform: "translateY(-100%)"
         }
-      }
+    }
+    let [searchParams, setSearchParams] = useSearchParams();
     const theme=useTheme();
     const isNonMobile = useMediaQuery(theme.breakpoints.up('lg'));
     const [show, setShow] = useState(true);
@@ -81,7 +85,7 @@ export default function Header(){
                     marginLeft={2}
                     >
 
-                        <InputBase placeholder="Tìm kiếm..."
+                        <InputBase placeholder="Tìm kiếm..." id="searchName"
                         sx={{
                             color: `${theme.palette.primary.main}`
                         }}/>
@@ -89,12 +93,14 @@ export default function Header(){
                             '& .MuiSvgIcon-root': {
                                 color: `${theme.palette.primary.main}`
                             }
-                        }}>
+                        }}
+                            onClick={()=>navigate('search',{'category':'','name':'ggg' })}
+                        >
                             <SearchIcon/>
                         </IconButton>
             </Box>  
             </Stack>  
-            <Button>
+            <Button >
                 <Typography fontSize={15} color='white' >Settings</Typography>
             </Button>   
             <Button >

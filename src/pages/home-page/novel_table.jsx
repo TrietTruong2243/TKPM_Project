@@ -66,8 +66,8 @@ export default function NovelTable({novel_data}){
                     color:theme.palette.light.main,
                 },
                 '& .MuiDataGrid-footerContainer': {
-                    color: theme.palette.dark.lighter,
-                    bgcolor:theme.palette.light.main,
+                    color: theme.palette.light.main,
+                    bgcolor:theme.palette.dark.lighter,
                 },
                 '& .MuiDataGrid-cell:focus-within': {
                     outline: 'none',
