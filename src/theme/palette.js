@@ -13,7 +13,14 @@ export const grey = {
   800: '#212B36',
   900: '#161C24',
 };
-
+export const dark={
+  main: '#000000',
+  light: '#111111',
+  lighter:'#181818'
+}
+export const light={
+  main: '#ffffff'
+}
 const primary = {
     light: "#dbceff",
     main: "#000000",
@@ -92,6 +99,8 @@ export const paletteSettings = () => {
       blue,
       success,
       error,
+      dark,
+      light,
       info,
       warning,
       text: {

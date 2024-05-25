@@ -15,7 +15,11 @@ export default function Router(){
             children:
                 [
                     {path:'', element: <Navigate to='home' replace> </Navigate>},
-                    {path:'home',element: <HomePage/>},
+                    {path:'home',children: [
+                        {path: '', index: true, element: <HomePage />},
+                        {path: 'search/:id', element: <HomePage />},
+                        {path:'description/:id',element:<DescriptionPage/>}
+                    ]},
                     {path:'history', element: <HistoryPage/> },
                     {path:'reading/:id',element:<ReadingPage/>},
                     {path:'description/:id',element:<DescriptionPage/>}

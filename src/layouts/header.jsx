@@ -1,7 +1,8 @@
-import {AppBar, useTheme,useMediaQuery,alpha, Stack, Typography,Button, InputBase, IconButton, Box} from "@mui/material"
-import {Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown} from "@mui/icons-material"
+import {AppBar, useTheme,useMediaQuery,alpha, Stack, Typography,Button, InputBase, IconButton, Box, Container} from "@mui/material"
+import {Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown, Layers} from "@mui/icons-material"
 import { useState,useEffect } from "react";
 import "../styles/header_appearance.css"
+import { categories_data } from "../data/data";
 export default function Header(){
     const styles = {
         active: {
@@ -46,7 +47,8 @@ export default function Header(){
             transition: theme.transitions.create(['height'], {
                 duration: theme.transitions.duration.shorter
             }),
-            background: alpha(theme.palette.primary.main, 0.8),
+            
+            background: alpha(theme.palette.dark.light, 1),
             ...(isNonMobile && {
                 width: '100%'
             })
@@ -67,11 +69,11 @@ export default function Header(){
                                 color: 'white'
                             }
                         }}>
-                <Typography fontSize={20} color='white' >Thể loại</Typography>
+                <Typography fontSize={15} color='white' >Thể loại</Typography>
                 <ArrowDropDown color='white'/>
             </IconButton>
             <Stack direction={'row'} alignItems={'center'}>
-            <Typography fontSize={18} color='white' >Tìm kiếm</Typography>
+            <Typography fontSize={15} color='white' >Tìm kiếm</Typography>
             <Box display='flex' alignItems='center'
                     bgcolor={theme.palette.common.white}
                     borderRadius={4}
@@ -92,11 +94,11 @@ export default function Header(){
                         </IconButton>
             </Box>  
             </Stack>  
-            <Button >
-                <Typography fontSize={20} color='white' >Settings</Typography>
+            <Button>
+                <Typography fontSize={15} color='white' >Settings</Typography>
             </Button>   
             <Button >
-                <Typography fontSize={20} color='white' >Lịch sử</Typography>
+                <Typography fontSize={15} color='white' >Lịch sử</Typography>
             </Button>       
         </Stack>
 
