@@ -12,7 +12,7 @@ export default function Footer(){
                 transition: theme.transitions.create(['height'], {
                     duration: theme.transitions.duration.shorter
                 }),
-                background: alpha(theme.palette.primary.main, 0.8),
+                background: alpha(theme.palette.primary.main, 0.9),
                 ...(isNonMobile && {
                     width: '100%'
                 }),             
