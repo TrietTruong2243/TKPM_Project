@@ -22,7 +22,13 @@ export default function Header(){
     const controlNavbar = () => {
         if (window.scrollY > lastScrollY+50) { // if scroll down hide the navbar
             setShow(true); 
-        } else if (window.scrollY < lastScrollY-50 || Window.scrollY-50<0) { // if scroll up show the navbar
+        } 
+        else if (lastScrollY==0)
+            {
+                setShow(true); 
+
+            }
+        else if (window.scrollY < lastScrollY-50 || Window.scrollY-50<0) { // if scroll up show the navbar
             setShow(false);  
         }
         console.log(show)
@@ -92,7 +98,10 @@ export default function Header(){
                         </IconButton>
             </Box>  
             </Stack>  
-            <Button >
+            <Button onClick={() => {
+                window.location.href="/settings"
+    }}
+>
                 <Typography fontSize={20} color='white' >Settings</Typography>
             </Button>   
             <Button >
