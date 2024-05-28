@@ -23,7 +23,10 @@ export default function Router(){
                     ]},
                     {path:'history', element: <HistoryPage/> },
                     {path:'reading/:id',element:<ReadingPage/>},
-                    {path:'description/:id',element:<DescriptionPage/>},
+                    {path:'description/:id',children: [
+                        {path: '',element:<DescriptionPage/>},
+                        {path: 'chapter/:chap',element: <ReadingPage/>}
+                    ]},
                     {path:'search', element:<SearchPage/>}
                 ]
         

@@ -8,7 +8,7 @@ export default function NovelCard({novel}) {
     const theme = useTheme();
     const navigate=useNavigate()
     const onClick=()=>{
-        navigate(`description/${novel.id}`)
+        navigate(`/description/${novel.id}`)
     }
 
     return (
