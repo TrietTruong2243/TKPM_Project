@@ -23,9 +23,9 @@ export default function Router(){
                     ]},
                     {path:'history', element: <HistoryPage/> },
                     {path:'reading/:id',element:<ReadingPage/>},
-                    {path:'description/:id',children: [
+                    {path:'description/:novelId',children: [
                         {path: '',element:<DescriptionPage/>},
-                        {path: 'chapter/:chap',element: <ReadingPage/>}
+                        {path: 'chapter/:chapterId',element: <ReadingPage/>}
                     ]},
                     {path:'search', element:<SearchPage/>}
                 ]

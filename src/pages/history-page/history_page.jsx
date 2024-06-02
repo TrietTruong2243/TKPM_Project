@@ -1,33 +1,40 @@
 // src/App.js
 import React from 'react';
 import "../../styles/history_page.css";
-import { palette, borders } from '@mui/system';
-import { Container, CssBaseline, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Badge, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {  Container, CssBaseline, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Badge, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const novels = [
     {
         imgSrc: 'https://via.placeholder.com/100',
+        novelId: 21,
         title: 'Ngạo thế đan thần',
         status: ['Full', 'Mới', 'Hot'],
-        progress: 'Chương 10'
+        progressID: "Chương 10-utwt",
+        progress: 'Chương 10: Tìm kiếm'
     },
     {
         imgSrc: 'https://via.placeholder.com/100',
-        title: 'Kiều sủng vi thượng',
+        novelId: 21,
+        title: 'Ngạo thế đan thần',
         status: ['Full', 'Mới', 'Hot'],
-        progress: 'Chương 10'
+        progressID: "Chương 10-utwt",
+        progress: 'Chương 10: Tìm kiếm'
     },
     {
         imgSrc: 'https://via.placeholder.com/100',
-        title: 'Kiều sủng vi thượng',
+        novelId: 21,
+        title: 'Ngạo thế đan thần',
         status: ['Full', 'Mới', 'Hot'],
-        progress: 'Chương 10'
+        progressID: "Chương 10_utwt",
+        progress: 'Chương 10: Tìm kiếm'
     },
     {
         imgSrc: 'https://via.placeholder.com/100',
-        title: 'Kiều sủng vi thượng',
+        novelId: 21,
+        title: 'Ngạo thế đan thần',
         status: ['Full', 'Mới', 'Hot'],
-        progress: 'Chương 10'
+        progressID: "Chương 10-utwt",
+        progress: 'Chương 10: Tìm kiếm'
     }
 ];
 
@@ -64,7 +71,10 @@ function App() {
                                                     ))}
                                                 </Box>
                                             </TableCell>
-                                            <TableCell style={{ color: '#fff' }}>{novel.progress}</TableCell>
+
+                                            <TableCell><a style={{ color: '#fff' }} href={`description/${novel.novelId}/chapter/${novel.progressID}`} >
+                                                {novel.progress}
+                                            </a></TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

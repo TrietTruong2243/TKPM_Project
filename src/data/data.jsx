@@ -1,6 +1,6 @@
 export const hot_story=[
     {
-        id:111,
+        id: 'de-phi-lam-thien',
         name:'Ngạo thế đan thần',
         image: '/images/ngao_the_dan_than.jpg',
     },
