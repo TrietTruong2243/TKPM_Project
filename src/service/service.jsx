@@ -33,7 +33,13 @@ export async function GetAllChapterByNovelId(novelId, chapterCount, chapterPerPa
 
     const responses = await Promise.all(chapterPromises);
     const allChapters = responses.flatMap(response => response.data.data);
-    console.log(allChapters);
+    /*data :
+    [
+      {
+        chapterId,
+        chapterName
+      }
+    ] */
     return allChapters;
   } catch (error) {
     console.error('There was an error making the request!', error);
@@ -45,7 +51,17 @@ export async function GetChapterOfNovelContent(novelId, chapterId) {
   try {
     const response = await axios.get(`http://localhost:4000/${novelId}/${chapterId}`);
     const data = response.data.data;
-    data.novelId=  novelId;
+    data.novelId = novelId;
+    /*
+    data: {
+      novelId,
+      title,
+      chapter,
+      content,
+      nextChapterId,
+      prevChapterId
+    }
+    */
     return data;
   } catch (error) {
     console.error('There was an error making the request!', error);
@@ -58,7 +74,17 @@ export async function GetHotNovels() {
     const data = response.data.data;
     data.forEach(item => {
       item.novelId = item.kebabCaseTitle;
-item.img ='https://fast.com.vn/uploads/news/He-thong-thong-tin/api-la-gi.jpg'    });
+      item.img = 'https://fast.com.vn/uploads/news/He-thong-thong-tin/api-la-gi.jpg'
+    });
+    /*
+    data: [
+      {
+        novelId,
+        img,
+        title
+      }
+    ]
+    */
     return data;
   } catch (error) {
     console.error('There was an error making the request!', error);

@@ -1,45 +1,70 @@
-import React, { useState } from 'react';
-import { Container, Box, Typography, Grid, Paper, List, ListItem, ListItemText, Pagination } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Navigate, useNavigate } from "react-router-dom";
-export default function AllChapters({allChapters}) {
-    
+import React, { useState, useEffect } from 'react';
+import {  Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+
+export default function AllChapters({ allChapters }) {
     const navigate = useNavigate();
-    //handle for 
     const [currentPage, setCurrentPage] = useState(1);
     const [chaptersPerPage] = useState(15);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (allChapters.length > 0) {
+            setIsLoading(false);
+        }
+    }, [allChapters]);
+
     const totalChapters = allChapters.length;
-    const chapters = allChapters;
+
     const getStartingIndex = (currentPage) => {
         return (currentPage - 1) * chaptersPerPage;
     };
+
     const getEndingIndex = (currentPage) => {
         return Math.min(currentPage * chaptersPerPage, totalChapters);
     };
-    const displayedChapters = chapters.slice(getStartingIndex(currentPage), getEndingIndex(currentPage));
+
+    const displayedChapters = allChapters.slice(getStartingIndex(currentPage), getEndingIndex(currentPage));
+
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };
-    if (!allChapters) {
-        return <Typography variant="body1">Loading...</Typography>;
-      }
-    return <Box mt={4} sx={{ border: 1 }} >
-        <Paper elevation={2} sx={{ p: 2 }}>
-            <Typography variant="h6" align="center">Danh sách chương</Typography>
-            <List>
-                {displayedChapters.map((chapter, index) => (
-                    <ListItem key={index} onClick={() => navigate(`chapter/${chapter.chapterId}`)}>
-                        <ListItemText primary={`${chapter.chapterName}`} />
-                    </ListItem>
-                ))}
-            </List>
-            <Pagination
-                count={Math.ceil(allChapters.length / chaptersPerPage)}
-                page={currentPage}
-                onChange={handleChangePage}
-                color="primary"
-                sx={{ display: 'flex', justifyContent: 'center' }}
-            />
-        </Paper>
-    </Box>
+
+    useEffect(() => {
+        if (currentPage > Math.ceil(totalChapters / chaptersPerPage)) {
+            setCurrentPage(1);
+        }
+    }, [totalChapters, chaptersPerPage, currentPage]);
+
+    return (
+        <Box mt={4} sx={{ border: 1 }}>
+            <Paper elevation={2} sx={{ p: 2 }}>
+                <Typography variant="h6" align="center">Danh sách chương</Typography>
+                {isLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                        <CircularProgress />
+                    </Box>
+                ) : totalChapters > 0 ? (
+                    <>
+                        <List>
+                            {displayedChapters.map((chapter, index) => (
+                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.chapterId}`)}>
+                                    <ListItemText primary={`${chapter.chapterName}`} />
+                                </ListItem>
+                            ))}
+                        </List>
+                        <Pagination
+                            count={Math.ceil(totalChapters / chaptersPerPage)}
+                            page={currentPage}
+                            onChange={handleChangePage}
+                            color="primary"
+                            sx={{ display: 'flex', justifyContent: 'center' }}
+                        />
+                    </>
+                ) : (
+                    <Typography variant="body2" align="center">Không có chương nào để hiển thị</Typography>
+                )}
+            </Paper>
+        </Box>
+    );
 }

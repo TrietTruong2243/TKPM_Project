@@ -1,7 +1,5 @@
-import { Typography } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Box } from '@mui/material';
 import { ThemeContext } from '../../../data/readingTheme';
 
 export default function SettingModal({ show, handleClose }) {

@@ -7,8 +7,7 @@ import NovelContent from './Components/novel_content';
 import Source from './Components/source';
 import ControlButtons from './Components/control_buttons';
 import { GetAllChapterByNovelId, GetChapterOfNovelContent, GetNovelByIdService } from '../../service/service';
-import Spinner from 'react-bootstrap/Spinner';
-
+import CenteredSpinner from '../../spinner/centered_spinner';
 const allSource = [
   {
     sourceName: "truyenfull.vn",
@@ -27,14 +26,21 @@ const App = () => {
   useEffect(() => {
     const fetchNovelAndChapters = async () => {
       try {
+        //Xử lý lưu truyện vào lịch sử
+        const readItems = JSON.parse(localStorage.getItem('readItems')) || {};
+        if (readItems[novelId])
+          {
+            delete readItems[novelId]
+          }
+        readItems[novelId] = chapterId;
+        localStorage.setItem('readItems', JSON.stringify(readItems));
         setReadingNovel(null);
         const fetchedNovel = await GetNovelByIdService(novelId);
         const chapters = await GetAllChapterByNovelId(novelId, fetchedNovel.chapterCount, fetchedNovel.chapterPerPage);
         const chapterContent = await GetChapterOfNovelContent(novelId, chapterId);
         setAllChapter(chapters);
         setReadingNovel({ ...chapterContent, chapterId});
-
-        // setReadingNovel({ ...fetchedNovel, content: chapterContent.content, chapterId });
+        
       } catch (error) {
         console.error('Error fetching novel and chapters:', error);
       }
@@ -44,9 +50,7 @@ const App = () => {
   }, [novelId, chapterId]);
 
   if (!readingNovel || !allChapter) {
-    return  <Spinner animation="border" role="status" class="d-flex justify-content-center" sx = {{}}>
-    <span className="visually-hidden">Loading...</span>
-  </Spinner>;
+    return <CenteredSpinner></CenteredSpinner>
   }
 
   return (

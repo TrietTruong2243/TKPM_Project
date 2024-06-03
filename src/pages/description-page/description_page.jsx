@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { Container, Grid, Paper } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DescriptionComponent from './Components/description_components';
 import HotNovel from './Components/hot_novel';
 import AllChapters from './Components/all_chapter';
 import { GetNovelByIdService, GetAllChapterByNovelId ,GetHotNovels} from '../../service/service';
-
-const hotNovels = [{
-    novelId: "1331",
-    title: 'Sau Khi Xuyên Sách, Tôi Thành Người Duy Nhất Của Nam Phụ Thầm Tình',
-    img: 'https://inkythuatso.com/uploads/thumbnails/800/2023/03/1-hinh-anh-ngay-moi-hanh-phuc-sieu-cute-inkythuatso-09-13-35-50.jpg'
-}, {
-    novelId: "3131",
-    title: 'Võ Khí Thần Bí Của Sát Thủ',
-    img: 'https://inkythuatso.com/uploads/thumbnails/800/2023/03/1-hinh-anh-ngay-moi-hanh-phuc-sieu-cute-inkythuatso-09-13-35-50.jpg'
-}]
-
+import CenteredSpinner from '../../spinner/centered_spinner';
 export default function DescriptionPage() {
-    const currentUrl = window.location.href;
-    const urlParts = currentUrl.split('/');
-    const novelId = urlParts[urlParts.length - 1];
+
+    const {novelId }= useParams();
     const [novel, setNovel] = useState(null);
     const [allChapters, setAllChapters] = useState([]);
     const [hotNovels, setHotNovels] = useState([]); 
@@ -53,8 +43,8 @@ export default function DescriptionPage() {
         },
     });
 
-    if (!novel || !hotNovels) {
-        return <div>Loading...</div>;
+    if (!novel || !hotNovels|| !allChapters) {
+        return <CenteredSpinner></CenteredSpinner>;
     }
 
     return (
