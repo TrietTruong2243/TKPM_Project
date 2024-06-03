@@ -10,7 +10,6 @@ export default function Main({children}) {
             minHeight={1000}
             display='flex'
             flexDirection='column'
-            sx={{background: alpha(theme.palette.primary.main, 0.8)}}
             py='64px'
             >
                 {children}

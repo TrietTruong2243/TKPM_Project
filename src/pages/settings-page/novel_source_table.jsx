@@ -1,18 +1,33 @@
 import { ButtonGroup, Box, Container,Typography , Stack} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import * as React from "react"
 import { ActionButton } from "../../components/action_button";
 import { useTheme } from "@emotion/react";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
-const ActionsBox = ({id, source_data}) => {
+const ActionsBox = ({id, source_data,setData}) => {
     const onMoveUp=()=>{
-        if (id>1){
-            source_data[id-2].id++;
-            source_data[id-1].id--;            
+        if (id>1){   
+            source_data[id-1].id--
+            source_data[id-2].id++
+            console.log(source_data)
+            const temp=[...source_data]
+            const moved_down_row=temp[id-2]
+            temp[id-2]=temp[id-1]
+            temp[id-1]=moved_down_row
+            setData([...temp])    
         }
     }
-    const onMoveDown=({id})=>{
-        if (id<source_data.length-1){
-
+    const onMoveDown=()=>{
+        console.log(id,source_data.length)
+        if (id<source_data.length){
+            source_data[id-1].id++
+            source_data[id].id--
+            console.log(source_data)
+            const temp=[...source_data]
+            const moved_down_row=temp[id]
+            temp[id]=temp[id-1]
+            temp[id-1]=moved_down_row
+            setData([...temp])
         }
     }
     return (
@@ -22,14 +37,9 @@ const ActionsBox = ({id, source_data}) => {
       </ButtonGroup>)
 }
 
-export default function NovelSourceTable({source_data}){
+export default function NovelSourceTable({sources_data}){
     const theme=useTheme();
-    const onMoveUp=({id})=>{
-        console.log(id)
-    }
-    const onMoveDown=({id})=>{
-
-    }
+    const [source_data,setData]=React.useState(sources_data)
     const columns=[
         { 
             field: 'id',
@@ -50,10 +60,9 @@ export default function NovelSourceTable({source_data}){
         {
             headerName: 'Action',
             flex: 1,
-            renderCell: (params) => <ActionsBox id={params.row.id} source_data={source_data} />
+            renderCell: (params) => <ActionsBox id={params.row.id} source_data={source_data} setData={setData}/>
         }
     ]
-    
     return (
         <Container>
             <Typography fontSize={20}>

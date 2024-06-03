@@ -7,7 +7,7 @@ export default function SettingsPage(){
 
     return (
         <Container sx={{margin:2}}>
-            <NovelSourceTable source_data={source_data}/>
+            <NovelSourceTable sources_data={source_data}/>
         </Container>
     )
 }
