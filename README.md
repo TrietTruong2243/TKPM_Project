@@ -1,4 +1,5 @@
 # Một số lưu ý
+Phần lưu lại lịch sử đọc truyện của người dùng, readingTheme được lưu trong localStorage\
 Chỉ mới thực hiện settings cho khung đọc truyện, chưa chỉnh settings cho toàn bộ các trang.\
 Cấu hình theme trong src/data/readingTheme .\
 Phần description và reading page được lấy data dựa theo cái của Phúc, nữa chỉnh lại sau .\
