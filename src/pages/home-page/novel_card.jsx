@@ -8,7 +8,7 @@ export default function NovelCard({novel}) {
     const theme = useTheme();
     const navigate=useNavigate()
     const onClick=()=>{
-        navigate(`description/${novel.id}`)
+        navigate(`/description/${novel.id}`)
     }
 
     return (
@@ -23,7 +23,7 @@ export default function NovelCard({novel}) {
             title={novel.name}
             />    
             <CardContent sx={{height:20}}>
-              <Typography>{novel.name}</Typography>  
+                <Typography>{novel.name}</Typography>  
             </CardContent>  
         </Card>
   );

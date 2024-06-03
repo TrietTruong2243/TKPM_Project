@@ -4,7 +4,7 @@ import { useState,useEffect } from "react";
 import "../styles/header_appearance.css"
 import { categories_data } from "../data/data";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import CategoryButton from "./components/categories_button";
 export default function Header(){
     const navigate=useNavigate()
     const styles = {
@@ -18,16 +18,15 @@ export default function Header(){
           transform: "translateY(-100%)"
         }
     }
-    let [searchParams, setSearchParams] = useSearchParams();
     const theme=useTheme();
     const isNonMobile = useMediaQuery(theme.breakpoints.up('lg'));
     const [show, setShow] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
     const controlNavbar = () => {
-        if (window.scrollY > lastScrollY+50) { // if scroll down hide the navbar
+        if (window.scrollY > lastScrollY) { // if scroll down hide the navbar
             setShow(true); 
-        } else if (window.scrollY < lastScrollY-50 || Window.scrollY-50<0) { // if scroll up show the navbar
+        } else if (window.scrollY < lastScrollY) { // if scroll up show the navbar
             setShow(false);  
         }
         console.log(show)
@@ -67,15 +66,10 @@ export default function Header(){
             flexDirection={'row'}
             spacing={8}
         >
-            <Typography fontSize={30}   justifyContent={'center'}>WeNovel</Typography>
-            <IconButton sx={{
-                            '& .MuiSvgIcon-root': {
-                                color: 'white'
-                            }
-                        }}>
-                <Typography fontSize={15} color='white' >Thể loại</Typography>
-                <ArrowDropDown color='white'/>
-            </IconButton>
+            <Button onClick={()=> navigate('/home')} >
+                <Typography fontSize={30} color='white'  justifyContent={'center'}>WeNovel</Typography>
+            </Button>
+            <CategoryButton/>
             <Stack direction={'row'} alignItems={'center'}>
             <Typography fontSize={15} color='white' >Tìm kiếm</Typography>
             <Box display='flex' alignItems='center'
@@ -94,13 +88,13 @@ export default function Header(){
                                 color: `${theme.palette.primary.main}`
                             }
                         }}
-                            onClick={()=>navigate('search',{'category':'','name':'ggg' })}
+                            onClick={()=>navigate('/search',{category:'',name:'ggg' })}
                         >
                             <SearchIcon/>
                         </IconButton>
             </Box>  
             </Stack>  
-            <Button >
+            <Button onClick={()=> navigate('/settings')} >
                 <Typography fontSize={15} color='white' >Settings</Typography>
             </Button>   
             <Button >

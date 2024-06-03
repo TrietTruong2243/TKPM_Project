@@ -58,11 +58,35 @@ export const categories_data=[
         name: 'Dị giới',
     },
     {
-        id:'do_thi',
+        id:'do_thi1',
         name: 'Đô thị',
     },
     {
-        id:'ngon_tinh',
+        id:'ngon_tinh11',
+        name: 'Ngôn tình',
+    },
+    {
+        id:'tien_hiep1',
+        name: 'Tiên hiệp',
+    },
+    {
+        id:'trinh_tham1',
+        name: 'Trinh thám',
+    },
+    {
+        id:'hai_kich1',
+        name: 'Hài kịch',
+    },
+    {
+        id:'di_gio1i',
+        name: 'Dị giới',
+    },
+    {
+        id:'do_th1i',
+        name: 'Đô thị',
+    },
+    {
+        id:'ngon_ti1nh',
         name: 'Ngôn tình',
     },
 ]
@@ -122,5 +146,27 @@ export const noveltable_data=[
         new_chapter: '3033-Nằm ngủ mơ thấy nằm ngủ',
         trans: 'Hồng Lâu Mộng',
         times: '2 phút trước'
+    },
+]
+export const source_data=[
+    {
+        id:1,
+        sourcepath:'link',
+        sourcename:'Mê truyện chữ'
+    },
+    {
+        id:2,
+        sourcepath:'link',
+        sourcename:'Mê truyện chữ1'
+    },
+    {
+        id:3,
+        sourcepath:'link',
+        sourcename:'Mê truyện chữ2'
+    },
+    {
+        id:4,
+        sourcepath:'link',
+        sourcename:'Mê truyện chữ3'
     },
 ]

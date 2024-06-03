@@ -5,6 +5,7 @@ import ReadingPage from "../pages/reading-page/reading_page";
 import { Navigate, Outlet, useRoutes } from "react-router-dom";
 import DashBoardLayout from "../layouts/dashboard";
 import SearchPage from "../pages/search-page/search_page";
+import SettingsPage from "../pages/settings-page/settings_page";
 export default function Router(){
     const routes=useRoutes([
         {
@@ -24,7 +25,8 @@ export default function Router(){
                     {path:'history', element: <HistoryPage/> },
                     {path:'reading/:id',element:<ReadingPage/>},
                     {path:'description/:id',element:<DescriptionPage/>},
-                    {path:'search', element:<SearchPage/>}
+                    {path:'search', element:<SearchPage/>},
+                    {path:'settings', element:<SettingsPage/>}
                 ]
         
         }
