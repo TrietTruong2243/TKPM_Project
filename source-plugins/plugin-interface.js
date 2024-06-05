@@ -21,7 +21,7 @@ class NovelStrategy{
     // TODO: getLatestNovels, getMostViewedNovels...
 
     async searchNovels(keyword, page = 1){
-        throw new Error('You have to implement the method getNovels!');
+        throw new Error('You have to implement the method searchNovels!');
     }
 
     async getNovelBySlug(slug){
@@ -32,7 +32,7 @@ class NovelStrategy{
         throw new Error('You have to implement the method getNovelChapterList!');
     }
 
-    async getChapterContent(novelId, chapterId){
+    async getChapterContent(slug, chapterId){
         throw new Error('You have to implement the method getChapterContent!');
     }
 }

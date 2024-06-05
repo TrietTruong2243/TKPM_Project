@@ -21,7 +21,6 @@ class TruyenFullStrategy extends NovelStrategy {
 
             const categories = [];
             const categoryElements = $('ul.dropdown-menu a');
-
             categoryElements.each((index, element) => {
                 const href = $(element).attr('href');
                 if (href.includes(`${this.baseUrl}/the-loai/`)) {
@@ -31,7 +30,6 @@ class TruyenFullStrategy extends NovelStrategy {
             });
 
             return categories;
-
         } catch (error) {
             throw error;
         }
@@ -46,12 +44,10 @@ class TruyenFullStrategy extends NovelStrategy {
             });
             const html = response.data;
             const $ = load(html);
-            const hotNovels = [];
 
-            console.log($('index-intro .item a'));
+            const hotNovels = [];
             $('.index-intro .item a').each((index, element) => {
                 const subUrl = $(element).attr('href').replace(`${this.baseUrl}/`, '');
-                
                 const novel = {
                     title: $(element).find('.title h3').text().trim(),
                     image: $(element).find('img').attr('src'),
@@ -61,9 +57,7 @@ class TruyenFullStrategy extends NovelStrategy {
                 hotNovels.push(novel);
             });
 
-            console.log(hotNovels);
             return hotNovels;
-
         } catch (error) {
             console.error(error);
         }
@@ -77,7 +71,6 @@ class TruyenFullStrategy extends NovelStrategy {
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
             });
-
             const data = response.data;
             const novels = data.data.map(novel => {
                 return {
@@ -114,8 +107,8 @@ class TruyenFullStrategy extends NovelStrategy {
             });
             const html = response.data;
             const $ = load(html);
+
             const id = $('input#truyen-id').attr('value');
-            
             const reponseFromApi = await axios.get(`${this.apiUrl}/story/detail/${id}`, {
                 headers: {
                     Accept: "application/json",
@@ -135,7 +128,6 @@ class TruyenFullStrategy extends NovelStrategy {
             }
 
             return info;
-
         } catch (error) {
             throw error;
         }
@@ -150,16 +142,15 @@ class TruyenFullStrategy extends NovelStrategy {
             });
             const html = response.data;
             const $ = load(html);
-            const id = $('input#truyen-id').attr('value');
 
+            const id = $('input#truyen-id').attr('value');
             const responseFromApi = await axios.get(`${this.apiUrl}/story/detail/${id}/chapters?page=${page}`, {
                 headers: {
                     Accept: "application/json",
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
             });
-
-            const data = responseFromApi.data; 
+            const data = responseFromApi.data;
             const chapters = data.data.map(chapter => {
                 return {
                     id: chapter.id,
@@ -181,20 +172,15 @@ class TruyenFullStrategy extends NovelStrategy {
         }
     }
 
-    async getChapterContent(novelId, chapterId) {
+    async getChapterContent(slug, chapterId) {
         try {
-
             const response = await axios.get(`${this.apiUrl}/chapter/detail/${chapterId}`, {
                 headers: {
                     Accept: "application/json",
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
             });
-
             const data = response.data.data;
-
-            console.log(data);
-
             const chapterContent = {
                 id: data.chapter_id,
                 title: data.chapter_name,
