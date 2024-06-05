@@ -156,17 +156,17 @@ export const source_data=[
     },
     {
         id:2,
-        sourcepath:'link',
+        sourcepath:'link2',
         sourcename:'Mê truyện chữ1'
     },
     {
         id:3,
-        sourcepath:'link',
+        sourcepath:'link3',
         sourcename:'Mê truyện chữ2'
     },
     {
         id:4,
-        sourcepath:'link',
+        sourcepath:'link4',
         sourcename:'Mê truyện chữ3'
     },
 ]

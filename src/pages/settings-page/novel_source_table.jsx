@@ -4,7 +4,9 @@ import * as React from "react"
 import { ActionButton } from "../../components/action_button";
 import { useTheme } from "@emotion/react";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import NovelSourceManager from "../../data/NovelSourceManager";
 const ActionsBox = ({id, source_data,setData}) => {
+    let novel_source_manager=NovelSourceManager.getInstance();
     const onMoveUp=()=>{
         if (id>1){   
             source_data[id-1].id--
@@ -14,6 +16,7 @@ const ActionsBox = ({id, source_data,setData}) => {
             const moved_down_row=temp[id-2]
             temp[id-2]=temp[id-1]
             temp[id-1]=moved_down_row
+            novel_source_manager.saveSourceWithPriority(temp)
             setData([...temp])    
         }
     }
@@ -27,6 +30,7 @@ const ActionsBox = ({id, source_data,setData}) => {
             const moved_down_row=temp[id]
             temp[id]=temp[id-1]
             temp[id-1]=moved_down_row
+            novel_source_manager.saveSourceWithPriority(temp)
             setData([...temp])
         }
     }

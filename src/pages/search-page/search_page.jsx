@@ -11,7 +11,7 @@ export default function SearchPage(){
     const params=useParams()
     console.log(navigate.params)
     return (
-        <Container>
+        <Container sx={{marginTop:2}}>
             <NovelGrid></NovelGrid>
             <Stack 
                 width={1}
