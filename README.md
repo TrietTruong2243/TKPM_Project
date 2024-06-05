@@ -39,7 +39,7 @@ http://localhost:4000/api/:source/novels/:slug/chapters/:chapterId
 `source`: tên nguồn viết liền không dấu (vd: truyenfull).\
 `slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than).
 ## TODO
-- [ ] <span style="color:red">Hiện tại đang phụ thuộc vào id truyện và id chương từ nguồn, nếu nguồn không chứa id? --> lấy nội dung truyện bằng url (slug)?, chuyển id về biến cục bộ nếu có, không trả về id?</span>
+- [ ] <span style="color:red">Hiện tại đang phụ thuộc vào id truyện và id chương từ nguồn, nếu nguồn không chứa các id? --> lấy nội dung truyện bằng url (slug)? --> chuyển id về biến cục bộ nếu được</span>
 - [ ] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn?
 - [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
 - [ ] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.

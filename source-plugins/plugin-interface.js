@@ -24,15 +24,15 @@ class NovelStrategy{
         throw new Error('You have to implement the method searchNovels!');
     }
 
-    async getNovelBySlug(slug){
+    async getNovelBySlug(novelSlug){
         throw new Error('You have to implement the method getNovelBySlug!');
     }
 
-    async getNovelChapterList(slug, page = 1){
+    async getNovelChapterList(novelSlug, page = 1){
         throw new Error('You have to implement the method getNovelChapterList!');
     }
 
-    async getChapterContent(slug, chapterId){
+    async getChapterContent(novelSlug, chapterSlug){
         throw new Error('You have to implement the method getChapterContent!');
     }
 }
