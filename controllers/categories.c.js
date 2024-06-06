@@ -18,4 +18,23 @@ const getCategories = async (req, res) => {
     }
 }
 
-export { getCategories };
+// [GET] /api/:source/categories/:categorySlug
+const getNovelsByCategory = async (req, res) => {
+    const { source, categorySlug } = req.params;
+    const page = req.query.page || 1;
+    try {
+        const novels = await NovelFetcher.fetchNovelsByCategory(source, categorySlug, page);
+        res.status(200).json({
+            message: 'success',
+            data: novels
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'error',
+            error: error.message
+        });
+    }
+}
+
+export { getCategories, getNovelsByCategory };

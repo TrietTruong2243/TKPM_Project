@@ -3,6 +3,6 @@ import { getNovelChapterList, getChapterContent } from '../controllers/chapters.
 
 const router = express.Router({ mergeParams: true });
 router.get('/', getNovelChapterList);
-router.get('/:chapterId', getChapterContent);
+router.get('/:chapterSlug', getChapterContent);
 
 export default router;

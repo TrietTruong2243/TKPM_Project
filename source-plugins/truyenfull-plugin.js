@@ -79,9 +79,8 @@ class TruyenFullStrategy extends NovelStrategy {
             const html = response.data;
             const $ = load(html);
             const novelSlugs = $('h3.truyen-title a').map((index, element) => $(element).attr('href').split('/')[3]).get();
-            console.log('novelSlugs', novelSlugs);
 
-            const responseFromApi = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&page=${page}`, {
+            const responseFromApi = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&order=6&page=${page}`, {
                 headers: {
                     Accept: "application/json",
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
@@ -118,6 +117,74 @@ class TruyenFullStrategy extends NovelStrategy {
                 },
                 novels,
             };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getNovelsByCategory(categorySlug, page = 1) {
+        try {
+            const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
+                },
+            });
+            const html = response.data;
+            const $ = load(html);
+
+            const novels = [];
+            $('.col-truyen-main .list-truyen .row').each((index, element) => {
+                if($(element).attr('id')) return; // adware =(
+                const title = $(element).find('.truyen-title a').text().trim();
+                const image = $(element).find('img.cover').attr('src');
+                const slug = $(element).find('.truyen-title a').attr('href').split('/')[3];
+                const authors = [];
+                $(element).find('.author').each((index, author) => {
+                    const authorName = $(author).text().trim();
+                    authors.push({ name: authorName, slug: convertNameToSlug(authorName) });
+                });
+                const status = $(element).find('.label-full').length ? 'Full' : 'Updating';
+                
+                novels.push({ 
+                    title, 
+                    image, 
+                    slug: convertNameToSlug(title),
+                    authors,
+                    categories: [],
+                    numChapters: "",
+                    status 
+                });
+            });
+
+            const per_page = novels.length;
+            let total = per_page;
+            let total_page = per_page > 0 ? 1 : 0;
+
+            const lastPageElement = $('ul.pagination').length ? $('ul.pagination li').last() : null;
+            if (lastPageElement) {
+                const lastPage = lastPageElement.find('li').last().prev();
+                total_page = parseInt(lastPage.text());
+                const responseFromLastPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${total_page}`, {
+                    headers: {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
+                    },
+                });
+                const htmlFromLastPage = responseFromLastPage.data;
+                const $lastPage = load(htmlFromLastPage);
+                const numChaptersLastPage = $lastPage('.col-truyen-main .list-truyen .row').length;
+                total = (total_page - 1) * per_page + numChaptersLastPage;
+            }
+
+            return {
+                meta: {
+                    total,
+                    per_page,
+                    current_page: page,
+                    total_pages: total_page,
+                },
+                novels
+            }
+            
         } catch (error) {
             throw error;
         }

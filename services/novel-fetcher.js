@@ -99,13 +99,29 @@ class NovelFetcher {
         }
     }
 
-    async fetchNovelByTitle(strategyName, title) {
+    async fetchNovelsByCategory(strategyName, categorySlug, page) {
+        const strategy = this.strategies[strategyName];
+        if (!strategy || !typeof strategy.getNovelsByCategory === 'function') {
+            throw new Error(`Strategy '${strategyName}' not found.`);
+        }
+        try {
+            const novels = await strategy.getNovelsByCategory(categorySlug, page);
+            return {
+                source: strategyName,
+                novels
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async fetchNovelByTitle(strategyName, novelSlug) {
         const strategy = this.strategies[strategyName];
         if (!strategy || !typeof strategy.getNovelBySlug === 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
-            const novelInfo = await strategy.getNovelBySlug(title);
+            const novelInfo = await strategy.getNovelBySlug(novelSlug);
             return {
                 source: strategyName,
                 novelInfo
@@ -115,13 +131,13 @@ class NovelFetcher {
         }
     }
 
-    async fetchNovelChapterList(strategyName, title, page) {
+    async fetchNovelChapterList(strategyName, novelSlug, page) {
         const strategy = this.strategies[strategyName];
         if (!strategy || !typeof strategy.getNovelChapterList === 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
-            const chapters = await strategy.getNovelChapterList(title, page);
+            const chapters = await strategy.getNovelChapterList(novelSlug, page);
             return {
                 source: strategyName,
                 chapters
@@ -131,13 +147,13 @@ class NovelFetcher {
         }
     }
 
-    async fetchChapterContent(strategyName, title, chapterId) {
+    async fetchChapterContent(strategyName, novelSlug, chapterSlug) {
         const strategy = this.strategies[strategyName];
         if (!strategy || !typeof strategy.getChapterContent === 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
-            const chapterContent = await strategy.getChapterContent(title, chapterId);
+            const chapterContent = await strategy.getChapterContent(novelSlug, chapterSlug);
             return {
                 source: strategyName,
                 chapterContent

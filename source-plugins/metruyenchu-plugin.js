@@ -117,7 +117,6 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			const totalNovels = $('.title-list p').text().match(/\d+/)[0];
 			let lastPage = $('.phan-trang a').last();
-			console.log(lastPage);
 			if (lastPage.text() === '❭') lastPage = lastPage.prev();
 			const totalPages = parseInt(lastPage.text());
 
@@ -127,6 +126,99 @@ class MeTruyenChuStrategy extends NovelStrategy {
 					current_page: page,
 					per_page: novels.length,
 					total_pages: totalPages
+				},
+				novels,
+			}
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async getNovelsByCategory(categorySlug, page = 1) {
+		try {
+			const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
+			const html = response.data;
+			let $ = load(html);
+
+			const novels = [];
+			$(".truyen-list .item").each((index, element) => {
+				const slug = $(element).find("a").attr("href").replace("/", "");
+				const title = $(element).find("h3 a").text();
+				const image = $(element).find("img").attr("src");
+
+				const authors = [];
+				$(element)
+					.find(".line")
+					.eq(0)
+					.find("a")
+					.each((index, ele) => {
+						const authorName = $(ele).text();
+						const authorSlug = $(ele).attr("href").replace("/tac-gia/", "");
+						authors.push({ name: authorName, slug: authorSlug });
+					});
+
+				const categories = [];
+				$(element)
+					.find(".line")
+					.eq(1)
+					.find("a")
+					.each((index, ele) => {
+						const categoryName = $(ele).text();
+						const categorySlug = $(ele).attr("href").replace("/the-loai/", "");
+						categories.push({ name: categoryName, slug: categorySlug });
+					});
+
+				const numChapters = $(element)
+					.find(".line")
+					.eq(2)
+					.text()
+					.replace("Số chương::", "")
+					.trim();
+
+				let status;
+				const novel = {
+					slug,
+					title,
+					image: this.baseUrl + image,
+					authors,
+					categories,
+					numChapters: parseInt(numChapters),
+					status,
+				};
+
+				novels.push(novel);
+			});
+
+			const per_page = novels.length;
+			let total = per_page;
+			let total_pages = 1;
+
+			let hasNextPage = $('.phan-trang').length > 0;
+			let currentPage = page, nextPage, nextHtml;
+			while (hasNextPage) {
+				console.log('current page:', currentPage);
+				if ($('.phan-trang .btn-page').last().text().includes('❭')) {
+					currentPage++;
+					// currentPage = parseInt($('.phan-trang .btn-page').last().prev().text());
+				} else {
+					hasNextPage = false;
+					total_pages = parseInt($('.phan-trang .btn-page').last().text());
+					// total = (total_pages - 1) * per_page + $('.truyen-list .item').length;
+				}
+
+				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
+				nextHtml = nextPage.data;
+				$ = load(nextHtml);
+				total += $('.truyen-list .item').length;
+				// await new Promise(resolve => setTimeout(resolve, 100)); // delay to prevent getting blocked
+			}
+
+			return {
+				meta: {
+					total,
+					current_page: page,
+					per_page,
+					total_pages
 				},
 				novels,
 			}

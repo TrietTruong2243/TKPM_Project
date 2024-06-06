@@ -19,11 +19,11 @@ const getNovelChapterList = async (req, res) => {
     }
 }
 
-// [GET] /api/:source/novels/:slug/chapters/:chapterId
+// [GET] /api/:source/novels/:slug/chapters/:chapterSlug
 const getChapterContent = async (req, res) => {
-    const { source, slug, chapterId } = req.params;
+    const { source, slug, chapterSlug } = req.params;
     try {
-        const chapterContent = await NovelFetcher.fetchChapterContent(source, slug, chapterId);
+        const chapterContent = await NovelFetcher.fetchChapterContent(source, slug, chapterSlug);
         res.status(200).json({
             message: 'success',
             data: chapterContent
