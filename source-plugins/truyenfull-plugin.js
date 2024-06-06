@@ -71,20 +71,39 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async searchNovels(keywords, page = 1) {
         try {
-            const response = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&page=${page}`, {
+            const response = await axios.get(`${this.baseUrl}/tim-kiem?tukhoa=${keywords}&page=${page}`, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
+                },
+            });
+            const html = response.data;
+            const $ = load(html);
+            const novelSlugs = $('h3.truyen-title a').map((index, element) => $(element).attr('href').split('/')[3]).get();
+            console.log('novelSlugs', novelSlugs);
+
+            const responseFromApi = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&page=${page}`, {
                 headers: {
                     Accept: "application/json",
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
             });
-            const data = response.data;
-            const novels = data.data.map(novel => {
+            const data = responseFromApi.data;
+            const novels = data.data.map((novel, index) => {
+                const categories = novel.categories.split(', ');
+                categories.forEach((category, index) => {
+                    categories[index] = { name: category, slug: convertNameToSlug(category) };
+                });
+                const authors = novel.author.split(', ');
+                authors.forEach((author, index) => {
+                    authors[index] = { name: author, slug: convertNameToSlug(author) };
+                });
+
                 return {
                     title: novel.title,
                     image: novel.image,
-                    slug: convertNameToSlug(novel.title),
-                    authors: novel.author,
-                    categories: novel.categories,
+                    slug: novelSlugs[index],
+                    authors,
+                    categories,
                     numChapters: novel.total_chapters,
                     status: novel.is_full === true ? 'Full' : 'Updating',
                 }

@@ -24,6 +24,10 @@ class NovelStrategy{
         throw new Error('You have to implement the method searchNovels!');
     }
 
+    async getNovelByCategory(categorySlug, page = 1){
+        throw new Error('You have to implement the method getNovelByCategory!');
+    }
+
     async getNovelBySlug(novelSlug){
         throw new Error('You have to implement the method getNovelBySlug!');
     }

@@ -115,7 +115,21 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				novels.push(novel);
 			});
 
-			return novels;
+			const totalNovels = $('.title-list p').text().match(/\d+/)[0];
+			let lastPage = $('.phan-trang a').last();
+			console.log(lastPage);
+			if (lastPage.text() === '❭') lastPage = lastPage.prev();
+			const totalPages = parseInt(lastPage.text());
+
+			return {
+				meta: {
+					total: parseInt(totalNovels),
+					current_page: page,
+					per_page: novels.length,
+					total_pages: totalPages
+				},
+				novels,
+			}
 		} catch (error) {
 			throw error;
 		}
