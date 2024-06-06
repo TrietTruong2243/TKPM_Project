@@ -42,6 +42,12 @@ Tìm truyện:
 http://localhost:4000/api/:source/novels/search?keyword=_&page=_
 ```
 
+Danh sách truyện theo thể loại:
+
+```
+http://localhost:4000/api/:source/categories/:categorySlug_
+```
+
 Danh sách chương của một truyện:
 
 ```
@@ -51,7 +57,7 @@ http://localhost:4000/api/:source/novels/:slug/chapters
 Nội dung chương:
 
 ```
-http://localhost:4000/api/:source/novels/:slug/chapters/:chapterId
+http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
 ```
 
 _Chú thích_:\
@@ -65,7 +71,6 @@ _Chú thích_:\
 -   [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
 -   [x] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.
 -   [ ] Thêm test cho các plugin được thêm vào?
--   [ ] Viết cơ chế thông báo cho frontend về cập nhật.
 -   [ ] Thêm model để tạo cấu trúc cho dữ liệu trả về?
 -   [ ] Xử lí lỗi.
 -   [ ] Cơ chế Export.
