@@ -1,7 +1,8 @@
-import Header from "./header";
 import {Box, Stack} from "@mui/material"
+
 import Main from "./main";
 import Footer from "./footer";
+import Header from "./header";
 
 export default function DashBoardLayout({children}){
     return (

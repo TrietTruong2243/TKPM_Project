@@ -1,10 +1,10 @@
 import { ButtonGroup, Box, Container,Typography , Stack} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react"
-import { ActionButton } from "../../components/action_button";
+import { ActionButton } from "../../../components/action_button";
 import { useTheme } from "@emotion/react";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
-import NovelSourceManager from "../../data/NovelSourceManager";
+import NovelSourceManager from "../../../data/novel_source_manager";
 const ActionsBox = ({id, source_data,setData}) => {
     let novel_source_manager=NovelSourceManager.getInstance();
     const onMoveUp=()=>{

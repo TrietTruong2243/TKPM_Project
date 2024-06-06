@@ -6,7 +6,6 @@ class NovelSourceManager{
             throw new Error("You can only create one instance!");
         }
         instance=this;
-        this.getSource()
     }
     static getInstance(){
         if(instance){

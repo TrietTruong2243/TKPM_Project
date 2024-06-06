@@ -1,6 +1,5 @@
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
-import { alpha } from "@mui/material";
 export default function Main({children}) {
     const theme=useTheme()
     return (

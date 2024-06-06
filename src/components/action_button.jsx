@@ -1,7 +1,6 @@
 import { Button } from "@mui/material";
 
 export const ActionButton = ({icon, bgcolor, small = false, label, handleClick}) => {
-
     return (
         <Button 
             disableElevation

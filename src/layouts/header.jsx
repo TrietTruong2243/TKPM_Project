@@ -1,10 +1,9 @@
 import { AppBar, useTheme, useMediaQuery, alpha, Stack, Typography, Button, InputBase, IconButton, Box, Container } from "@mui/material"
 import { Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown, Layers } from "@mui/icons-material"
 import { useState, useEffect } from "react";
-import "../styles/header_appearance.css"
-import { categories_data } from "../data/data";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+
+import "../styles/header_appearance.css"
 import CategoryButton from "./components/categories_button";
 
 export default function Header(){
@@ -20,7 +19,6 @@ export default function Header(){
             transform: "translateY(-100%)"
         }
     }
-    let [searchParams, setSearchParams] = useSearchParams();
     const theme=useTheme();
     const isNonMobile = useMediaQuery(theme.breakpoints.up('lg'));
     const [show, setShow] = useState(true);
@@ -32,7 +30,6 @@ export default function Header(){
         } else if (window.scrollY < lastScrollY) { // if scroll up show the navbar
             setShow(false);  
         }
-        console.log(show)
         setLastScrollY(window.scrollY);
     };
 
