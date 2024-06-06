@@ -5,11 +5,7 @@ import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
 	constructor() {
-		super(
-			"https://metruyenchu.com.vn",
-			"Mê Truyện Chữ",
-			"https://metruyenchu.com.vn/images/logo.png"
-		);
+		super("https://metruyenchu.com.vn", "Mê Truyện Chữ", "https://metruyenchu.com.vn/images/logo.png");
 		this.hotNovelsPath = "get/hotbook";
 		this.listChapPath = "get/listchap";
 	}
@@ -94,6 +90,75 @@ class MeTruyenChuStrategy extends NovelStrategy {
 						categories.push({ name: categoryName, slug: categorySlug });
 					});
 
+				const numChapters = $(element).find(".line").eq(2).text().replace("Số chương::", "").trim();
+
+				let status;
+				const novel = {
+					slug,
+					title,
+					image: this.baseUrl + image,
+					authors,
+					categories,
+					numChapters: parseInt(numChapters),
+					status,
+				};
+
+				novels.push(novel);
+			});
+
+			const totalNovels = $(".title-list p").text().match(/\d+/)[0];
+			let lastPage = $(".phan-trang a").last();
+			if (lastPage.text() === "❭") lastPage = lastPage.prev();
+			const totalPages = parseInt(lastPage.text());
+
+			return {
+				meta: {
+					total: parseInt(totalNovels),
+					current_page: page,
+					per_page: novels.length,
+					total_pages: totalPages,
+				},
+				novels,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async getNovelsByCategory(categorySlug, page = 1) {
+		try {
+			const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
+			const html = response.data;
+			let $ = load(html);
+
+			const novels = [];
+			$(".truyen-list .item").each((index, element) => {
+				const slug = $(element).find("a").attr("href").replace("/", "");
+				const title = $(element).find("h3 a").text();
+				const image = $(element).find("img").attr("src");
+
+				const authors = [];
+				$(element)
+					.find(".line")
+					.eq(0)
+					.find("a")
+					.each((index, ele) => {
+						const authorName = $(ele).text();
+						const authorSlug = $(ele).attr("href").replace("/tac-gia/", "");
+						authors.push({ name: authorName, slug: authorSlug });
+					});
+
+				const categories = [];
+				$(element)
+					.find(".line")
+					.eq(1)
+					.find("a")
+					.each((index, ele) => {
+						const categoryName = $(ele).text();
+						const categorySlug = $(ele).attr("href").replace("/the-loai/", "");
+						categories.push({ name: categoryName, slug: categorySlug });
+					});
+
 				const numChapters = $(element)
 					.find(".line")
 					.eq(2)
@@ -122,7 +187,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			return {
 				meta: {
-					total: parseInt(totalNovels),
+					total,
 					current_page: page,
 					per_page: novels.length,
 					total_pages: totalPages
@@ -231,9 +296,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 		try {
 			const novel = await this.getNovelBySlug(slug);
 
-			const response = await axios.get(
-				`${this.baseUrl}/${this.listChapPath}/${novel.id}?page=${page}`
-			);
+			const response = await axios.get(`${this.baseUrl}/${this.listChapPath}/${novel.id}?page=${page}`);
 			const html = response.data;
 			const $ = load(html.data);
 
@@ -245,19 +308,18 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			});
 
 			let total_pages = 1;
-			const lastElement = $('.paging a').last();
-			console.log(lastElement.attr('onclick'));
-			if(lastElement.attr('onclick')) 
-				total_pages = lastElement.attr('onclick').match(/page\(\d+,\s*(\d+)\);?/)[1];
-			else 
-				total_pages = parseInt(lastElement.text());
+			const lastElement = $(".paging a").last();
+			console.log(lastElement.attr("onclick"));
+			if (lastElement.attr("onclick"))
+				total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
+			else total_pages = parseInt(lastElement.text());
 
 			return {
 				meta: {
 					total: novel.numChapters,
 					current_page: page,
 					per_page: chapters.length,
-					total_pages
+					total_pages,
 				},
 				chapters,
 			};
@@ -298,11 +360,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			// 	chapterPerPage += $(ulEle).find("li").length;
 			// });
 
-			const numChapters = $(".mLeftCol .book-info-text li")
-				.eq(2)
-				.text()
-				.replace("Số chương:", "")
-				.trim();
+			const numChapters = $(".mLeftCol .book-info-text li").eq(2).text().replace("Số chương:", "").trim();
 
 			const status = $(".mLeftCol .book-info-text .label-status").text();
 
