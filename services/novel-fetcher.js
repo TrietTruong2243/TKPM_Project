@@ -48,7 +48,14 @@ class NovelFetcher {
     }
 
     getAvailableStrategies() {
-        return Object.keys(this.strategies);
+        return Object.keys(this.strategies).map(strategyName => {
+            return {
+                slug: strategyName,
+                baseUrl: this.strategies[strategyName].baseUrl,
+                name: this.strategies[strategyName].name,
+                logo: this.strategies[strategyName].thumbnail,
+            };
+        })
     }
 
     async fetchCategories(strategyName) {

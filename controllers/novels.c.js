@@ -56,8 +56,4 @@ const getNovelBySlug = async (req, res) => {
     }
 }
 
-export {
-    getHotNovels,
-    searchNovels,
-    getNovelBySlug,
-};
+export { getHotNovels, searchNovels, getNovelBySlug, };
