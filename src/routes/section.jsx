@@ -17,17 +17,14 @@ export default function Router(){
             children:
                 [
                     {path:'', element: <Navigate to='home' replace> </Navigate>},
-                    {path:'home',children: [
-                        {path: '', index: true, element: <HomePage />},
-                        {path: 'search/:id', element: <HomePage />},
-                        {path:'description/:id',element:<DescriptionPage/>}
-                    ]},
+                    {path:'home',element: <HomePage/>},
                     {path:'history', element: <HistoryPage/> },
                     // {path:'reading/:id',element:<ReadingPage/>},
                     {path:'description/:novelId',children: [
                         {path: '',element:<DescriptionPage/>},
                         {path: 'chapter/:chapterId',element: <ReadingPage/>}
-                    ]},                    {path:'search', element:<SearchPage/>},
+                    ]},                    
+                    {path:'search', element:<SearchPage/>},
                     {path:'settings', element:<SettingsPage/>}
 
                 ]

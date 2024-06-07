@@ -51,22 +51,27 @@ export default function NovelSourceTable({sources_data}){
             field: 'id',
             headerName: 'Thứ tự ưu tiên',
             flex: 1.5,
+            sortable:false,
 
         },
         { 
             field: 'baseUrl',
             headerName: 'Nguồn',
-            flex: 1.5 
+            flex: 1.5,
+            sortable:false, 
         },
         { 
             field: 'name',
             headerName: 'Tên nguồn',
-            flex: 1.5 
+            flex: 1.5 ,
+            sortable:false,
         },
         {
             headerName: 'Thao tác',
             flex: 1,
-            renderCell: (params) => <ActionsBox id={params.row.id} source_data={source_data} setData={setData}/>
+            sortable:false,
+            renderCell: (params) => <ActionsBox id={params.row.id} source_data={source_data} setData={setData}/>,
+
         }
     ]
     return (

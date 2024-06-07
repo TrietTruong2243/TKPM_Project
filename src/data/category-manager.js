@@ -1,5 +1,6 @@
 import getAllCategories from "../service/categories_service";
 import DataManagementInterface from "./data_management_interface";
+import NovelSourceManager from "./novel_source_manager";
 
 let instance;
 class CategoryManager extends DataManagementInterface{
@@ -26,10 +27,11 @@ class CategoryManager extends DataManagementInterface{
     async save(){
     }
     async reload(){
+        let source_manager=NovelSourceManager.getInstance();
         let categories_list=[]
-        const source_list=['truyenfull','metruyenchu']
+        const source_list=await source_manager.get();
         for (let i in source_list){
-            let current_source_categories= await getAllCategories(source_list[i]);
+            let current_source_categories= await getAllCategories(source_list[i].slug);
             categories_list=[...categories_list,...current_source_categories]
         }
         let result =[...new Map(categories_list.map(item =>[item["slug"], item])).values()]

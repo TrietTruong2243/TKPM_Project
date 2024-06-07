@@ -25,7 +25,7 @@ export default function HomePage(){
     return (
         <Container >
             <Typography fontSize={20} color={theme.palette.light.main}>Truyện Hot</Typography>
-            <NovelGrid hot_novel={hot_novels}></NovelGrid>
+            <NovelGrid novels={hot_novels}></NovelGrid>
             <NovelTable></NovelTable>
         </Container>
     )

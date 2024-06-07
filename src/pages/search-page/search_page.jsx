@@ -1,23 +1,45 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
-import { alpha } from "@mui/material";
-import { useTheme } from "@emotion/react"
 import NovelGrid from "../home-page/novel_grid";
-import NovelTable from "../home-page/novel_table";
-import { useNavigate, useParams } from "react-router-dom";
-import NovelCard from "../home-page/novel_card";
+import { hot_story } from "../../data/data";
+import SearchingNovelsManager from "../../data/searching_novels_manager";
+import { useEffect, useState } from "react";
+import CenteredSpinner from "../../spinner/centered_spinner";
+import { useNavigate } from "react-router-dom";
+import { createSearchParams } from "react-router-dom";
 export default function SearchPage(){
-    const theme=useTheme();
-    const navigate=useNavigate()
-    const params=useParams()
-    console.log(navigate.params)
+    const queryParameters = new URLSearchParams(window.location.search)
+    const keyword = queryParameters.get("keyword")
+    const navigate=useNavigate();
+    const page = queryParameters.get("page")
+    let searching_manager=SearchingNovelsManager.getInstance();
+    const [searched_novels,setSearchedNovel]=useState([]);
+    const [loading,setLoading]=useState(true);
+    const handleChangePageClick=(event,value)=>{
+        navigate({
+            pathname:'/search',
+            search:`${createSearchParams({keyword:keyword,page:value})}`,
+        });
+    }
+    searching_manager.set({keyword:keyword,page:page})
+    useEffect(()=>{
+            setLoading(true);
+            searching_manager.get().then(res=>{
+            setSearchedNovel([...res]);
+            setLoading(false);
+        })
+    },[keyword,page])
+    if (loading){
+        return <CenteredSpinner/>;
+    }
     return (
         <Container sx={{marginTop:2}}>
-            <NovelGrid></NovelGrid>
+            <Typography fontSize={25}> Kết quả tìm kiếm </Typography>
+            <NovelGrid novels={searched_novels}></NovelGrid>
             <Stack 
                 width={1}
                 justifyContent={'center'} alignItems='center'
             >
-                <Pagination count={10} color="primary"/>
+                <Pagination count={searching_manager.total_page} color="primary" onChange={handleChangePageClick}/>
             </Stack>
         </Container>
     )
