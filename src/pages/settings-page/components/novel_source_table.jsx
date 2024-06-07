@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react"
 import { ActionButton } from "../../../components/action_button";
 import { useTheme } from "@emotion/react";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, Visibility } from "@mui/icons-material";
 import NovelSourceManager from "../../../data/novel_source_manager";
 const ActionsBox = ({id, source_data,setData}) => {
     let novel_source_manager=NovelSourceManager.getInstance();
@@ -16,7 +16,8 @@ const ActionsBox = ({id, source_data,setData}) => {
             const moved_down_row=temp[id-2]
             temp[id-2]=temp[id-1]
             temp[id-1]=moved_down_row
-            novel_source_manager.saveSourceWithPriority(temp)
+            novel_source_manager.set({sources:[...temp]})
+            novel_source_manager.save()
             setData([...temp])    
         }
     }
@@ -30,7 +31,8 @@ const ActionsBox = ({id, source_data,setData}) => {
             const moved_down_row=temp[id]
             temp[id]=temp[id-1]
             temp[id-1]=moved_down_row
-            novel_source_manager.saveSourceWithPriority(temp)
+            novel_source_manager.set({sources:[...temp]})
+            novel_source_manager.save()
             setData([...temp])
         }
     }
@@ -43,7 +45,7 @@ const ActionsBox = ({id, source_data,setData}) => {
 
 export default function NovelSourceTable({sources_data}){
     const theme=useTheme();
-    const [source_data,setData]=React.useState(sources_data)
+    const [source_data,setData]=React.useState([...sources_data])
     const columns=[
         { 
             field: 'id',
@@ -52,17 +54,17 @@ export default function NovelSourceTable({sources_data}){
 
         },
         { 
-            field: 'sourcepath',
+            field: 'baseUrl',
             headerName: 'Nguồn',
             flex: 1.5 
         },
         { 
-            field: 'sourcename',
+            field: 'name',
             headerName: 'Tên nguồn',
             flex: 1.5 
         },
         {
-            headerName: 'Action',
+            headerName: 'Thao tác',
             flex: 1,
             renderCell: (params) => <ActionsBox id={params.row.id} source_data={source_data} setData={setData}/>
         }

@@ -20,10 +20,10 @@ export default function NovelCard({novel}) {
             <CardMedia
             sx={{ flex:1, height:200,objectFit:'contain'}}
             image={novel.image}
-            title={novel.name}
+            title={novel.title}
             />    
-            <CardContent sx={{height:20}}>
-                <Typography>{novel.name}</Typography>  
+            <CardContent sx={{height:100}}>
+                <Typography>{novel.title}</Typography>  
             </CardContent>  
         </Card>
   );

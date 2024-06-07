@@ -19,10 +19,9 @@ class CategoryManager extends DataManagementInterface{
     }
     async get(){
         await this.reload();
-        console.log(this.categories_list)
         return this.categories_list;
     }
-    async set(){        
+    async set(params){        
     }
     async save(){
     }

@@ -1,12 +1,10 @@
 import axios from "axios";
-import { source_data } from "../data/data";
-import getAllCategories from "./categories_service";
-function getNovelSource() {
+async function getNovelSource() {
     try {
-      //const result = await axios.get(`${process.env.APP_BASE_URL}`)
-      return source_data;
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/sources`)
+      return result.data.data;
     } catch (error) {
-      return source_data;
+      return [];
     }
 }
 export default getNovelSource;

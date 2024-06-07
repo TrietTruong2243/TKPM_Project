@@ -1,5 +1,4 @@
 import NovelCard from "./novel_card";
-import { hot_story } from "../../data/data";
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
@@ -8,7 +7,7 @@ export default function NovelGrid({hot_novel}){
     return (
         <Container maxWidth='xl'>
             <Grid mb={5} container spacing={4}>
-                {hot_story.map(novel => (
+                {hot_novel.map(novel => (
                     <Grid xs={2} sm={2} md={2} lg={2}  item key={novel.id}
                     display='flex'
                     width={1}

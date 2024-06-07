@@ -6,7 +6,7 @@ class DataManagementInterface{
     async get(){
         throw new Error('Missing implementation!!');
     }
-    async set(){
+    async set(params){
         throw new Error('Missing implementation!!');
     }
     async save(){
