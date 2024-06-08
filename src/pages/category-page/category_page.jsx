@@ -1,0 +1,50 @@
+import {Container, Typography, Stack, Pagination} from "@mui/material"
+import NovelGrid from "../home-page/novel_grid";
+import { useEffect, useState } from "react";
+import CenteredSpinner from "../../spinner/centered_spinner";
+import { useNavigate, useParams } from "react-router-dom";
+import { createSearchParams } from "react-router-dom";
+import NovelByCategoryManager from "../../data/category_novel_manager";
+export default function NovelByCategoryPage(){
+    const queryParameters = new URLSearchParams(window.location.search)
+    const {category_slug} = useParams()
+    const navigate=useNavigate();
+    const page = queryParameters.get("page")||1
+    console.log(category_slug,page)
+    const [current_page,setCurrentPage]=useState();
+    let novel_category_manager=NovelByCategoryManager.getInstance();
+    const [category_novels,setCategoryNovel]=useState([]);
+    const [loading,setLoading]=useState(true);
+    const handleChangePageClick=(event,value)=>{
+        setCurrentPage(value)
+        navigate({
+            pathname:`/category/${category_slug}`,
+            search:`${createSearchParams({page:value})}`,
+        });
+    }
+    novel_category_manager.set({category:category_slug,page:parseInt(novel_category_manager)})
+    useEffect(()=>{
+            setLoading(true);
+            novel_category_manager.get().then(res=>{
+            setCategoryNovel([...res]);
+            setLoading(false);
+            setCurrentPage(parseInt(novel_category_manager.page))
+        })
+    },[category_slug,page])
+    if (loading){
+        return <CenteredSpinner/>;
+    }
+    return (
+        <Container sx={{marginTop:2}}>
+            <Typography fontSize={25}> Kết quả tìm kiếm </Typography>
+            {(category_novels||category_novels.length<=0)&&<Typography fontSize={15}> Không tìm thấy kết quả </Typography>}
+            <NovelGrid novels={category_novels}></NovelGrid>
+            <Stack 
+                width={1}
+                justifyContent={'center'} alignItems='center'
+            >
+                <Pagination count={novel_category_manager.total_page} page={current_page} color="primary" onChange={handleChangePageClick}/>
+            </Stack>
+        </Container>
+    )
+}

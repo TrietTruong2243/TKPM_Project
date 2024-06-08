@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Grid ,Button} from '@mui/material';
 import { Container } from 'react-bootstrap';
 import CenteredSpinner from '../../spinner/centered_spinner';
+import { useNavigate } from 'react-router-dom';
 
 function CategoryDropdownList({categories_data,handleMouseLeave,loading}) { 
+  const navigate=useNavigate()
   if(loading){
     return (
       <Container  
@@ -38,7 +40,7 @@ function CategoryDropdownList({categories_data,handleMouseLeave,loading}) {
           {categories_data.map(category => ( 
             <Grid xs={3} sm={3} md={3} lg={3} item key={category.slug}
                 display='flex'>        
-                <Button  key={category.slug} onClick={()=> console.log(category.name)} > 
+                <Button  key={category.slug} onClick={()=> navigate(`/category/${category.slug}`)} > 
                     {category.name} 
                 </Button> 
             </Grid>

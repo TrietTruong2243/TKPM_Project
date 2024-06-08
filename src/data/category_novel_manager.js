@@ -1,14 +1,14 @@
-import searchNovel from "../service/search_novels_service";
 import DataManagementInterface from "./data_management_interface";
 import NovelSourceManager from "./novel_source_manager";
+import getNovelByCategory from "../service/category_novel_service";
 let instance;
-class SearchingNovelsManager extends DataManagementInterface{
+class NovelByCategoryManager extends DataManagementInterface{
     constructor(){
         if(instance){
             throw new Error("You can only create one instance!");
         }
         super();
-        this.keyword="";
+        this.category="";
         this.page=1;
         this.sources=[];
         this.novels=[];
@@ -19,7 +19,7 @@ class SearchingNovelsManager extends DataManagementInterface{
         if (instance){
             return instance;
         }
-        return new SearchingNovelsManager();
+        return new NovelByCategoryManager();
     }
     async get(){
         await this.reload();
@@ -29,8 +29,8 @@ class SearchingNovelsManager extends DataManagementInterface{
         if (params.page){
             this.page=params.page;
         }
-        if (params.keyword){
-            this.keyword=params.keyword;
+        if (params.category){
+            this.category=params.category;
         }
     }
     async save(){
@@ -44,7 +44,7 @@ class SearchingNovelsManager extends DataManagementInterface{
         let source_manager=NovelSourceManager.getInstance();
         let sources=await source_manager.get();
         for (let i in sources){
-            let source_meta=await searchNovel(sources[i].slug,this.keyword,1);
+            let source_meta=await getNovelByCategory(sources[i].slug,this.category,1);
             if(source_meta.meta){                
                 this.sources.push({slug:sources[i].slug,total_page:source_meta.meta.total_pages})
             }            
@@ -76,9 +76,9 @@ class SearchingNovelsManager extends DataManagementInterface{
                 query_source=this.sources[index].slug;
             }
         }
-        let novels=await searchNovel(query_source,this.keyword,query_page);
+        let novels=await getNovelByCategory(query_source,this.category,query_page);
         this.novels=[...novels.novels]; 
     }
 }
 
-export default SearchingNovelsManager;
+export default NovelByCategoryManager;
