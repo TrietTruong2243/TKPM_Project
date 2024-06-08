@@ -39,6 +39,10 @@ class NovelStrategy {
 	async getChapterContent(novelSlug, chapterSlug) {
 		throw new Error("You have to implement the method getChapterContent!");
 	}
+
+    async getChapterContentByPosition(novelSlug, position){
+        throw new Error('You have to implement the method getChapterContentByPosition!');
+    }
 }
 
 export default NovelStrategy;

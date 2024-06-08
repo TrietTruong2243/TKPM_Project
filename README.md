@@ -7,6 +7,7 @@
 - Hiện tại sử dụng `chokidar` để watch folder `source-plugins`, cho phép thêm xóa các file plugin mà không cần restart lại server.
 - Các nguồn truyện hiện có: Truyện Full (_truyenfull_), Mê Truyện Chữ (_metruyenchu_), Tàng Thư Viện (_tangthuvien_)
 - Dùng hàm `convertNameToSlug` khi không còn cách nào khác, còn lại đều parse từ trang gốc.
+- Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
 
 ## Hướng dẫn sử dụng
 

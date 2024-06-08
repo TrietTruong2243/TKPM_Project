@@ -234,7 +234,6 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			let total_pages = 1;
 			const lastElement = $(".paging a").last();
-			console.log(lastElement.attr("onclick"));
 			if (lastElement.attr("onclick"))
 				total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
 			else total_pages = parseInt(lastElement.text());
@@ -322,7 +321,15 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let prevId = $(".chapter_control .back").attr("href");
 			if (prevId !== "#") prevId = prevId.split("/")[2];
 
-			return { slug: chapterSlug, title, content, nextId, prevId };
+			const position = $(".chapter_control .chapter-title").text().split("/");
+
+			return { 
+				slug: chapterSlug, 
+				title, 
+				content, 
+				next_slug: nextId, 
+				prev_slug: prevId 
+			};
 		} catch (error) {
 			throw error;
 		}

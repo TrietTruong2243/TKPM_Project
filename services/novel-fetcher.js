@@ -156,7 +156,7 @@ class NovelFetcher {
 
     async fetchChapterContent(strategyName, novelSlug, chapterSlug) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getChapterContent === 'function') {
+        if (!strategy || !typeof strategy.getChapterContent == 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {

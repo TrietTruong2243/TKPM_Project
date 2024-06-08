@@ -148,7 +148,7 @@ class TruyenFullStrategy extends NovelStrategy {
                 novels.push({ 
                     title, 
                     image, 
-                    slug: convertNameToSlug(title),
+                    slug,
                     authors,
                     categories: [],
                     numChapters: "",
@@ -158,13 +158,13 @@ class TruyenFullStrategy extends NovelStrategy {
 
             const per_page = novels.length;
             let total = per_page;
-            let total_page = per_page > 0 ? 1 : 0;
+            let total_pages = per_page > 0 ? 1 : 0;
 
-            const lastPageElement = $('ul.pagination').length ? $('ul.pagination li').last() : null;
-            if (lastPageElement) {
-                const lastPage = lastPageElement.find('li').last().prev();
-                total_page = parseInt(lastPage.text());
-                const responseFromLastPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${total_page}`, {
+            const lastPaginationButton = $('ul.pagination').length > 0 ? $('ul.pagination li').last() : null;
+            if (lastPaginationButton) {
+                const lastPage = lastPaginationButton.prev();
+                total_pages = parseInt(lastPage.find('a').attr('href').split('/')[5].split('-')[1]);
+                const responseFromLastPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${total_pages}`, {
                     headers: {
                         "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                     },
@@ -172,7 +172,7 @@ class TruyenFullStrategy extends NovelStrategy {
                 const htmlFromLastPage = responseFromLastPage.data;
                 const $lastPage = load(htmlFromLastPage);
                 const numChaptersLastPage = $lastPage('.col-truyen-main .list-truyen .row').length;
-                total = (total_page - 1) * per_page + numChaptersLastPage;
+                total = (total_pages - 1) * per_page + numChaptersLastPage;
             }
 
             return {
@@ -180,7 +180,7 @@ class TruyenFullStrategy extends NovelStrategy {
                     total,
                     per_page,
                     current_page: page,
-                    total_pages: total_page,
+                    total_pages
                 },
                 novels
             }
