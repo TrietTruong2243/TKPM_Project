@@ -5,8 +5,8 @@ const {PassThrough}=require("stream")
 const getFile=async (req,res)=>{
     const {source,novel_slug,chapter_slug}=req.params;
     try {
-        res.setHeader('Content-Type', 'application/epub+zip');
-        const content=await downloaderFetcher.fetchGetBuffer('epub-downloader',source,novel_slug,chapter_slug);
+        res.setHeader('Content-Type', 'application/pdf');
+        const content=await downloaderFetcher.fetchGetBuffer('pdf-downloader',source,novel_slug,chapter_slug);
         var stream=new PassThrough();
         stream.pipe(res);
         const arrayBuffer = await content.blob.arrayBuffer();
