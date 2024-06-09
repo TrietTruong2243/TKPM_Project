@@ -4,7 +4,7 @@ import cors from 'cors';
 // import webpackConfig from './webpack.config.cjs';
 // import webpackDevMiddleware from 'webpack-dev-middleware';
 // import webpackHotMiddleware from 'webpack-hot-middleware';
-
+import downloaderRouter from './routes/download.r.js'
 import sourceRouter from './routes/sources.r.js';
 import categoryRouter from './routes/categories.r.js';
 import novelRouter from './routes/novel.r.js';
@@ -30,7 +30,7 @@ app.use('/api/:source/novels/:slug/chapters', chapterRouter);
 app.use('/api/:source/novels', novelRouter);
 app.use('/api/:source/categories', categoryRouter);
 app.use('/api/sources', sourceRouter);
-
+app.use('/api/download',downloaderRouter)
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
