@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Grid} from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 
-export default function DescriptionComponent({novel}) {
+export default function DescriptionComponent({novel,available_source}) {
     // const genreNames = novel.genres.map((genre,index) => genre.genreName);
     if (!novel) {
         return <Typography variant="body1">Loading...</Typography>;
@@ -22,9 +22,9 @@ export default function DescriptionComponent({novel}) {
             </Typography>
             <Typography variant="body1"><strong>Tác giả:</strong> {novel.authors.map((genre) => genre.name).join(", ")}</Typography>
             <Typography variant="body1"><strong>Thể loại:</strong>{ novel.categories.map((genre) => genre.name).join(", ")} </Typography>
-            <Typography variant="body1"><strong>Nguồn:</strong> { novel.sources.map((genre) => genre.name).join(", ")}</Typography>
+            <Typography variant="body1"><strong>Nguồn:</strong> { available_source.map((genre) => genre.name).join(", ")}</Typography>
             <Typography variant="body1"><strong>Trạng thái:</strong> {novel.status} </Typography>
-            <Typography variant="body1"><strong>Nguồn hiện tại:</strong> {novel.sources[0].name} </Typography>
+            <Typography variant="body1"><strong>Nguồn hiện tại:</strong> {available_source[0].name} </Typography>
 
         </Grid>
     </Grid>

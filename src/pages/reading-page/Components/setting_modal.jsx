@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { ThemeContext } from '../../../data/readingTheme';
+import { ThemeContext } from '../readingTheme';
 
 export default function SettingModal({ show, handleClose }) {
 
@@ -37,11 +37,22 @@ export default function SettingModal({ show, handleClose }) {
           Launch demo modal
         </Button> */}
 
-      <Modal show={show} onHide={handleClose} >
+      <Modal show={show} onHide={handleClose} style={{position: 'absolute',
+                                                    top: '50%',
+                                                    left: '50%',
+                                                    transform: 'translate(-50%, -50%)',
+                                                    width: 450,
+                                                    height: 600,
+                                                    color:'white',
+                                                    borderRadius: 12,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    flexDirection: 'column',
+                                                    padding: '24px 32px'}}>
         <Modal.Header style={{ backgroundColor: '#000', color: '#fff' }} closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ backgroundColor: '#000', color: '#fff' }}>
+        <Modal.Body style={{ backgroundColor: '#232323', color: '#fff' }}>
           {/* <Form> */}
           <Form.Group controlId="formTextColor">
             <Form.Label>Màu chữ</Form.Label>
@@ -76,23 +87,6 @@ export default function SettingModal({ show, handleClose }) {
               <option value='#FFFF00'>Vàng</option>
             </Form.Control>
           </Form.Group>
-
-          {/* <Button variant="primary" style={{ width: '100%' }}>
-              Xem trước
-            </Button> */}
-
-          {/* </Form> */}
-          {/* <Typography variant="h3" align="center" style={{ width: '100%' }}>Xem trước</Typography>
-          <br />
-          <Box style={{ width: '100%', backgroundColor: theme.backgroundColor }}>
-            <Typography
-              variant="primary" align="center"
-              style={{ width: '100%', marginTop: '10px', color: theme.fontColor, fontFamily: theme.fontFamily, fontSize: theme.fontSize }}
-            >
-              Xem trước mẫu
-            </Typography>
-          </Box> */}
-
         </Modal.Body>
         <Modal.Footer style={{ backgroundColor: '#000', color: '#fff' }}>
           <Button variant="secondary" onClick={handleClose}>

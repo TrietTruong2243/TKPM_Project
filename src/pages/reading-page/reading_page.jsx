@@ -1,23 +1,16 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Container, Box } from '@mui/material';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { ThemeContext } from '../../data/readingTheme';
+import { ThemeContext } from './readingTheme.jsx';
 import NovelTitle from './Components/novel_title';
 import NovelContent from './Components/novel_content';
 import Source from './Components/source';
 import ControlButtons from './Components/control_buttons';
 import NovelSourceManager from "../../data/novel_source_manager.js";
-
 import { GetAllChapterByNovelId, GetChapterOfNovelContent, GetNovelByIdService } from '../../service/service';
 import CenteredSpinner from '../../spinner/centered_spinner';
-const allSource = [
-  {
-    sourceName: "truyenfull.vn",
-  },
-  {
-    sourceName: "metruyenchu.com.vn",
-  }
-];
+import NovelDescriptionManager from '../../data/novel_description_manager.js';
+
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
@@ -31,6 +24,7 @@ const App = () => {
   const [allSource, setAllSource] = useState(null)
   const { novelId, chapterId } = useParams();
   let novel_source_manager = NovelSourceManager.getInstance();
+  let novel_description_manager=NovelDescriptionManager.getInstance();
   const [source_data, setSourceData] = useState([]);
 
   useEffect(() => {
@@ -62,7 +56,6 @@ const App = () => {
             }
             setSource(sourceFromQuery);
             const chapterContent = await GetChapterOfNovelContent(novelId, chapterId, source);
-            alert(chapterContent)
             if (chapterContent) {
               setReadingNovel({ ...chapterContent, chapterId });
             }
@@ -72,15 +65,10 @@ const App = () => {
             const fetchedChapters = await GetAllChapterByNovelId(novelId, source);
             if (fetchedChapters) {
               setAllChapter(fetchedChapters);
-
             }
-            console.log(allChapter)
-
           }
 
         }
-
-
       } catch (error) {
         console.error('Error fetching novel and chapters:', error);
       }

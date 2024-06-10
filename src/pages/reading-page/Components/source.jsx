@@ -1,6 +1,6 @@
 import React, {useContext}  from 'react';
 import { Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { ThemeContext } from '../../../data/readingTheme';
+import { ThemeContext } from '../readingTheme';
 import { useNavigate } from 'react-router-dom';
 
 export default function Source({novelId,chapterId, sourceList,sourceValue }) {
@@ -12,7 +12,6 @@ export default function Source({novelId,chapterId, sourceList,sourceValue }) {
             Nguồn:
         </Typography>
         <FormControl variant="outlined" sx={{ width: '50%', backgroundColor: '#444' }}>
-            <InputLabel id="nguon-label">Nguồn</InputLabel>
             <Select labelId="nguon-label" id="nguonSelect" defaultValue={sourceValue} label="Nguồn">
                 {sourceList.map((source) =>(
                 

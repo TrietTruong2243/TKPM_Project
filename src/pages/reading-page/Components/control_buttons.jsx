@@ -90,7 +90,6 @@ export default function ControlButtons({ novelId, readingNovel, allChapter,sourc
         &laquo;
       </Button>
       <FormControl variant="outlined" sx={{ width: '50%' }}>
-        <InputLabel id="chapter-label">Chương</InputLabel>
         <Select
           sx={{ color: '#FFF', backgroundColor: '#444' }}
           labelId="chapter-label"

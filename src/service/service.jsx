@@ -1,5 +1,18 @@
 import axios from 'axios';
-
+export async function getNovelDescription(novel_slug,source){
+  try{
+    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/novels/${novel_slug}`);
+    const data = response.data.data.novelInfo;
+    if (data.title === "") {
+       return ;
+    }
+    return data;
+  }
+  catch(error)
+  {
+    return ;
+  }
+}
 export async function GetNovelByIdService(novelId, sourceList) {
   try {
     let check = false;
@@ -32,7 +45,6 @@ export async function GetNovelByIdService(novelId, sourceList) {
               availableSource.push(source)
             }
         } catch (err) {
-          alert(err)
         }
 
 
@@ -82,16 +94,6 @@ export async function GetChapterOfNovelContent(novelId, chapterId,sourceSlug) {
     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters/${chapterId}`);
     const data = response.data.data.chapterContent;
     data.novelId = novelId;
-    /*
-    data: {
-      novelId,
-      title,
-      chapter,
-      content,
-      nextChapterId,
-      prevChapterId
-    }
-    */
     return data;
   } catch (error) {
     console.error('There was an error making the request!', error);

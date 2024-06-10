@@ -35,7 +35,16 @@ export default function AllChapters({ allChapters, source }) {
             setCurrentPage(1);
         }
     }, [totalChapters, chaptersPerPage, currentPage]);
-
+    if (allChapters.length<=0) {
+        return (<Box mt={4} sx={{ border: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <CircularProgress />
+                        </Box>
+                    </Paper>
+                </Box>
+            )
+    }
     return (
         <Box mt={4} sx={{ border: 1 }}>
             <Paper elevation={2} sx={{ p: 2 }}>
@@ -48,7 +57,7 @@ export default function AllChapters({ allChapters, source }) {
                     <>
                         <List>
                             {displayedChapters.map((chapter, index) => (
-                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.slug}?source=${source.slug}`)}>
+                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.slug}?source=${source}`)}>
                                     <ListItemText primary={`${chapter.title}`} />
                                 </ListItem>
                             ))}

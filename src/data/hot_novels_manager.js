@@ -29,7 +29,6 @@ class HotNovelManager extends DataManagementInterface{
     async reload(){
         let source_manager=NovelSourceManager.getInstance();
         let sources=await source_manager.get();
-        console.log(sources)
         if (!sources || sources.length<=0){
             return;
         }
