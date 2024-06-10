@@ -13,8 +13,8 @@ class MeTruyenChuStrategy extends NovelStrategy {
 	async getCategories() {
 		try {
 			const response = await axios.get(this.baseUrl);
-			const html = response.data;
-			const $ = load(html);
+			let html = response.data;
+			let $ = load(html);
 
 			const categories = [];
 			$("#menu .menu-item-has-children")
@@ -159,12 +159,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 						categories.push({ name: categoryName, slug: categorySlug });
 					});
 
-				const numChapters = $(element)
-					.find(".line")
-					.eq(2)
-					.text()
-					.replace("Số chương::", "")
-					.trim();
+				const numChapters = $(element).find(".line").eq(2).text().replace("Số chương::", "").trim();
 
 				let status;
 				const novel = {
@@ -184,22 +179,24 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let total = per_page;
 			let total_pages = 1;
 
-			let hasNextPage = $('.phan-trang').length > 0;
-			let currentPage = page, nextPage, nextHtml;
+			let hasNextPage = $(".phan-trang").length > 0;
+			let currentPage = page,
+				nextPage,
+				nextHtml;
 			while (hasNextPage) {
-				if ($('.phan-trang .btn-page').last().text().includes('❭')) {
+				if ($(".phan-trang .btn-page").last().text().includes("❭")) {
 					currentPage++;
 					// currentPage = parseInt($('.phan-trang .btn-page').last().prev().text());
 				} else {
 					hasNextPage = false;
-					total_pages = parseInt($('.phan-trang .btn-page').last().text());
+					total_pages = parseInt($(".phan-trang .btn-page").last().text());
 					// total = (total_pages - 1) * per_page + $('.truyen-list .item').length;
 				}
 
 				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
 				nextHtml = nextPage.data;
 				$ = load(nextHtml);
-				total += $('.truyen-list .item').length;
+				total += $(".truyen-list .item").length;
 				// await new Promise(resolve => setTimeout(resolve, 100)); // delay to prevent getting blocked
 			}
 
@@ -208,10 +205,10 @@ class MeTruyenChuStrategy extends NovelStrategy {
 					total,
 					current_page: page,
 					per_page,
-					total_pages
+					total_pages,
 				},
 				novels,
-			}
+			};
 		} catch (error) {
 			throw error;
 		}
@@ -323,12 +320,12 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			const position = $(".chapter_control .chapter-title").text().split("/");
 
-			return { 
-				slug: chapterSlug, 
-				title, 
-				content, 
-				next_slug: nextId, 
-				prev_slug: prevId 
+			return {
+				slug: chapterSlug,
+				title,
+				content,
+				next_slug: nextId,
+				prev_slug: prevId,
 			};
 		} catch (error) {
 			throw error;
