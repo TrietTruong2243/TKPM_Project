@@ -3,7 +3,7 @@ import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
-const {convert}=require("html-to-text")
+const { convert } = require("html-to-text");
 var blobStream = require("blob-stream");
 
 class PDFDownloaderStrategy extends DownLoaderStrategy {
@@ -18,13 +18,17 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 				const stream = doc.pipe(blobStream());
 
 				doc.font("./utils/fonts/arial.ttf");
-				const response = await novelFetcher.fetchChapterContent(source,novel_slug,chapter_slug)
+				const response = await novelFetcher.fetchChapterContent(source, novel_slug, chapter_slug);
 				const title = response.chapterContent.title;
-				const content = convert(response.chapterContent.content,{wordwrap:130});
-				const formattedContent = content.replace(/\\n/g, "\n").replace(/\\t/g, "\t");
+				const content = response.chapterContent.content;
+				const formattedContent = content
+					.replace(/<p>/g, "<br/>")
+					.replace(/<\/p>/g, "")
+					.replace(/\n\n/g, "<br/>")
+					.replace(/\t/g, "");
 
 				// Split content into paragraphs
-				const paragraphs = formattedContent.split("\n");
+				const paragraphs = formattedContent.split("<br/>");
 
 				doc.font("./utils/fonts/arial.ttf")
 					.fontSize(10)
