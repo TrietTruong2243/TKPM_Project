@@ -1,4 +1,4 @@
-import NovelFetcher from '../services/novel-fetcher.js';
+import NovelFetcher from "../services/novel-fetcher.js";
 
 // [GET] /api/:source/novels/hot
 const getHotNovels = async (req, res) => {
@@ -56,4 +56,4 @@ const getNovelBySlug = async (req, res) => {
     }
 }
 
-export { getHotNovels, searchNovels, getNovelBySlug, };
+export { getHotNovels, searchNovels, getNovelBySlug };

@@ -68,13 +68,27 @@ Nội dung chương:
 http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
 ```
 
+Lấy định dạng file hỗ trợ:
+
+```
+http://localhost:4000/api/:source/download
+```
+
+
+Export ra file theo định dạng:
+
+```
+http://localhost:4000/api/:source/download/:format/:novelSlug/:chapterSlug
+```
+
 _Chú thích_:\
 `source`: tên nguồn viết liền không dấu (vd: truyenfull).\
 `slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than).
+`format`: định dạng file cần xuất
 
 ## TODO
 
-- [ ] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn? 
+- [x] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn? 
 - [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
 - [x] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.
 - [ ] Thêm test cho các plugin được thêm vào?

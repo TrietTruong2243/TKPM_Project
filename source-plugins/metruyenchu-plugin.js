@@ -1,6 +1,5 @@
 import NovelStrategy from "./plugin-interface.js";
 import { load } from "cheerio";
-import { convertNameToSlug } from "../utils/name-converter.js";
 import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
@@ -13,8 +12,8 @@ class MeTruyenChuStrategy extends NovelStrategy {
 	async getCategories() {
 		try {
 			const response = await axios.get(this.baseUrl);
-			const html = response.data;
-			const $ = load(html);
+			let html = response.data;
+			let $ = load(html);
 
 			const categories = [];
 			$("#menu .menu-item-has-children")
@@ -189,12 +188,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 						categories.push({ name: categoryName, slug: categorySlug });
 					});
 
-				const numChapters = $(element)
-					.find(".line")
-					.eq(2)
-					.text()
-					.replace("Số chương::", "")
-					.trim();
+				const numChapters = $(element).find(".line").eq(2).text().replace("Số chương::", "").trim();
 
 				let status;
 				const novel = {
@@ -214,8 +208,10 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let total = per_page;
 			let total_pages = 1;
 
-			let hasNextPage = $('.phan-trang').length > 0;
-			let currentPage = page, nextPage, nextHtml;
+			let hasNextPage = $(".phan-trang").length > 0;
+			let currentPage = page,
+				nextPage,
+				nextHtml;
 			while (hasNextPage) {
 				if ($('.phan-trang .btn-page').last().text().includes('❭')) {
 					// currentPage++;
@@ -231,12 +227,13 @@ class MeTruyenChuStrategy extends NovelStrategy {
 						const $firstPage = load(htmlFromFirstPage);
 						per_page = $firstPage('.truyen-list .item').length;
 					}
+					total_pages = parseInt($(".phan-trang .btn-page").last().text());
 				}
 
 				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
 				nextHtml = nextPage.data;
 				$ = load(nextHtml);
-				// total += $('.truyen-list .item').length;
+				// total += $(".truyen-list .item").length;
 				// await new Promise(resolve => setTimeout(resolve, 100)); // delay to prevent getting blocked
 			}
 
@@ -247,10 +244,10 @@ class MeTruyenChuStrategy extends NovelStrategy {
 					total,
 					current_page: parseInt(page),
 					per_page,
-					total_pages
+					total_pages,
 				},
 				novels,
-			}
+			};
 		} catch (error) {
 			throw error;
 		}

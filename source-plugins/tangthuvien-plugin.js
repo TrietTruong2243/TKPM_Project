@@ -7,7 +7,6 @@ class TangThuVienStrategy extends NovelStrategy {
 		super("https://truyen.tangthuvien.vn", "Tàng Thư Viện", "https://truyen.tangthuvien.vn/images/logo-web.png", 75);
 	}
 
-	// TODO: xử lí trường hợp Ngôn tình + Khác ko lấy được slug
 	async getCategories() {
 		try {
 			const response = await axios.get(this.baseUrl);
@@ -15,11 +14,13 @@ class TangThuVienStrategy extends NovelStrategy {
 			const $ = load(html);
 
 			const categories = [];
-			$("#classify-list a").each((index, element) => {
+			$("#classify-list a").each(async (index, element) => {
 				const categoryName = $(element).find(".info i").text();
-				const categorySlug = $(element).attr("href").replace(`${this.baseUrl}/`, "").replace("the-loai/", "");
+				const categorySlug = $(element).attr("href").replace(`${this.baseUrl}/the-loai/`, "");
 
-				categories.push({ name: categoryName, slug: categorySlug });
+				if (categorySlug.indexOf("https") != 0) {
+					categories.push({ name: categoryName, slug: categorySlug });
+				}
 			});
 
 			return categories;
@@ -131,19 +132,171 @@ class TangThuVienStrategy extends NovelStrategy {
 				novels.push(novel);
 			});
 
-			let per_page = novels.length;
-			let total = per_page;
-			let total_pages = page;
+			return novels;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async getNovelsByCategory(categorySlug, page = 1) {
+		try {
+			const categoryId = await this.getCategoryIdBySlug(categorySlug);
+
+			let response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${page}`);
+			let html = response.data;
+			let $ = load(html);
+
+			const novels = [];
+			$(".book-img-text ul li").each((index, element) => {
+				const slug = $(element)
+					.find(".book-mid-info h4 a")
+					.attr("href")
+					.replace(`${this.baseUrl}/doc-truyen/`, "");
+				const title = $(element).find(".book-mid-info h4 a").text();
+				const image = $(element).find(".book-img-box img").attr("src");
+
+				const authors = [];
+				$(element)
+					.find(".author")
+					.each((i, ele) => {
+						const authorName = $(ele).find(".name").text();
+						const authorSlug = $(ele)
+							.find(".name")
+							.attr("href")
+							.replace(`${this.baseUrl}/tac-gia?author=`, "");
+						const author = { authorName, authorSlug };
+						authors.push(author);
+					});
+
+				const categories = [];
+				$(element)
+					.find(".author")
+					.each((i, ele) => {
+						const categoryName = $(ele).find("a").eq(1).text();
+						const categorySlug = $(ele)
+							.find("a")
+							.eq(1)
+							.attr("href")
+							.replace(`${this.baseUrl}/the-loai/`, "");
+						const category = { categoryName, categorySlug };
+						categories.push(category);
+					});
+
+				const numChapters = $(element).find("span span").text();
+
+				const status = $(element).find(".book-mid-info .author span").eq(0).text();
+
+				novels.push({
+					slug,
+					title,
+					image,
+					authors,
+					categories,
+					numChapters: parseInt(numChapters),
+					status,
+				});
+			});
+
+			const per_page = 20;
+			const total_pages = parseInt($("ul.pagination li").last().prev().find("a").text());
+
+			response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${total_pages}`);
+			$ = load(response.data);
+
+			const lastPageLength = $(".book-img-text ul li").length;
+			const total = (total_pages - 1) * per_page + lastPageLength;
 
 			return {
 				meta: {
-					total: novels.length,
-					current_page: page,
-					per_page: novels.length,
-					total_pages: 1,
+					total,
+					per_page,
+					current_page: parseInt(page),
+					total_pages,
 				},
-				novels
-			}
+				novels,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async getNovelsByCategory(categorySlug, page = 1) {
+		try {
+			const categoryId = await this.getCategoryIdBySlug(categorySlug);
+
+			let response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${page}`);
+			let html = response.data;
+			let $ = load(html);
+
+			const novels = [];
+			$(".book-img-text ul li").each((index, element) => {
+				const slug = $(element)
+					.find(".book-mid-info h4 a")
+					.attr("href")
+					.replace(`${this.baseUrl}/doc-truyen/`, "");
+				const title = $(element).find(".book-mid-info h4 a").text();
+				const image = $(element).find(".book-img-box img").attr("src");
+
+				const authors = [];
+				$(element)
+					.find(".author")
+					.each((i, ele) => {
+						const authorName = $(ele).find(".name").text();
+						const authorSlug = $(ele)
+							.find(".name")
+							.attr("href")
+							.replace(`${this.baseUrl}/tac-gia?author=`, "");
+						const author = { authorName, authorSlug };
+						authors.push(author);
+					});
+
+				const categories = [];
+				$(element)
+					.find(".author")
+					.each((i, ele) => {
+						const categoryName = $(ele).find("a").eq(1).text();
+						const categorySlug = $(ele)
+							.find("a")
+							.eq(1)
+							.attr("href")
+							.replace(`${this.baseUrl}/the-loai/`, "");
+						const category = { categoryName, categorySlug };
+						categories.push(category);
+					});
+
+				const numChapters = $(element).find("span span").text();
+
+				const status = $(element).find(".book-mid-info .author span").eq(0).text();
+
+				novels.push({
+					slug,
+					title,
+					image,
+					authors,
+					categories,
+					numChapters: parseInt(numChapters),
+					status,
+				});
+			});
+
+			const per_page = 20;
+			const total_pages = parseInt($("ul.pagination li").last().prev().find("a").text());
+
+			response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${total_pages}`);
+			$ = load(response.data);
+
+			const lastPageLength = $(".book-img-text ul li").length;
+			const total = (total_pages - 1) * per_page + lastPageLength;
+
+			return {
+				meta: {
+					total,
+					per_page,
+					current_page: parseInt(page),
+					total_pages,
+				},
+				novels,
+			};
 		} catch (error) {
 			throw error;
 		}
@@ -301,6 +454,15 @@ class TangThuVienStrategy extends NovelStrategy {
 		} catch (error) {
 			throw error;
 		}
+	}
+
+	async getCategoryIdBySlug(categorySlug) {
+		const categoryResponse = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}`);
+		let html = categoryResponse.data;
+		let $ = load(html);
+
+		const categoryId = $("#update-tab a").attr("href").split("ctg=")[1];
+		return categoryId;
 	}
 }
 
