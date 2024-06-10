@@ -4,9 +4,9 @@ import axios from "axios";
 
 class TangThuVienStrategy extends NovelStrategy {
 	constructor() {
-		super("https://truyen.tangthuvien.vn", 
-			"Tàng Thư Viện", 
-			"https://truyen.tangthuvien.vn/images/logo-web.png", 
+		super("https://truyen.tangthuvien.vn",
+			"Tàng Thư Viện",
+			"https://truyen.tangthuvien.vn/images/logo-web.png",
 			20,
 			75
 		);
@@ -77,7 +77,7 @@ class TangThuVienStrategy extends NovelStrategy {
 			const html = response.data;
 			const $ = load(html);
 			const novels = [];
-			
+
 			//check if there is no result
 			const firstElement = $('#rank-view-list li').eq(0).children('p');
 			if ($(firstElement).length > 0
@@ -89,8 +89,8 @@ class TangThuVienStrategy extends NovelStrategy {
 						per_page: 0,
 						total_pages: 1,
 					},
-					novels
-				}
+					novels,
+				};
 			}
 
 			$("#rank-view-list li").each((index, element) => {
@@ -239,7 +239,9 @@ class TangThuVienStrategy extends NovelStrategy {
 		try {
 			if (page < 1) page = 1;
 			const novel = await this.getNovelBySlug(slug);
-			const response = await axios.get(`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page - 1}&limit=75&web=1`);
+			const response = await axios.get(
+				`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page - 1}&limit=75&web=1`
+			);
 			const html = response.data;
 			const $ = load(html);
 
