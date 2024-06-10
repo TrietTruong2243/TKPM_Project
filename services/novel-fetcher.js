@@ -193,7 +193,7 @@ class NovelFetcher {
                     try {
                         novel = await strategy.getNovelBySlug(novelSlug);
                     } catch (error) {
-                        console.log(`Error fetching novel by slug ${novelSlug} from ${strategyName}:`, error);
+                        console.log(`Error fetching novel by slug ${novelSlug} from ${strategyName}`);
                         // just find in the first page of search results
                         const searchedNovels = (await strategy.searchNovels(title)).novels;
 

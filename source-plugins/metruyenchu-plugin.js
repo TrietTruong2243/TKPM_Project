@@ -4,7 +4,12 @@ import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
 	constructor() {
-		super("https://metruyenchu.com.vn", "Mê Truyện Chữ", "https://metruyenchu.com.vn/images/logo.png", 100);
+		super("https://metruyenchu.com.vn", 
+			"Mê Truyện Chữ", 
+			"https://metruyenchu.com.vn/images/logo.png",
+			20, 
+			100
+		);
 		this.hotNovelsPath = "get/hotbook";
 		this.listChapPath = "get/listchap";
 	}
@@ -123,13 +128,13 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let lastPage = $(".phan-trang a").last();
 			if (lastPage.text() === "❭") lastPage = lastPage.prev();
 			const totalPages = parseInt(lastPage.text());
-			if (page > totalPages) page = 1; // if page is out of range, redirect the first page, TODO: get the last page
+			if (page > totalPages) page = 1; // if page is out of range, redirect the first page, will update to get the last page
 
 			return {
 				meta: {
 					total: parseInt(totalNovels),
 					current_page: parseInt(page),
-					per_page: novels.length,
+					per_page: this.maxNovelsPerPage,
 					total_pages: totalPages,
 				},
 				novels,
@@ -144,7 +149,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			if (page < 1 || isNaN(page)) page = 1;
 			// if the page is out of range, the connection will be failed with 404 error
 			// so we check if the connection fails, we will return the first page
-			// TODO: get the last page
+			// update to get the last page
 			let response;
 			try {
 				response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
@@ -204,7 +209,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				novels.push(novel);
 			});
 
-			const per_page = novels.length;
+			const per_page = this.maxNovelsPerPage;
 			let total = per_page;
 			let total_pages = 1;
 
@@ -220,14 +225,6 @@ class MeTruyenChuStrategy extends NovelStrategy {
 					hasNextPage = false;
 					total_pages = parseInt($('.phan-trang .btn-page').last().text());
 					total = $('.truyen-list .item').length; // assign total with last page
-					// if the page is last page, update per_page by first page
-					if (page === total_pages && total_pages > 1) {
-						const responseFromFirstPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=1`);
-						const htmlFromFirstPage = responseFromFirstPage.data;
-						const $firstPage = load(htmlFromFirstPage);
-						per_page = $firstPage('.truyen-list .item').length;
-					}
-					total_pages = parseInt($(".phan-trang .btn-page").last().text());
 				}
 
 				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
@@ -242,7 +239,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			return {
 				meta: {
 					total,
-					current_page: parseInt(page),
+					current_page: page,
 					per_page,
 					total_pages,
 				},
@@ -279,7 +276,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				else total_pages = parseInt(lastElement.text());
 			}
 
-			// TODO: if page is out of range, get the last page, currently it returns the first page
+			// if page is out of range, currently it returns the first page, update to get the last page
 			if (page > total_pages) page = 1;
 			
 			chapters.forEach((chapter, index) => {

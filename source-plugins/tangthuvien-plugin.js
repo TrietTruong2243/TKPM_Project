@@ -4,7 +4,12 @@ import axios from "axios";
 
 class TangThuVienStrategy extends NovelStrategy {
 	constructor() {
-		super("https://truyen.tangthuvien.vn", "Tàng Thư Viện", "https://truyen.tangthuvien.vn/images/logo-web.png", 75);
+		super("https://truyen.tangthuvien.vn",
+			"Tàng Thư Viện",
+			"https://truyen.tangthuvien.vn/images/logo-web.png",
+			20,
+			75
+		);
 	}
 
 	async getCategories() {
@@ -67,16 +72,16 @@ class TangThuVienStrategy extends NovelStrategy {
 
 	async searchNovels(keyword, page = 1) {
 		try {
+			if (page < 1) page = 1;
 			const response = await axios.get(`${this.baseUrl}/ket-qua-tim-kiem?term=${keyword}&page=${page}`);
 			const html = response.data;
 			const $ = load(html);
 			const novels = [];
-			
+
 			//check if there is no result
 			const firstElement = $('#rank-view-list li').eq(0).children('p');
 			if ($(firstElement).length > 0
 				&& $(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu") {
-					console.log('No result found');
 				return {
 					meta: {
 						total: 0,
@@ -84,8 +89,8 @@ class TangThuVienStrategy extends NovelStrategy {
 						per_page: 0,
 						total_pages: 1,
 					},
-					novels
-				}
+					novels,
+				};
 			}
 
 			$("#rank-view-list li").each((index, element) => {
@@ -132,89 +137,17 @@ class TangThuVienStrategy extends NovelStrategy {
 				novels.push(novel);
 			});
 
-			return novels;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async getNovelsByCategory(categorySlug, page = 1) {
-		try {
-			const categoryId = await this.getCategoryIdBySlug(categorySlug);
-
-			let response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${page}`);
-			let html = response.data;
-			let $ = load(html);
-
-			const novels = [];
-			$(".book-img-text ul li").each((index, element) => {
-				const slug = $(element)
-					.find(".book-mid-info h4 a")
-					.attr("href")
-					.replace(`${this.baseUrl}/doc-truyen/`, "");
-				const title = $(element).find(".book-mid-info h4 a").text();
-				const image = $(element).find(".book-img-box img").attr("src");
-
-				const authors = [];
-				$(element)
-					.find(".author")
-					.each((i, ele) => {
-						const authorName = $(ele).find(".name").text();
-						const authorSlug = $(ele)
-							.find(".name")
-							.attr("href")
-							.replace(`${this.baseUrl}/tac-gia?author=`, "");
-						const author = { authorName, authorSlug };
-						authors.push(author);
-					});
-
-				const categories = [];
-				$(element)
-					.find(".author")
-					.each((i, ele) => {
-						const categoryName = $(ele).find("a").eq(1).text();
-						const categorySlug = $(ele)
-							.find("a")
-							.eq(1)
-							.attr("href")
-							.replace(`${this.baseUrl}/the-loai/`, "");
-						const category = { categoryName, categorySlug };
-						categories.push(category);
-					});
-
-				const numChapters = $(element).find("span span").text();
-
-				const status = $(element).find(".book-mid-info .author span").eq(0).text();
-
-				novels.push({
-					slug,
-					title,
-					image,
-					authors,
-					categories,
-					numChapters: parseInt(numChapters),
-					status,
-				});
-			});
-
-			const per_page = 20;
-			const total_pages = parseInt($("ul.pagination li").last().prev().find("a").text());
-
-			response = await axios.get(`${this.baseUrl}/tong-hop?ctg=${categoryId}&page=${total_pages}`);
-			$ = load(response.data);
-
-			const lastPageLength = $(".book-img-text ul li").length;
-			const total = (total_pages - 1) * per_page + lastPageLength;
+			// TODO: update meta data
 
 			return {
 				meta: {
-					total,
-					per_page,
+					total: novels.length,
 					current_page: parseInt(page),
-					total_pages,
+					per_page: novels.length,
+					total_pages: 1,
 				},
 				novels,
-			};
+			}
 		} catch (error) {
 			throw error;
 		}
@@ -306,7 +239,9 @@ class TangThuVienStrategy extends NovelStrategy {
 		try {
 			if (page < 1) page = 1;
 			const novel = await this.getNovelBySlug(slug);
-			const response = await axios.get(`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page - 1}&limit=75&web=1`);
+			const response = await axios.get(
+				`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page - 1}&limit=75&web=1`
+			);
 			const html = response.data;
 			const $ = load(html);
 

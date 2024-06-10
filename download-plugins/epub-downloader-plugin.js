@@ -1,6 +1,6 @@
 import novelFetcher from "../services/novel-fetcher.js";
 import DownLoaderStrategy from "./download-plugin-interface.js";
-import {createRequire} from "module"
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 var JSZip=require("jszip")
 const getMimetype=()=>{ 
@@ -90,6 +90,6 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy{
 		.then( (content) => {
 		    return content;
 		});
-    }
+	}
 }
 export default EPUBDownloaderStrategy;

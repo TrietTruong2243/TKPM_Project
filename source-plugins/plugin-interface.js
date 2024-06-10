@@ -3,10 +3,12 @@
 class NovelStrategy {
 	static numImplemented = 0;
 
-	constructor(baseUrl, name, thumbnail, maxNumChaptersPerPage) {
+	constructor(baseUrl, name, thumbnail, maxNovelsPerPage, maxNumChaptersPerPage) {
 		this.baseUrl = baseUrl;
 		this.name = name;
 		this.thumbnail = thumbnail;
+		// Maximum number of novels and chapters per page, this is constant for each strategy
+		this.maxNovelsPerPage = maxNovelsPerPage;
 		this.maxNumChaptersPerPage = maxNumChaptersPerPage;
 		NovelStrategy.numImplemented++;
 	}
