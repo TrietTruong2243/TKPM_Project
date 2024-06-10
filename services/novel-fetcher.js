@@ -13,6 +13,7 @@ const pageErrorBetweenSources = 1;
 class NovelFetcher {
     constructor() {
         this.strategies = {};
+
     }
 
     async loadStrategies() {
@@ -26,6 +27,7 @@ class NovelFetcher {
                 await this.loadStrategyWithPath(pluginPath);
             }
         }
+
     }
 
     async loadStrategyWithPath(pluginPath) {
