@@ -3,24 +3,22 @@ import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
-const { convert } = require("html-to-text");
 var blobStream = require("blob-stream");
 
 class PDFDownloaderStrategy extends DownLoaderStrategy {
 	constructor() {
-		super(".pdf");
+		super(".pdf",'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png');
 	}
 	createPDF(source, novel_slug, chapter_slug) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				// Khởi tạo tài liệu PDF
 				const doc = new PDFDocument();
 				const stream = doc.pipe(blobStream());
 
 				doc.font("./utils/fonts/arial.ttf");
 				const response = await novelFetcher.fetchChapterContent(source, novel_slug, chapter_slug);
-				const title = response.chapterContent.title;
-				const content = response.chapterContent.content;
+				const title = response.data.title;
+				const content = response.data.content;
 				const formattedContent = content
 					.replace(/<p>/g, "<br/>")
 					.replace(/<\/p>/g, "")
@@ -40,12 +38,11 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 
 				// Add paragraphs to PDF
 				paragraphs.forEach((paragraph) => {
-					// Split paragraph into lines if it contains tabs
 					const lines = paragraph.split("<br/>");
 					lines.forEach((line) => {
 						doc.text(line);
 					});
-					doc.moveDown(); // Move to the next line
+					doc.moveDown();
 				});
 
 				doc.end();
