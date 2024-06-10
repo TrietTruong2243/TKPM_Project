@@ -3,7 +3,7 @@ async function searchNovel(source,keyword, page) {
     try {
       const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/novels/search?keyword=${keyword}&page=${page}`)
       if (result.status===200){
-            return result.data.data.novels;
+            return result.data.data.data;
       }
       return [];
     } catch (error) {
