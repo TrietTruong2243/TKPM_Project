@@ -37,7 +37,7 @@ export default function SearchPage(){
     return (
         <Container sx={{marginTop:2}}>
             <Typography fontSize={25}> Kết quả tìm kiếm </Typography>
-            {(searched_novels||searched_novels.length<=0)&&<Typography fontSize={15}> Không tìm thấy kết quả </Typography>}
+            {(!searched_novels||searched_novels.length<=0)&&<Typography fontSize={15}> Không tìm thấy kết quả </Typography>}
             <NovelGrid novels={searched_novels}></NovelGrid>
             <Stack 
                 width={1}

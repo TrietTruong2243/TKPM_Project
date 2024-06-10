@@ -52,6 +52,7 @@ class NovelByCategoryManager extends DataManagementInterface{
         let result =[...new Map(this.sources.map(item =>[item["slug"], item])).values()]
         this.sources=[...result]
         this.total_page=this.sources.map(item => item.total_page).reduce((prev, curr) => prev + curr, 0);
+        console.log(this.sources)
     }
     async queryNovels(){
         let query_page=0;
@@ -76,6 +77,7 @@ class NovelByCategoryManager extends DataManagementInterface{
                 query_source=this.sources[index].slug;
             }
         }
+        console.log(query_page,query_source)
         let novels=await getNovelByCategory(query_source,this.category,query_page);
         this.novels=[...novels.novels]; 
     }

@@ -10,7 +10,6 @@ export default function NovelByCategoryPage(){
     const {category_slug} = useParams()
     const navigate=useNavigate();
     const page = queryParameters.get("page")||1
-    console.log(category_slug,page)
     const [current_page,setCurrentPage]=useState();
     let novel_category_manager=NovelByCategoryManager.getInstance();
     const [category_novels,setCategoryNovel]=useState([]);
@@ -22,7 +21,7 @@ export default function NovelByCategoryPage(){
             search:`${createSearchParams({page:value})}`,
         });
     }
-    novel_category_manager.set({category:category_slug,page:parseInt(novel_category_manager)})
+    novel_category_manager.set({category:category_slug,page:parseInt(page)})
     useEffect(()=>{
             setLoading(true);
             novel_category_manager.get().then(res=>{
@@ -37,7 +36,7 @@ export default function NovelByCategoryPage(){
     return (
         <Container sx={{marginTop:2}}>
             <Typography fontSize={25}> Kết quả tìm kiếm </Typography>
-            {(category_novels||category_novels.length<=0)&&<Typography fontSize={15}> Không tìm thấy kết quả </Typography>}
+            {(!category_novels||category_novels.length<=0)&&<Typography fontSize={15}> Không tìm thấy kết quả </Typography>}
             <NovelGrid novels={category_novels}></NovelGrid>
             <Stack 
                 width={1}

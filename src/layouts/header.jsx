@@ -5,8 +5,26 @@ import { Navigate, useNavigate } from "react-router-dom";
 import "../styles/header_appearance.css"
 import CategoryButton from "./components/categories_button";
 import SearchButton from "./components/search_button";
+import axios from "axios";
 
 export default function Header(){
+    const downloadPdf = async () => {
+        const response = await axios.get('http://localhost:4000/api/metruyenchu/download/pdf-downloader/thien-nhan/chuong-1-gfZCxYFKK_gY', { responseType: 'blob' });
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        const fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        const contentDisposition = response.headers['content-disposition'];
+        const fileName = "bill.pdf"
+        fileLink.setAttribute('download', fileName);
+        fileLink.setAttribute('target', '_blank');
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        fileLink.remove();
+      };
+    const doa=async()=>{
+         const response = await axios.get('http://localhost:4000/api/truyenfull/download');
+         console.log(response)
+    }
     const navigate=useNavigate()
     const styles = {
         active: {
@@ -77,6 +95,9 @@ export default function Header(){
             </Button>
             <Button onClick={() => navigate('history')}>
                 <Typography fontSize={15} color='white' >Lịch sử</Typography>
+            </Button>
+            <Button onClick={downloadPdf}>
+                <Typography color='white'>test</Typography>
             </Button>
         </Stack>
 
