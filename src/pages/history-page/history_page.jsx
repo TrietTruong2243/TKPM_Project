@@ -24,6 +24,7 @@ function App() {
                                     <TableRow>
                                         <TableCell>Hình ảnh</TableCell>
                                         <TableCell>Tên truyện</TableCell>
+                                        <TableCell>Nguồn</TableCell>
                                         <TableCell>Trạng thái</TableCell>
                                         <TableCell>Đã đọc đến</TableCell>
                                     </TableRow>
@@ -51,10 +52,10 @@ function App() {
                                         <MenuItem value={4}>Theo tên từ Z đến A</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <Typography variant="h6">Theo trạng thái:</Typography>
+                                {/* <Typography variant="h6">Theo trạng thái:</Typography>
                                 <FormControlLabel control={<Checkbox defaultChecked />} label="Full" />
                                 <FormControlLabel control={<Checkbox defaultChecked />} label="Mới" />
-                                <FormControlLabel control={<Checkbox defaultChecked />} label="Hot" />
+                                <FormControlLabel control={<Checkbox defaultChecked />} label="Hot" /> */}
                             </Container>
                         </Box>
                     </Grid>

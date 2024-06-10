@@ -7,6 +7,7 @@ import NovelContent from './Components/novel_content';
 import Source from './Components/source';
 import ControlButtons from './Components/control_buttons';
 import NovelSourceManager from "../../data/novel_source_manager.js";
+import Spinner from 'react-bootstrap/Spinner';
 
 import { GetAllChapterByNovelId, GetChapterOfNovelContent, GetNovelByIdService } from '../../service/service';
 import CenteredSpinner from '../../spinner/centered_spinner';
@@ -32,7 +33,6 @@ const App = () => {
   const { novelId, chapterId } = useParams();
   let novel_source_manager = NovelSourceManager.getInstance();
   const [source_data, setSourceData] = useState([]);
-
   useEffect(() => {
     novel_source_manager.get().then(res => {
       setSourceData([...res]);
@@ -42,16 +42,6 @@ const App = () => {
     const fetchNovelAndChapters = async () => {
       try {
         if (source_data.length > 0) {
-          //Xử lý lưu truyện vào lịch sử
-          const readItems = JSON.parse(localStorage.getItem('readItems')) || {};
-          if (readItems[novelId]) {
-            delete readItems[novelId]
-          }
-          readItems[novelId] = chapterId;
-          localStorage.setItem('readItems', JSON.stringify(readItems));
-          // setReadingNovel(null);
-
-
           const fetchedNovel = await GetNovelByIdService(novelId, source_data);
           setAllSource(fetchedNovel.sources);
           if (fetchedNovel) {
@@ -62,19 +52,29 @@ const App = () => {
             }
             setSource(sourceFromQuery);
             const chapterContent = await GetChapterOfNovelContent(novelId, chapterId, source);
-            alert(chapterContent)
             if (chapterContent) {
               setReadingNovel({ ...chapterContent, chapterId });
             }
-            // setReadingNovel({ ...chapterContent, chapterId });
-            // console.log(readingNovel)
+
 
             const fetchedChapters = await GetAllChapterByNovelId(novelId, source);
             if (fetchedChapters) {
               setAllChapter(fetchedChapters);
 
             }
-            console.log(allChapter)
+            const readItems = JSON.parse(localStorage.getItem('readItems')) || {};
+            if (readItems[novelId]) {
+              delete readItems[novelId]
+            }
+            readItems[novelId] = {
+              novelImage: fetchedNovel.image,
+              novelTitle: fetchedNovel.title, 
+              sourceSlug: source, 
+              novelStatus: fetchedNovel.status, 
+              chapterId: chapterId, 
+              chapterTitle: chapterContent.title
+            };
+            localStorage.setItem('readItems', JSON.stringify(readItems));
 
           }
 
@@ -89,32 +89,38 @@ const App = () => {
     fetchNovelAndChapters();
   }, [novelId, chapterId, source_data, source]);
 
-  if (!readingNovel || !allChapter) {
+  if (!readingNovel) {
     return <CenteredSpinner></CenteredSpinner>
   }
-  if (!allChapter)
-    {
+  else
+    if (!allChapter) {
+      return (
+        <Box sx={{ backgroundColor: theme.backgroundColor, color: theme.fontColor, fontFamily: theme.fontFamily, padding: '20px' }}>
+          <Container>
+
+            <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} />
+            <Spinner animation="border" />;
+            <Source sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} />
+            <NovelContent readingNovel={readingNovel} />
+
+          </Container>
+        </Box>
+      );
+    }
+    else {
       return (
         <Box sx={{ backgroundColor: theme.backgroundColor, color: theme.fontColor, fontFamily: theme.fontFamily, padding: '20px' }}>
           <Container>
             <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} />
             <Source sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} />
+            <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} />
             <NovelContent readingNovel={readingNovel} />
+            {/* <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} /> */}
           </Container>
         </Box>
       );
     }
-  return (
-    <Box sx={{ backgroundColor: theme.backgroundColor, color: theme.fontColor, fontFamily: theme.fontFamily, padding: '20px' }}>
-      <Container>
-        <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} />
-        <Source sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} />
-        <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} />
-        <NovelContent readingNovel={readingNovel} />
-        <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} />
-      </Container>
-    </Box>
-  );
+
 };
 
 export default App;
