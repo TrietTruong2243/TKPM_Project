@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import SettingModal from './setting_modal';
 import { jsPDF } from 'jspdf';
 
-export default function ControlButtons({ novelId, readingNovel, allChapter }) {
+export default function ControlButtons({ novelId, readingNovel, allChapter,sourceValue }) {
   // const { theme } = useContext(ThemeContext);
   const [content] = useState(readingNovel.content);
   const story = readingNovel.title;
@@ -40,11 +40,11 @@ export default function ControlButtons({ novelId, readingNovel, allChapter }) {
   const chapterOptions = useMemo(() => {
     return allChapter.map((chapter) => (
       <MenuItem
-        key={chapter.chapterId}
-        value={chapter.chapterId}
-        onClick={() => navigate(`/description/${novelId}/chapter/${chapter.chapterId}`)}
+        key={chapter.slug}
+        value={chapter.slug}
+        onClick={() => navigate(`/description/${novelId}/chapter/${chapter.slug}?source=${sourceValue}`)}
       >
-        {chapter.chapterName}
+        {chapter.title}
       </MenuItem>
     ));
   }, [allChapter, navigate, novelId]);
@@ -84,8 +84,8 @@ export default function ControlButtons({ novelId, readingNovel, allChapter }) {
           height: '48px',
           minWidth: '48px',
         }}
-        onClick={() => navigate(`/description/${novelId}/chapter/${readingNovel.prevChapterId}`)}
-        disabled={readingNovel.prevChapterId === '#'|| !readingNovel.prevChapterId}
+        onClick={() => navigate(`/description/${novelId}/chapter/${readingNovel.prev_slug}?source=${sourceValue}`)}
+        disabled={readingNovel.prev_slug === '#'|| !readingNovel.prev_slug}
       >
         &laquo;
       </Button>
@@ -112,8 +112,8 @@ export default function ControlButtons({ novelId, readingNovel, allChapter }) {
           height: '48px',
           minWidth: '48px',
         }}
-        onClick={() => navigate(`/description/${novelId}/chapter/${readingNovel.nextChapterId}`)}
-        disabled={readingNovel.nextChapterId === '#' || !readingNovel.nextChapterId}
+        onClick={() => navigate(`/description/${novelId}/chapter/${readingNovel.next_slug}?source=${sourceValue}`)}
+        disabled={readingNovel.next_slug === '#' || !readingNovel.next_slug}
       >
         &raquo;
       </Button>

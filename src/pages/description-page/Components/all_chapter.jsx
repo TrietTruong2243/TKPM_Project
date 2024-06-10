@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {  Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 
-export default function AllChapters({ allChapters }) {
+export default function AllChapters({ allChapters, source }) {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [chaptersPerPage] = useState(15);
@@ -48,8 +48,8 @@ export default function AllChapters({ allChapters }) {
                     <>
                         <List>
                             {displayedChapters.map((chapter, index) => (
-                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.chapterId}`)}>
-                                    <ListItemText primary={`${chapter.chapterName}`} />
+                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.slug}?source=${source.slug}`)}>
+                                    <ListItemText primary={`${chapter.title}`} />
                                 </ListItem>
                             ))}
                         </List>

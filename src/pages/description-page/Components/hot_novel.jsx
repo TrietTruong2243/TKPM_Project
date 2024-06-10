@@ -31,11 +31,11 @@ export default function HotNovel({ hotNovels }) {
                             alignItems="center"
                             sx={{ cursor: "pointer" }}
                             onClick={() => {
-                                navigate(`/description/${related.novelId}`);
+                                navigate(`/description/${related.slug}`);
                             }}
                         >
                             <Box mr={2}>
-                                <img src={related.img} alt={related.title} style={{ width: 60, borderRadius: 8 }} />
+                                <img src={related.image} alt={related.title} style={{ width: 60, borderRadius: 8 }} />
                             </Box>
                             <Typography variant="body2">{related.title}</Typography>
                         </Box>
