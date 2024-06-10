@@ -1,20 +1,55 @@
 import axios from 'axios';
 
-export async function GetNovelByIdService(novelId) {
+export async function GetNovelByIdService(novelId, sourceList) {
   try {
-    const response = await axios.get(`http://localhost:4000/${novelId}`);
-    const data = response.data.data;
+    let check = false;
+    let availableSource = [];
+    let checkResData;
+    for (let i = 0; i < sourceList.length; i++) {
+      const source = sourceList[i];
+      if (check === false) {
+        try{
+          const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source.slug}/novels/${novelId}`);
+          const data = response.data.data.novelInfo;
+          if (response.data.data.novelInfo.title !== "") {
+            availableSource.push(source)
+            check = true;
+            checkResData = data
+          }
+        }
+        catch(error)
+        {
+
+        }
+        
+      }
+      else {
+        try {
+          const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source.slug}/novels/${novelId}`);
+
+          //Xử lý lỗi, do bên back chưa xử lỗi nên tui làm theo title
+            if (response.data.data.novelInfo.title !== "") {
+              availableSource.push(source)
+            }
+        } catch (err) {
+          alert(err)
+        }
+
+
+
+      }
+
+
+    }
     const resData = {
-      novelId: novelId,
-      img: 'https://via.placeholder.com/100',
-      title: data.title,
-      genres: data.genres,
-      authors: data.authors,
-      source: "truyenfull.vn",
-      status: data.status,
-      chapterCount: data.chapterCount,
-      description: data.desc,
-      chapterPerPage: data.chapterPerPage
+      slug: checkResData.slug,
+      image: checkResData.image,
+      title: checkResData.title,
+      categories: checkResData.categories,
+      sources: availableSource,
+      authors: checkResData.authors,
+      status: checkResData.status,
+      description: checkResData.description,
     };
     return resData;
   } catch (error) {
@@ -23,23 +58,17 @@ export async function GetNovelByIdService(novelId) {
   }
 }
 
-export async function GetAllChapterByNovelId(novelId, chapterCount, chapterPerPage) {
+export async function GetAllChapterByNovelId(novelId, sourceSlug) {
   try {
     let chapterPromises = []
-    const pageCounts = Math.ceil(chapterCount / chapterPerPage);
-    for (let i = 1; i <= pageCounts; i++) {
-      chapterPromises.push(axios.get(`http://localhost:4000/${novelId}/chapter-list/${i}`));
+    const countChaptersResponses = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=1`);
+    const countChapterData = countChaptersResponses.data.data.chapters.meta;
+    const totalPages = countChapterData.total_pages;
+    for (let i = 1; i <= totalPages; i++) {
+      chapterPromises.push(axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=${i}`));
     }
-
     const responses = await Promise.all(chapterPromises);
-    const allChapters = responses.flatMap(response => response.data.data);
-    /*data :
-    [
-      {
-        chapterId,
-        chapterName
-      }
-    ] */
+    const allChapters = responses.flatMap(response => response.data.data.chapters.chapters);
     return allChapters;
   } catch (error) {
     console.error('There was an error making the request!', error);
@@ -47,10 +76,11 @@ export async function GetAllChapterByNovelId(novelId, chapterCount, chapterPerPa
   }
 }
 
-export async function GetChapterOfNovelContent(novelId, chapterId) {
+export async function GetChapterOfNovelContent(novelId, chapterId,sourceSlug) {
   try {
-    const response = await axios.get(`http://localhost:4000/${novelId}/${chapterId}`);
-    const data = response.data.data;
+
+    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters/${chapterId}`);
+    const data = response.data.data.chapterContent;
     data.novelId = novelId;
     /*
     data: {
@@ -70,11 +100,10 @@ export async function GetChapterOfNovelContent(novelId, chapterId) {
 }
 export async function GetHotNovels() {
   try {
-    const response = await axios.get(`http://localhost:4000/hot-stories/0`);
+    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/hot-stories/0`);
     const data = response.data.data;
     data.forEach(item => {
-      item.novelId = item.kebabCaseTitle;
-      item.img = 'https://fast.com.vn/uploads/news/He-thong-thong-tin/api-la-gi.jpg'
+
     });
     /*
     data: [

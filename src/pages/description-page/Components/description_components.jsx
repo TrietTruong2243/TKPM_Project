@@ -11,7 +11,7 @@ export default function DescriptionComponent({novel}) {
     <Grid container spacing={2}>
         <Grid item xs={12} md={3} textAlign="center">
             <img
-                src={novel.img}
+                src={novel.image}
                 alt={novel.title}
                 style={{ width: '100%', borderRadius: 8 }}
             />
@@ -20,10 +20,12 @@ export default function DescriptionComponent({novel}) {
             <Typography variant="h4" gutterBottom>
                 {novel.title} <DownloadIcon />
             </Typography>
-            <Typography variant="body1"><strong>Tác giả:</strong> {novel.authors.map((genre) => genre.authorName).join(", ")}</Typography>
-            <Typography variant="body1"><strong>Thể loại:</strong>{ novel.genres.map((genre) => genre.genreName).join(", ")} </Typography>
-            <Typography variant="body1"><strong>Nguồn:</strong> {novel.source}</Typography>
+            <Typography variant="body1"><strong>Tác giả:</strong> {novel.authors.map((genre) => genre.name).join(", ")}</Typography>
+            <Typography variant="body1"><strong>Thể loại:</strong>{ novel.categories.map((genre) => genre.name).join(", ")} </Typography>
+            <Typography variant="body1"><strong>Nguồn:</strong> { novel.sources.map((genre) => genre.name).join(", ")}</Typography>
             <Typography variant="body1"><strong>Trạng thái:</strong> {novel.status} </Typography>
+            <Typography variant="body1"><strong>Nguồn hiện tại:</strong> {novel.sources[0].name} </Typography>
+
         </Grid>
     </Grid>
     <Box mt={3}>

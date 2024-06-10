@@ -1,8 +1,11 @@
 import React, {useContext}  from 'react';
 import { Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { ThemeContext } from '../../../data/readingTheme';
-export default function Source({ sourceList }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function Source({novelId,chapterId, sourceList,sourceValue }) {
     const  {theme } = useContext(ThemeContext);
+    const navigate = useNavigate()
 
     return <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
         <Typography sx = {{color: theme.fontColor}} variant="body1" mr={1}>
@@ -10,8 +13,14 @@ export default function Source({ sourceList }) {
         </Typography>
         <FormControl variant="outlined" sx={{ width: '50%', backgroundColor: '#444' }}>
             <InputLabel id="nguon-label">Nguồn</InputLabel>
-            <Select labelId="nguon-label" id="nguonSelect" defaultValue="Tàng thư viện" label="Nguồn">
-                <MenuItem value="Tàng thư viện">Tàng thư viện</MenuItem>
+            <Select labelId="nguon-label" id="nguonSelect" defaultValue={sourceValue} label="Nguồn">
+                {sourceList.map((source) =>(
+                
+                    <MenuItem value={source.slug}         onClick={() => window.location.href = `/description/${novelId}/chapter/${chapterId}?source=${source.slug}`}
+> {source.name}</MenuItem>
+                )
+
+                )}
             </Select>
         </FormControl>
     </Box>

@@ -1,34 +1,56 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DescriptionComponent from './Components/description_components';
 import HotNovel from './Components/hot_novel';
 import AllChapters from './Components/all_chapter';
-import { GetNovelByIdService, GetAllChapterByNovelId ,GetHotNovels} from '../../service/service';
-import CenteredSpinner from '../../spinner/centered_spinner';
-export default function DescriptionPage() {
+import NovelSourceManager from "../../data/novel_source_manager.js";
+import { GetNovelByIdService, GetAllChapterByNovelId, GetHotNovels } from '../../service/service';
+import HotNovelManager from "../../data/hot_novels_manager.js";
 
-    const {novelId }= useParams();
+export default function DescriptionPage() {
+    let novel_source_manager = NovelSourceManager.getInstance();
+    const hot_novels_manager = HotNovelManager.getInstance();
+
+    const [source_data, setSourceData] = useState([]);
+    const { novelId } = useParams();
     const [novel, setNovel] = useState(null);
     const [allChapters, setAllChapters] = useState([]);
-    const [hotNovels, setHotNovels] = useState([]); 
+    const [hotNovels, setHotNovels] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [source, setSource] = useState(null)
+    useEffect(() => {
+        novel_source_manager.get().then(res => {
+            setSourceData([...res]);
+        });
+        hot_novels_manager.get().then(res=>{
+            setHotNovels([...res]);
+            // setLoading(false); 
+        });
+    }, []);
+
     useEffect(() => {
         const fetchNovelAndChapters = async () => {
-            try {
-                const fetchedNovel = await GetNovelByIdService(novelId);
-                setNovel(fetchedNovel);
-                const fetchedChapters = await GetAllChapterByNovelId(novelId, fetchedNovel.chapterCount, fetchedNovel.chapterPerPage);
-                setAllChapters(fetchedChapters);
-                const fetchHotNovels = await GetHotNovels();
-                setHotNovels(fetchHotNovels);
-            } catch (error) {
-                console.error('Error fetching novel and chapters:', error);
+            if (source_data.length > 0) { // Ensure source_data is available
+                try {
+                    const fetchedNovel = await GetNovelByIdService(novelId, source_data);
+                    setNovel(fetchedNovel);
+                    
+                    if (fetchedNovel) {
+                        const availableFirstSource = fetchedNovel.sources[0]; 
+                        setSource(availableFirstSource)
+                        const fetchedChapters = await GetAllChapterByNovelId(novelId, availableFirstSource.slug);
+                        setAllChapters(fetchedChapters);
+                    }
+                } catch (error) {
+                    console.error('Error fetching novel and chapters:', error);
+                }
             }
         };
 
         fetchNovelAndChapters();
-    }, [novelId]);
+    }, [novelId, source_data,source]); // Add source_data as a dependency
 
     const theme = createTheme({
         palette: {
@@ -43,9 +65,9 @@ export default function DescriptionPage() {
         },
     });
 
-    if (!novel || !hotNovels|| !allChapters) {
-        return <CenteredSpinner></CenteredSpinner>;
-    }
+    // if (loading) {
+    //     return <CenteredSpinner></CenteredSpinner>;
+    // }
 
     return (
         <ThemeProvider theme={theme}>
@@ -54,7 +76,7 @@ export default function DescriptionPage() {
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={8}>
                             <DescriptionComponent novel={novel}></DescriptionComponent>
-                            <AllChapters allChapters={allChapters}></AllChapters>
+                            <AllChapters allChapters={allChapters} source = {source}></AllChapters>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <HotNovel hotNovels={hotNovels}></HotNovel>
