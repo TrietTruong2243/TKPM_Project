@@ -2,12 +2,12 @@
 
 ## Một số thông tin
 
-- Sử dụng ESM thay cho CommonJS đối với nodejs server.
 - Port server: **4000**.
 - Hiện tại sử dụng `chokidar` để watch folder `source-plugins`, cho phép thêm xóa các file plugin mà không cần restart lại server.
 - Các nguồn truyện hiện có: Truyện Full (_truyenfull_), Mê Truyện Chữ (_metruyenchu_), Tàng Thư Viện (_tangthuvien_)
 - Dùng hàm `convertNameToSlug` khi không còn cách nào khác, còn lại đều parse từ trang gốc.
 - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
+- Vị trí của chap hiện tại được parse từ slug hoặc tên. 
 
 ## Hướng dẫn sử dụng
 
@@ -74,8 +74,7 @@ _Chú thích_:\
 
 ## TODO
 
-- [ ] <span style="color:red">Hiện tại đang phụ thuộc vào id truyện và id chương từ nguồn, nếu nguồn không chứa các id? --> lấy nội dung truyện bằng url (slug)? --> chuyển id về biến cục bộ nếu được</span>
-- [ ] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn?
+- [ ] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn? 
 - [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
 - [x] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.
 - [ ] Thêm test cho các plugin được thêm vào?

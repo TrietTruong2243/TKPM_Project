@@ -6,13 +6,13 @@ const getHotNovels = async (req, res) => {
     try {
         const hotNovels = await NovelFetcher.fetchHotNovels(source);
         res.status(200).json({
-            message: 'success',
+            status: 'success',
             data: hotNovels
         });
 
     } catch (error) {
         res.status(500).json({
-            message: 'error',
+            status: 'error',
             error: error.message
         });
     }
@@ -26,13 +26,13 @@ const searchNovels = async (req, res) => {
     try {
         const novels = await NovelFetcher.fetchNovels(source, keyword, page);
         res.status(200).json({
-            message: 'success',
+            status: 'success',
             data: novels
         });
 
     } catch (error) {
         res.status(500).json({
-            message: 'error',
+            status: 'error',
             error: error.message
         });
     }
@@ -44,13 +44,13 @@ const getNovelBySlug = async (req, res) => {
     try {
         const novelInfo = await NovelFetcher.fetchNovelByTitle(source, slug);
         res.status(200).json({
-            message: 'success',
+            status: 'success',
             data: novelInfo
         });
 
     } catch (error) {
         res.status(500).json({
-            message: 'error',
+            status: 'error',
             error: error.message
         });
     }

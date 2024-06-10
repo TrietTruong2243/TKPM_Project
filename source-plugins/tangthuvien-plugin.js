@@ -4,7 +4,7 @@ import axios from "axios";
 
 class TangThuVienStrategy extends NovelStrategy {
 	constructor() {
-		super("https://truyen.tangthuvien.vn", "Tàng Thư Viện", "https://truyen.tangthuvien.vn/images/logo-web.png");
+		super("https://truyen.tangthuvien.vn", "Tàng Thư Viện", "https://truyen.tangthuvien.vn/images/logo-web.png", 75);
 	}
 
 	// TODO: xử lí trường hợp Ngôn tình + Khác ko lấy được slug
@@ -70,6 +70,22 @@ class TangThuVienStrategy extends NovelStrategy {
 			const html = response.data;
 			const $ = load(html);
 			const novels = [];
+			
+			//check if there is no result
+			const firstElement = $('#rank-view-list li').eq(0).children('p');
+			if ($(firstElement).length > 0
+				&& $(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu") {
+					console.log('No result found');
+				return {
+					meta: {
+						total: 0,
+						current_page: 1,
+						per_page: 0,
+						total_pages: 1,
+					},
+					novels
+				}
+			}
 
 			$("#rank-view-list li").each((index, element) => {
 				const slug = $(element)
@@ -115,16 +131,29 @@ class TangThuVienStrategy extends NovelStrategy {
 				novels.push(novel);
 			});
 
-			return novels;
+			let per_page = novels.length;
+			let total = per_page;
+			let total_pages = page;
+
+			return {
+				meta: {
+					total: novels.length,
+					current_page: page,
+					per_page: novels.length,
+					total_pages: 1,
+				},
+				novels
+			}
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async getNovelChapterList(slug, page = 0) {
+	async getNovelChapterList(slug, page = 1) {
 		try {
+			if (page < 1) page = 1;
 			const novel = await this.getNovelBySlug(slug);
-			const response = await axios.get(`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page}&limit=75&web=1`);
+			const response = await axios.get(`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${page - 1}&limit=75&web=1`);
 			const html = response.data;
 			const $ = load(html);
 
