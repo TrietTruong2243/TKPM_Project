@@ -1,6 +1,7 @@
-import { GetAllChapterByNovelId, getNovelDescription } from "../service/service";
+import { GetAllChapterByNovelId, getNovelDescription,GetChapterOfNovelContent } from "../service/service";
 import DataManagementInterface from "./data_management_interface";
 import NovelSourceManager from "./novel_source_manager";
+
 let instance;
 class NovelDescriptionManager extends DataManagementInterface{
     constructor(){
@@ -42,6 +43,8 @@ class NovelDescriptionManager extends DataManagementInterface{
             if(novel_info){
                 if (this.current_source===''){
                     this.current_source=sources[i].slug;
+                }
+                if(this.novel_info===null){
                     this.novel_info=novel_info;
                 }
                 this.available_source.push(sources[i]);
@@ -57,6 +60,11 @@ class NovelDescriptionManager extends DataManagementInterface{
         return await GetAllChapterByNovelId(this.novel_slug,this.current_source).then(res=>{
             return res;
         });
+    }
+    async getChapterContent(chapter_slug){
+        return await GetChapterOfNovelContent(this.novel_slug, chapter_slug, this.current_source).then((res)=>{
+            return res;
+        })
     }
 }
 export default NovelDescriptionManager;

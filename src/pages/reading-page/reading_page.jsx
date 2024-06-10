@@ -11,12 +11,11 @@ import { GetAllChapterByNovelId, GetChapterOfNovelContent, GetNovelByIdService }
 import CenteredSpinner from '../../spinner/centered_spinner';
 import NovelDescriptionManager from '../../data/novel_description_manager.js';
 
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-};
-const App = () => {
+
+function ReadingPage () {
   const navigate = useNavigate();
-  let source1 = useQuery();
+  const queryParameters = new URLSearchParams(window.location.search)
+  let query_source = queryParameters.get('source');
   const [source, setSource] = useState(null);
   const { theme } = useContext(ThemeContext);
   const [readingNovel, setReadingNovel] = useState(null);
@@ -25,57 +24,33 @@ const App = () => {
   const { novelId, chapterId } = useParams();
   let novel_source_manager = NovelSourceManager.getInstance();
   let novel_description_manager=NovelDescriptionManager.getInstance();
-  const [source_data, setSourceData] = useState([]);
-
+  if(query_source){
+    novel_description_manager.current_source=query_source;
+  }
+  novel_description_manager.set({novel_slug:novelId})
   useEffect(() => {
-    novel_source_manager.get().then(res => {
-      setSourceData([...res]);
-    });
-  }, []);
-  useEffect(() => {
-    const fetchNovelAndChapters = async () => {
-      try {
-        if (source_data.length > 0) {
-          //Xử lý lưu truyện vào lịch sử
-          const readItems = JSON.parse(localStorage.getItem('readItems')) || {};
-          if (readItems[novelId]) {
-            delete readItems[novelId]
+    novel_description_manager.get().then(res=>{
+      console.log(novel_description_manager.available_source)
+      setAllSource(novel_description_manager.available_source)
+      novel_description_manager.getAllChapter().then((res)=>{
+        setAllChapter([...res]);
+      })
+      if(res){
+        if(!query_source){
+          query_source=novel_description_manager.current_source;
+          if(!query_source){
+            navigate(`/description/${novelId}/chapter/${chapterId}?source=${query_source}`);
           }
-          readItems[novelId] = chapterId;
-          localStorage.setItem('readItems', JSON.stringify(readItems));
-          // setReadingNovel(null);
-
-
-          const fetchedNovel = await GetNovelByIdService(novelId, source_data);
-          setAllSource(fetchedNovel.sources);
-          if (fetchedNovel) {
-            let sourceFromQuery = source1.get("source");
-            if (!sourceFromQuery) {
-              sourceFromQuery = fetchedNovel.sources[0].slug;
-              navigate(`/description/${novelId}/chapter/${chapterId}?source=${sourceFromQuery}`);
-            }
-            setSource(sourceFromQuery);
-            const chapterContent = await GetChapterOfNovelContent(novelId, chapterId, source);
-            if (chapterContent) {
-              setReadingNovel({ ...chapterContent, chapterId });
-            }
-            // setReadingNovel({ ...chapterContent, chapterId });
-            // console.log(readingNovel)
-
-            const fetchedChapters = await GetAllChapterByNovelId(novelId, source);
-            if (fetchedChapters) {
-              setAllChapter(fetchedChapters);
-            }
-          }
-
         }
-      } catch (error) {
-        console.error('Error fetching novel and chapters:', error);
+        setSource(query_source)
+        novel_description_manager.getChapterContent(chapterId).then((res)=>{
+          if(res){
+            setReadingNovel({...res,chapterId});
+          }
+        })
       }
-    };
-
-    fetchNovelAndChapters();
-  }, [novelId, chapterId, source_data, source]);
+    })
+  }, []);
 
   if (!readingNovel || !allChapter) {
     return <CenteredSpinner></CenteredSpinner>
@@ -105,4 +80,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default  ReadingPage;
