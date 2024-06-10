@@ -1,6 +1,5 @@
 import NovelStrategy from "./plugin-interface.js";
 import { load } from "cheerio";
-import { convertNameToSlug } from "../utils/name-converter.js";
 import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
