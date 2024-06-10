@@ -73,7 +73,7 @@ const getText=(chapter,title,content)=>{
 }
 class EPUBDownloaderStrategy extends DownLoaderStrategy{
     constructor(){
-        super('.epub')
+        super('.epub','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbU14J11CojjLhE-fVsmhAdSEQA68aeZygIlxkHLGqYXmla7_W8y_hMUnstS3UcZZwSso&usqp=CAU')
     }
     async getBuffer(source,novel_slug,chapter_slug){
         const response = await novelFetcher.fetchChapterContent(source,novel_slug,chapter_slug)

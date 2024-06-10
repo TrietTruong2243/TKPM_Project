@@ -52,6 +52,7 @@ class DownloaderFetcher {
 			return {
 				slug: strategyName,
 				extension: this.strategies[strategyName].extension,
+				image: this.strategies[strategyName].image
 			};
 		});
 	}

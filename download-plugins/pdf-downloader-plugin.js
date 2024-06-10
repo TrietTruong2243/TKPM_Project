@@ -8,7 +8,7 @@ var blobStream = require("blob-stream");
 
 class PDFDownloaderStrategy extends DownLoaderStrategy {
 	constructor() {
-		super(".pdf");
+		super(".pdf",'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png');
 	}
 	createPDF(source, novel_slug, chapter_slug) {
 		return new Promise(async (resolve, reject) => {
