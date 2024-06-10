@@ -73,6 +73,7 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async searchNovels(keywords, page = 1) {
         try {
+            page = parseInt(page);
             if (page < 1 || isNaN(page)) page = 1;
             const response = await axios.get(`${this.baseUrl}/tim-kiem?tukhoa=${keywords}&page=${page}`, {
                 headers: {
@@ -127,6 +128,7 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async getNovelsByCategory(categorySlug, page = 1) {
         try {
+            page = parseInt(page);
             if(page < 1 || isNaN(page)) page = 1;
             const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}/trang-${page}/`, {
                 headers: {
@@ -263,6 +265,7 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async getNovelChapterList(novelSlug, page = 1) {
         try {
+            page = parseInt(page);
             if (page < 1 || isNaN(page)) page = 1;
             const response = await axios.get(`${this.baseUrl}/${novelSlug}/trang-${page}/#list-chapter`, {
                 headers: {

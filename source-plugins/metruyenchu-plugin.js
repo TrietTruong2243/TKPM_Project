@@ -62,6 +62,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async searchNovels(keywords, page = 1) {
 		try {
+			page = parseInt(page);
 			if (page < 1 || isNaN(page)) page = 1;
 			const response = await axios.get(`${this.baseUrl}/search?q=${keywords}&page=${page}`);
 			const html = response.data;
@@ -146,6 +147,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async getNovelsByCategory(categorySlug, page = 1) {
 		try {
+			page = parseInt(page);
 			if (page < 1 || isNaN(page)) page = 1;
 			// if the page is out of range, the connection will be failed with 404 error
 			// so we check if the connection fails, we will return the first page
@@ -252,6 +254,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async getNovelChapterList(slug, page = 1) {
 		try {
+			page = parseInt(page);
 			if (page < 1 || isNaN(page)) page = 1;
 			const novel = await this.getNovelBySlug(slug);
 
