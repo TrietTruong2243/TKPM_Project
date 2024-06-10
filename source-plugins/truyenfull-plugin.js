@@ -8,7 +8,8 @@ class TruyenFullStrategy extends NovelStrategy {
         super(
             "https://truyenfull.vn",
             "Truyện Full",
-            "https://truyenfull.vn/favicon.ico"
+            "https://truyenfull.vn/favicon.ico",
+            50
         );
         this.apiUrl = "https://api.truyenfull.vn/v1";
     }
@@ -71,6 +72,7 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async searchNovels(keywords, page = 1) {
         try {
+            if (page < 1 || isNaN(page)) page = 1;
             const response = await axios.get(`${this.baseUrl}/tim-kiem?tukhoa=${keywords}&page=${page}`, {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
@@ -124,7 +126,8 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async getNovelsByCategory(categorySlug, page = 1) {
         try {
-            const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`, {
+            if(page < 1 || isNaN(page)) page = 1;
+            const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}/trang-${page}/`, {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
@@ -156,15 +159,21 @@ class TruyenFullStrategy extends NovelStrategy {
                 });
             });
 
-            const per_page = novels.length;
+            let per_page = novels.length; // init per_page by the length of novels in current page, not exact per_page
             let total = per_page;
-            let total_pages = per_page > 0 ? 1 : 0;
+            let total_pages = 1;
 
             const lastPaginationButton = $('ul.pagination').length > 0 ? $('ul.pagination li').last() : null;
             if (lastPaginationButton) {
                 const lastPage = lastPaginationButton.prev();
-                total_pages = parseInt(lastPage.find('a').attr('href').split('/')[5].split('-')[1]);
-                const responseFromLastPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${total_pages}`, {
+                // if the current is last page, the button doesn't have href attribute
+                if (lastPage.find('a').length === 0) {
+                    total_pages = parseInt($(lastPage).find('span').text().trim());
+                }
+                else total_pages = parseInt(lastPage.find('a').attr('href').split('/')[5].split('-')[1]);
+
+                // get number of chapters in last page
+                const responseFromLastPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}/trang-${total_pages}`, {
                     headers: {
                         "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                     },
@@ -172,6 +181,24 @@ class TruyenFullStrategy extends NovelStrategy {
                 const htmlFromLastPage = responseFromLastPage.data;
                 const $lastPage = load(htmlFromLastPage);
                 const numChaptersLastPage = $lastPage('.col-truyen-main .list-truyen .row').length;
+
+                // if page is greater than total_pages
+                if (page > total_pages) page = total_pages; 
+
+                // if page is last page, update per_page by first page
+                if (page === total_pages && total_pages > 1) {
+                    const responseFromFirstPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}/trang-1`, {
+                        headers: {
+                            "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
+                        },
+                    });
+                    const htmlFromFirstPage = responseFromFirstPage.data;
+                    const $firstPage = load(htmlFromFirstPage);
+                    const numChaptersFirstPage = $firstPage('.col-truyen-main .list-truyen .row').length;
+                    per_page = numChaptersFirstPage;
+                }
+
+                // calculate total
                 total = (total_pages - 1) * per_page + numChaptersLastPage;
             }
 
@@ -248,7 +275,8 @@ class TruyenFullStrategy extends NovelStrategy {
 
     async getNovelChapterList(novelSlug, page = 1) {
         try {
-            const response = await axios.get(`${this.baseUrl}/${novelSlug}`, {
+            if (page < 1 || isNaN(page)) page = 1;
+            const response = await axios.get(`${this.baseUrl}/${novelSlug}/trang-${page}/#list-chapter`, {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
                 },
@@ -271,13 +299,21 @@ class TruyenFullStrategy extends NovelStrategy {
                 },
             });
             const dataMeta = responseFromApi.data.meta;
+            const total = dataMeta.pagination.total;
+            const per_page = dataMeta.pagination.per_page;
+            const total_pages = dataMeta.pagination.total_pages;
+            if (page > total_pages) page = total_pages;
+
+            chapters.forEach((chapter, index) => {
+                chapter.position = index + (per_page * (page - 1)) + 1;
+            });
 
             return {
                 meta: {
-                    total: dataMeta.pagination.total,
-                    per_page: dataMeta.pagination.per_page,
-                    current_page: dataMeta.pagination.current_page,
-                    total_pages: dataMeta.pagination.total_pages,
+                    total,
+                    per_page,
+                    current_page: page,
+                    total_pages,
                 },
                 chapters: chapters,
             };
@@ -314,7 +350,6 @@ class TruyenFullStrategy extends NovelStrategy {
                 slug: chapterSlug,
                 title: data.chapter_name,
                 content: data.content,
-                position: data.position,
                 next_slug: nextSlug,
                 prev_slug: prevSlug,
             }

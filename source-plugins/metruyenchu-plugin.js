@@ -4,7 +4,7 @@ import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
 	constructor() {
-		super("https://metruyenchu.com.vn", "Mê Truyện Chữ", "https://metruyenchu.com.vn/images/logo.png");
+		super("https://metruyenchu.com.vn", "Mê Truyện Chữ", "https://metruyenchu.com.vn/images/logo.png", 100);
 		this.hotNovelsPath = "get/hotbook";
 		this.listChapPath = "get/listchap";
 	}
@@ -45,7 +45,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const slug = $(element).find("a").attr("href").trim().replace("/", "");
 
 				const novel = { title, image: this.baseUrl + image, slug };
-
+				
 				hotNovels.push(novel);
 			});
 
@@ -57,10 +57,24 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async searchNovels(keywords, page = 1) {
 		try {
+			if (page < 1 || isNaN(page)) page = 1;
 			const response = await axios.get(`${this.baseUrl}/search?q=${keywords}&page=${page}`);
 			const html = response.data;
 			const $ = load(html);
 			const novels = [];
+
+			// check if there is no result
+			if ($('.title-list p').text().includes("Không có kết quả nào được tìm thấy.")){
+				return {
+					meta: {
+						total: 0,
+						current_page: 1,
+						per_page: 0,
+						total_pages: 1,
+					},
+					novels,
+				};
+			}
 
 			$(".truyen-list .item").each((index, element) => {
 				const slug = $(element).find("a").attr("href").replace("/", "");
@@ -109,11 +123,12 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let lastPage = $(".phan-trang a").last();
 			if (lastPage.text() === "❭") lastPage = lastPage.prev();
 			const totalPages = parseInt(lastPage.text());
+			if (page > totalPages) page = 1; // if page is out of range, redirect the first page, TODO: get the last page
 
 			return {
 				meta: {
 					total: parseInt(totalNovels),
-					current_page: page,
+					current_page: parseInt(page),
 					per_page: novels.length,
 					total_pages: totalPages,
 				},
@@ -126,7 +141,22 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async getNovelsByCategory(categorySlug, page = 1) {
 		try {
-			const response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
+			if (page < 1 || isNaN(page)) page = 1;
+			// if the page is out of range, the connection will be failed with 404 error
+			// so we check if the connection fails, we will return the first page
+			// TODO: get the last page
+			let response;
+			try {
+				response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
+			} catch (error) {
+				// check error status
+				if (error.response.status === 404) {
+					page = 1;
+					response = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${page}`);
+				} else {
+					throw error;
+				}
+			}
 			const html = response.data;
 			let $ = load(html);
 
@@ -183,26 +213,36 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				nextPage,
 				nextHtml;
 			while (hasNextPage) {
-				if ($(".phan-trang .btn-page").last().text().includes("❭")) {
-					currentPage++;
-					// currentPage = parseInt($('.phan-trang .btn-page').last().prev().text());
+				if ($('.phan-trang .btn-page').last().text().includes('❭')) {
+					// currentPage++;
+					currentPage = parseInt($('.phan-trang .btn-page').last().prev().text());
 				} else {
 					hasNextPage = false;
+					total_pages = parseInt($('.phan-trang .btn-page').last().text());
+					total = $('.truyen-list .item').length; // assign total with last page
+					// if the page is last page, update per_page by first page
+					if (page === total_pages && total_pages > 1) {
+						const responseFromFirstPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=1`);
+						const htmlFromFirstPage = responseFromFirstPage.data;
+						const $firstPage = load(htmlFromFirstPage);
+						per_page = $firstPage('.truyen-list .item').length;
+					}
 					total_pages = parseInt($(".phan-trang .btn-page").last().text());
-					// total = (total_pages - 1) * per_page + $('.truyen-list .item').length;
 				}
 
 				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
 				nextHtml = nextPage.data;
 				$ = load(nextHtml);
-				total += $(".truyen-list .item").length;
+				// total += $(".truyen-list .item").length;
 				// await new Promise(resolve => setTimeout(resolve, 100)); // delay to prevent getting blocked
 			}
+
+			total += (total_pages - 1) * per_page;
 
 			return {
 				meta: {
 					total,
-					current_page: page,
+					current_page: parseInt(page),
 					per_page,
 					total_pages,
 				},
@@ -215,6 +255,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 	async getNovelChapterList(slug, page = 1) {
 		try {
+			if (page < 1 || isNaN(page)) page = 1;
 			const novel = await this.getNovelBySlug(slug);
 
 			const response = await axios.get(`${this.baseUrl}/${this.listChapPath}/${novel.id}?page=${page}`);
@@ -227,18 +268,29 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const chapterSlug = $(chapter).find("a").attr("href").split("/")[2];
 				chapters.push({ title, slug: chapterSlug });
 			});
-
+			
 			let total_pages = 1;
 			const lastElement = $(".paging a").last();
-			if (lastElement.attr("onclick"))
-				total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
-			else total_pages = parseInt(lastElement.text());
+			if(lastElement.length > 0){
+				if (lastElement.attr("onclick")){
+					total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
+					total_pages = parseInt(total_pages);
+				} 
+				else total_pages = parseInt(lastElement.text());
+			}
+
+			// TODO: if page is out of range, get the last page, currently it returns the first page
+			if (page > total_pages) page = 1;
+			
+			chapters.forEach((chapter, index) => {
+				chapter.position = index + (page - 1) * this.maxNumChaptersPerPage + 1;
+			});
 
 			return {
 				meta: {
 					total: novel.numChapters,
 					current_page: page,
-					per_page: chapters.length,
+					per_page: this.maxNumChapterPerPage,
 					total_pages,
 				},
 				chapters,
@@ -253,6 +305,10 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			const response = await axios.get(`${this.baseUrl}/${slug}`);
 			const html = response.data;
 			const $ = load(html);
+			// Metruyenchu will redirect to home page if the slug is not found => check if the page is home page
+			if ($('.wrap .container').eq(0).text().trim() == "MeTruyenChu - Đọc Truyện Chữ Miễn Phí, Không Quảng Cáo!!!") {
+				return null;
+			}
 
 			const id = $('.findchap input[name="bid"]').val();
 			const title = $(".mainCol h1").text();
@@ -316,15 +372,13 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			let prevId = $(".chapter_control .back").attr("href");
 			if (prevId !== "#") prevId = prevId.split("/")[2];
-
-			const position = $(".chapter_control .chapter-title").text().split("/");
-
-			return {
-				slug: chapterSlug,
-				title,
-				content,
-				next_slug: nextId,
-				prev_slug: prevId,
+			
+			return { 
+				slug: chapterSlug, 
+				title, 
+				content, 
+				next_slug: nextId, 
+				prev_slug: prevId 
 			};
 		} catch (error) {
 			throw error;

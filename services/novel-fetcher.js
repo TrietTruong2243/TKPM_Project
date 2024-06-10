@@ -5,6 +5,10 @@ import chokidar from 'chokidar';
 import NovelStrategy from '../source-plugins/plugin-interface.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// the error of a chapter position in different sources
+// be used to fetch the previous pages and next pages (the number of pages is specific) of the calculated page just in case. These are be able to contain the target chapter.
+// Eg: novel 'Ngạo thế đan thần' in MêTruyệnChữ has chapter 0 but the others do not.
+const pageErrorBetweenSources = 1; 
 
 class NovelFetcher {
     constructor() {
@@ -60,21 +64,21 @@ class NovelFetcher {
 
     async fetchCategories(strategyName) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getCategories === 'function') {
+        if (!strategy || typeof strategy.getCategories != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const categories = await strategy.getCategories();
             return {
                 source: strategyName,
-                categories
+                data: categories
             };
         } catch (error) {
             throw error;
         }
     }
 
-    async fetchNovels(strategyName, keyword, page){
+    async fetchNovels(strategyName, keyword, page) {
         const strategy = this.strategies[strategyName];
         if (!strategy || !typeof strategy.searchNovels === 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
@@ -83,7 +87,7 @@ class NovelFetcher {
             const novels = await strategy.searchNovels(keyword, page);
             return {
                 source: strategyName,
-                novels
+                data: novels
             };
         } catch (error) {
             throw error;
@@ -92,14 +96,14 @@ class NovelFetcher {
 
     async fetchHotNovels(strategyName) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getHotNovels === 'function') {
+        if (!strategy || typeof strategy.getHotNovels != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const hotNovels = await strategy.getHotNovels();
             return {
                 source: strategyName,
-                hotNovels
+                data: hotNovels
             };
         } catch (error) {
             throw error;
@@ -108,14 +112,14 @@ class NovelFetcher {
 
     async fetchNovelsByCategory(strategyName, categorySlug, page) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getNovelsByCategory === 'function') {
+        if (!strategy || typeof strategy.getNovelsByCategory != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const novels = await strategy.getNovelsByCategory(categorySlug, page);
             return {
                 source: strategyName,
-                novels
+                data: novels
             };
         } catch (error) {
             throw error;
@@ -124,14 +128,14 @@ class NovelFetcher {
 
     async fetchNovelByTitle(strategyName, novelSlug) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getNovelBySlug === 'function') {
+        if (!strategy || typeof strategy.getNovelBySlug != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const novelInfo = await strategy.getNovelBySlug(novelSlug);
             return {
                 source: strategyName,
-                novelInfo
+                data: novelInfo
             };
         } catch (error) {
             throw error;
@@ -140,14 +144,14 @@ class NovelFetcher {
 
     async fetchNovelChapterList(strategyName, novelSlug, page) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getNovelChapterList === 'function') {
+        if (!strategy || typeof strategy.getNovelChapterList != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const chapters = await strategy.getNovelChapterList(novelSlug, page);
             return {
                 source: strategyName,
-                chapters
+                data: chapters
             };
         } catch (error) {
             throw error;
@@ -156,21 +160,154 @@ class NovelFetcher {
 
     async fetchChapterContent(strategyName, novelSlug, chapterSlug) {
         const strategy = this.strategies[strategyName];
-        if (!strategy || !typeof strategy.getChapterContent == 'function') {
+        if (!strategy || typeof strategy.getChapterContent != 'function') {
             throw new Error(`Strategy '${strategyName}' not found.`);
         }
         try {
             const chapterContent = await strategy.getChapterContent(novelSlug, chapterSlug);
             return {
                 source: strategyName,
-                chapterContent
+                data: chapterContent
             };
         } catch (error) {
             throw error;
         }
     }
 
-    watchPlugins(){
+    async fetchAlternativeNovels(currentStrategy, novelSlug, title) {
+        try {
+            title = title.toLowerCase();
+
+            // get novel of current strategy for double checking
+            const sourceNovel = await this.strategies[currentStrategy].getNovelBySlug(novelSlug);
+        
+            const alternatives = [];
+            for (const strategyName in this.strategies) {
+                if (strategyName === currentStrategy) continue;
+
+                const strategy = this.strategies[strategyName];
+                if (typeof strategy.getNovelBySlug === 'function') {
+                    // First try to fetch novel by slug
+                    // If not found, search by title
+                    let novel;
+                    try {
+                        novel = await strategy.getNovelBySlug(novelSlug);
+                    } catch (error) {
+                        console.log(`Error fetching novel by slug ${novelSlug} from ${strategyName}:`, error);
+                        // just find in the first page of search results
+                        const searchedNovels = (await strategy.searchNovels(title)).novels;
+
+                        // find the novel has the same title or contains the title
+                        const candidateNovels = searchedNovels.filter(novel => {
+                            const searchedTitle = novel.title.toLowerCase();
+                            return (searchedTitle === title || searchedTitle.includes(title) || title.includes(searchedTitle));
+                        });
+
+                        // double check by compare absolute difference of number of chapters
+                        let temp_min = 1000000;
+                        candidateNovels.forEach(candidateNovel => {
+                            if (Math.abs(candidateNovel.numChapters - sourceNovel.numChapters) < temp_min) {
+                                temp_min = Math.abs(candidateNovel.numChapters - sourceNovel.numChapters);
+                                novel = candidateNovel;
+                            }
+                        });
+                    }
+                    
+                    if (novel) {
+                        alternatives.push({
+                            source: strategyName,
+                            data: novel
+                        });
+                    }
+                }
+            }
+
+            return alternatives;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async fetchAlternativeChapter(targetStrategy, targetNovelSlug, chapterSlug, chapterTitle, chapterPosition) {
+        // targetStrategy, targeNovelSlug in the same source that has alternative chapters
+        // chapterSlug, chapterTitle, chapterPosition in the current source
+        // NOTE: the targetStrategy and targetSource are available (normally use fetchAlternativeNovels to get them)
+        
+        try {
+            chapterTitle = chapterTitle.toLowerCase();
+
+            // check if the target strategy exists
+            const strategy = this.strategies[targetStrategy];
+            if (!strategy || typeof strategy.getNovelBySlug != 'function' || typeof strategy.getNovelChapterList != 'function') {
+                throw new Error(`Strategy '${targetStrategy}' not found.`);
+            }
+
+            // check if the target novel exists, if not, return empty array
+            let targetNovel;
+            try {
+                targetNovel = await strategy.getNovelBySlug(targetNovelSlug);
+            } catch (error) {
+                console.log(`Novel '${targetNovelSlug}' not found in '${targetStrategy}'.`);
+                return null;
+            }
+
+            let targetChapter;
+            // check the chapter slug first
+            try {
+                targetChapter = await strategy.getChapterContent(targetNovelSlug, chapterSlug);
+                const searchedTitle = targetChapter.title.toLowerCase();
+                if (searchedTitle === chapterTitle || searchedTitle.includes(chapterTitle) || chapterTitle.includes(searchedTitle)) {
+                    return {
+                        title: targetChapter.title,
+                        slug: targetChapter.slug,
+                        position: chapterPosition, // not correct position but it is most likely to be correct
+                    }
+                }
+            } catch (error) {
+                console.log(`Chapter '${chapterSlug}' not found in '${targetNovelSlug}' of '${targetStrategy}'.`);
+            }
+
+            // get chapters in the page that is most likely to contain the target chapter
+            const targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
+            const targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
+            targetChapter = targetChapters.find(chapter => {
+                const searchedTitle = chapter.title.toLowerCase();
+                return (searchedTitle === chapterTitle || searchedTitle.includes(chapterTitle) || chapterTitle.includes(searchedTitle));
+            });
+
+            // if the target chapter is not found in the current page, fetch the previous and next pages just in case
+            if (!targetChapter) {
+                const mostPrevPage = Math.max(1, targetPage - pageErrorBetweenSources);
+                const mostNextPage = targetPage + pageErrorBetweenSources; // todo: error handling when mostNextPage > total_pages
+
+                let allChapters = [];
+                for (let page = mostPrevPage; page <= mostNextPage; page++) {
+                    if (page === targetPage) continue;
+                    const chapters = (await strategy.getNovelChapterList(targetNovelSlug, page)).chapters;
+                    allChapters = allChapters.concat(chapters);
+                }
+
+                targetChapter = allChapters.find(chapter => {
+                    const searchedTitle = chapter.title.toLowerCase();
+                    return (searchedTitle === chapterTitle || searchedTitle.includes(chapterTitle) || chapterTitle.includes(searchedTitle));
+                });
+            }
+
+            // if not found again, return the chapter in relative position
+            if (!targetChapter) {
+                console.log('Chapters not found in pages near by. Return the chapter in relative position.');
+                targetChapter = targetChapters.find((chapter, index) => {
+                    return index + 1 === chapterPosition % strategy.maxNumChaptersPerPage;
+                })
+            }
+            
+            return targetChapter;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    watchPlugins() {
         const watcher = chokidar.watch(path.join(__dirname, '../source-plugins'), { persistent: true });
         watcher
             .on('add', pluginPath => {
@@ -179,13 +316,14 @@ class NovelFetcher {
                     this.loadStrategyWithPath(pluginPath);
                 }
             })
-            .on('change', pluginPath => {
-                console.log(`File ${pluginPath} has been changed`);
-                if (pluginPath.endsWith('plugin.js')) {
-                    this.loadStrategyWithPath(pluginPath);
-                }
-            
-            })
+            // .on('change', pluginPath => {
+            //     console.log(`File ${pluginPath} has been changed`);
+            //     if (pluginPath.endsWith('plugin.js')) {
+            //         const strategyName = path.basename(pluginPath, '-plugin.js');
+            //         this.removeStrategy(strategyName);
+            //         this.loadStrategyWithPath(pluginPath);
+            //     }
+            // })
             .on('unlink', pluginPath => {
                 console.log(`File ${pluginPath} has been removed`);
                 if (pluginPath.endsWith('plugin.js')) {

@@ -3,10 +3,11 @@
 class NovelStrategy {
 	static numImplemented = 0;
 
-	constructor(baseUrl, name, thumbnail) {
+	constructor(baseUrl, name, thumbnail, maxNumChaptersPerPage) {
 		this.baseUrl = baseUrl;
 		this.name = name;
 		this.thumbnail = thumbnail;
+		this.maxNumChaptersPerPage = maxNumChaptersPerPage;
 		NovelStrategy.numImplemented++;
 	}
 
@@ -18,7 +19,9 @@ class NovelStrategy {
 		throw new Error("You have to implement the method getHotNovels!");
 	}
 
-	// TODO: getLatestNovels, getMostViewedNovels...
+	async getLatestNovels() {
+		throw new Error("You have to implement the method getLatestNovels!");
+	}
 
 	async searchNovels(keyword, page = 1) {
 		throw new Error("You have to implement the method searchNovels!");
@@ -38,10 +41,6 @@ class NovelStrategy {
 
 	async getChapterContent(novelSlug, chapterSlug) {
 		throw new Error("You have to implement the method getChapterContent!");
-	}
-
-	async getChapterContentByPosition(novelSlug, position) {
-		throw new Error("You have to implement the method getChapterContentByPosition!");
 	}
 }
 
