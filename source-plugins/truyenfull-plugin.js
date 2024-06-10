@@ -9,6 +9,7 @@ class TruyenFullStrategy extends NovelStrategy {
             "https://truyenfull.vn",
             "Truyện Full",
             "https://truyenfull.vn/favicon.ico",
+            27,
             50
         );
         this.apiUrl = "https://api.truyenfull.vn/v1";
@@ -159,7 +160,7 @@ class TruyenFullStrategy extends NovelStrategy {
                 });
             });
 
-            let per_page = novels.length; // init per_page by the length of novels in current page, not exact per_page
+            let per_page = this.maxNovelsPerPage;
             let total = per_page;
             let total_pages = 1;
 
@@ -184,19 +185,6 @@ class TruyenFullStrategy extends NovelStrategy {
 
                 // if page is greater than total_pages
                 if (page > total_pages) page = total_pages; 
-
-                // if page is last page, update per_page by first page
-                if (page === total_pages && total_pages > 1) {
-                    const responseFromFirstPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}/trang-1`, {
-                        headers: {
-                            "User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
-                        },
-                    });
-                    const htmlFromFirstPage = responseFromFirstPage.data;
-                    const $firstPage = load(htmlFromFirstPage);
-                    const numChaptersFirstPage = $firstPage('.col-truyen-main .list-truyen .row').length;
-                    per_page = numChaptersFirstPage;
-                }
 
                 // calculate total
                 total = (total_pages - 1) * per_page + numChaptersLastPage;
