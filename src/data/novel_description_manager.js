@@ -36,6 +36,7 @@ class NovelDescriptionManager extends DataManagementInterface{
     async save(){
     }
     async reload(){
+        this.novel_info=null;
         const source_manager=NovelSourceManager.getInstance();
         const sources=await source_manager.get()
         for(let i in sources){
@@ -57,6 +58,8 @@ class NovelDescriptionManager extends DataManagementInterface{
         if(this.current_source===''){
             return [];
         }
+        console.log(this.novel_slug,this.current_source)
+
         return await GetAllChapterByNovelId(this.novel_slug,this.current_source).then(res=>{
             return res;
         });

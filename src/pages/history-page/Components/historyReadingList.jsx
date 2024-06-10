@@ -2,22 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { TableRow, TableCell } from '@mui/material';
 import { GetNovelByIdService, GetChapterOfNovelContent } from '../../../service/service';
 import CenteredSpinner from '../../../spinner/centered_spinner';
+import NovelSourceManager from '../../../data/novel_source_manager';
 
 const ReadItems = ({ searchValue }) => {
     const [novels, setNovels] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sourceData, setSourceData] = useState([]);
 
+    let novelSourceManager = NovelSourceManager.getInstance();
+
+    useEffect(() => {
+        novelSourceManager.get().then(res => {
+            setSourceData([...res]);
+        });
+    }, []);
     useEffect(() => {
         setLoading(true); // Set loading to true when searchValue changes
 
         const storedItems = JSON.parse(localStorage.getItem('readItems')) || {};
-        const fetchNovels = async () => {
+        const novelIds = Object.keys(storedItems);
+
+        const fetchNovelData = async () => {
             const novelDataArray = await Promise.all(
-                Object.keys(storedItems).map(async (novelId) => {
-                    const novel = await GetNovelByIdService(novelId);
-                    const chapterId = storedItems[novelId];
-                    const chapter = await GetChapterOfNovelContent(novelId, chapterId);
-                    return { novelId, chapterId, novel, chapter };
+                novelIds.map(async (novelId) => {
+                    const {novelImage ,novelTitle, sourceSlug, novelStatus,chapterId,  chapterTitle} = storedItems[novelId]; 
+
+                    console.log(storedItems[novelId])
+                    // const novel = await GetNovelByIdService(novelId, sourceData);
+
+                    const source = sourceData.find((value) => value.slug === sourceSlug);
+                    // const chapter = await GetChapterOfNovelContent(novelId, chapterId, sourceSlug);
+                    return { novelId, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle };
                 })
             );
 
@@ -25,25 +40,27 @@ const ReadItems = ({ searchValue }) => {
             let sortedNovels = [...novelDataArray];
             switch (searchValue) {
                 case 1:
-                    setNovels([...sortedNovels].reverse());
-                    break;
-                case 2:
-                    setNovels(sortedNovels);
+                    sortedNovels.reverse();
                     break;
                 case 3:
-                    setNovels([...sortedNovels].sort((a, b) => a.novel.title.localeCompare(b.novel.title)));
+                    sortedNovels.sort((a, b) => a.novelTitle.localeCompare(b.novelTitle));
                     break;
                 case 4:
-                    setNovels([...sortedNovels].sort((a, b) => b.novel.title.localeCompare(a.novel.title)));
+                    sortedNovels.sort((a, b) => b.novelTitle.localeCompare(a.novelTitle));
                     break;
                 default:
                     break;
             }
+            setNovels(sortedNovels);
             setLoading(false);
         };
 
-        fetchNovels();
-    }, [searchValue]); // Run effect when searchValue changes
+        if (sourceData.length > 0) {
+            fetchNovelData();
+        } else {
+            setLoading(false);
+        }
+    }, [searchValue, sourceData]);
 
     if (loading) {
         return <CenteredSpinner />;
@@ -51,14 +68,16 @@ const ReadItems = ({ searchValue }) => {
 
     return (
         <>
-            {novels.map(({ novelId, chapterId, novel, chapter }, index) => (
+            {novels.map(({ novelId, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle }, index) => (
                 <TableRow key={index}>
-                    <TableCell><img style={{ width: '100px', height: '150px' }} src={novel.img} alt={novel.title} /></TableCell>
-                    <TableCell style={{ color: '#fff' }}>{novel.title}</TableCell>
-                    <TableCell>{novel.status}</TableCell>
-                    <TableCell><a style={{ color: '#fff' }} href={`description/${novelId}/chapter/${chapterId}`}>{chapter.chapter}</a></TableCell>
+                    <TableCell><img style={{ width: '100px', height: '150px' }} src={novelImage} alt={novelTitle} /></TableCell>
+                    <TableCell style={{ color: '#fff' }}>{novelTitle}</TableCell>
+                    <TableCell>{source.name}</TableCell>
+                    <TableCell>{novelStatus}</TableCell>
+                    <TableCell><a style={{ color: '#fff' }} href={`description/${novelId}/chapter/${chapterId}`}>{chapterTitle}</a></TableCell>
                 </TableRow>
-            ))}
+            )
+        )}
         </>
     );
 };

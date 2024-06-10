@@ -37,6 +37,7 @@ export default function DescriptionPage() {
         if (source_data.length > 0) { // Ensure source_data is available
             try {
                 novel_description_manager.get().then(res=>{
+                    console.log(res);
                     setNovel(res);
                     novel_description_manager.getAllChapter().then((res)=>{
                         setAllChapters(res);
