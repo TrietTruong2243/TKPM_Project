@@ -7,7 +7,7 @@
 - Các nguồn truyện hiện có: Truyện Full (_truyenfull_), Mê Truyện Chữ (_metruyenchu_), Tàng Thư Viện (_tangthuvien_)
 - Dùng hàm `convertNameToSlug` khi không còn cách nào khác, còn lại đều parse từ trang gốc.
 - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
-- Vị trí của chap hiện tại được parse từ slug hoặc tên. 
+- Vị trí của chap hiện tại được parse từ slug hoặc tên.
 
 ## Hướng dẫn sử dụng
 
@@ -68,12 +68,26 @@ Nội dung chương:
 http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
 ```
 
+Lấy thông tin novel thay thế trong tất cả các nguồn:\
+`source`, `slug`, `title` là của novel nguồn hiện tại:
+
+```
+http://localhost:4000/api/sources/alternative-novels?source=_&slug=_&title=_
+```
+
+Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
+`targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).
+`chapterSlug`, `chapterSlug`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
+
+```
+http://localhost:4000/api/sources/alternative-chapters?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
+```
+
 Lấy định dạng file hỗ trợ:
 
 ```
 http://localhost:4000/api/:source/download
 ```
-
 
 Export ra file theo định dạng:
 
@@ -88,7 +102,7 @@ _Chú thích_:\
 
 ## TODO
 
-- [x] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn? 
+- [x] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn?
 - [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
 - [x] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.
 - [ ] Thêm test cho các plugin được thêm vào?
