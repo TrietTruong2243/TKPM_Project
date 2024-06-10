@@ -1,3 +1,4 @@
+import novelFetcher from "../services/novel-fetcher.js";
 import DownLoaderStrategy from "./download-plugin-interface.js";
 import {createRequire} from "module"
 const require = createRequire(import.meta.url);
@@ -33,7 +34,7 @@ const getMetaData=()=>{
     '  </spine>' +
     '</package>'
 }
-const getToc=()=>{
+const getToc=(chapter)=>{
     return '<?xml version="1.0"?>' +
     '<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">' +
     '  <head>' +
@@ -48,20 +49,14 @@ const getToc=()=>{
     '  <navMap>' +
     '    <navPoint id="navpoint-1" playOrder="1">' +
     '      <navLabel>' +
-    '        <text>Chapter 1</text>' +
+    `        <text>Chương ${chapter}</text>` +
     '      </navLabel>' +
     '      <content src="text.xhtml#xpointer(/html/body/section[1])"/>' +
-    '    </navPoint>' +
-    '    <navPoint id="navpoint-2" playOrder="2">' +
-    '      <navLabel>' +
-    '        <text>Chapter 2</text>' +
-    '      </navLabel>' +
-    '      <content src="text.xhtml#xpointer(/html/body/section[2])"/>' +
-    '    </navPoint>' +
+    '    </navPoint>' +    
     '  </navMap>' +
     '</ncx>';
 }
-const getText=(novel,author,chapter,content)=>{
+const getText=(chapter,title,content)=>{
 
     return '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' + 
     '<!DOCTYPE html>' + 
@@ -70,12 +65,9 @@ const getText=(novel,author,chapter,content)=>{
     '    <title>My Book</title>' + 
     '  </head>' + 
     '  <body>' + 
-    '    <section><h1>Chapter 1</h1>' + 
-    '      <p>Phạm Nguyễn Quốc Vũ.</p>' + 
+    `    <section><h1>Chương ${chapter} - ${title} </h1>` + 
+    `      <p>${content}</p>` + 
     '    </section>' + 
-    '    <section><h1>Chapter 2</h1>' + 
-    '      <p>This is the text for chapter 2.</p>' + 
-    '    </section>' +
     '  </body>' + 
     '</html>'
 }
@@ -84,12 +76,15 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy{
         super('.epub')
     }
     async getBuffer(source,novel_slug,chapter_slug){
+        const response = await novelFetcher.fetchChapterContent(source,novel_slug,chapter_slug)
+        const title = response.chapterContent.title;
+        const content = response.chapterContent.content;
         let zip=new JSZip();
         zip.file("mimetype", getMimetype());
         zip.file("META-INF/container.xml", getContainer());
         zip.file("OEBPS/content.opf", getMetaData());
-        zip.file("OEBPS/toc.ncx", getToc());
-        zip.file("OEBPS/text.xhtml", getText(1,1,1,1));
+        zip.file("OEBPS/toc.ncx", getToc(chapter_slug));
+        zip.file("OEBPS/text.xhtml", getText(chapter_slug,title,content));
         return zip
 		.generateAsync({ type: "blob", mimeType: "application/epub+zip" })
 		.then( (content) => {

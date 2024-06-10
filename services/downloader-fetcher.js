@@ -22,7 +22,6 @@ class DownloaderFetcher {
 				await this.loadStrategyWithPath(pluginPath);
 			}
 		}
-		console.log(this.strategies);
 	}
 
 	async loadStrategyWithPath(pluginPath) {

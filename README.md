@@ -68,6 +68,13 @@ Nội dung chương:
 http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
 ```
 
+Lấy định dạng file hỗ trợ:
+
+```
+http://localhost:4000/api/:source/download
+```
+
+
 Export ra file theo định dạng:
 
 ```

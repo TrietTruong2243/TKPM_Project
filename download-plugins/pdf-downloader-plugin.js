@@ -1,8 +1,9 @@
-import axios from "axios";
+import novelFetcher from "../services/novel-fetcher.js";
 import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
+const {convert}=require("html-to-text")
 var blobStream = require("blob-stream");
 
 class PDFDownloaderStrategy extends DownLoaderStrategy {
@@ -17,13 +18,9 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 				const stream = doc.pipe(blobStream());
 
 				doc.font("./utils/fonts/arial.ttf");
-
-				const response = await axios.get(
-					`http://localhost:4000/api/tangthuvien/novels/${novel_slug}/chapters/${chapter_slug}`
-				);
-
-				const title = response.data.data.chapterContent.title;
-				const content = response.data.data.chapterContent.content;
+				const response = await novelFetcher.fetchChapterContent(source,novel_slug,chapter_slug)
+				const title = response.chapterContent.title;
+				const content = convert(response.chapterContent.content,{wordwrap:130});
 				const formattedContent = content.replace(/\\n/g, "\n").replace(/\\t/g, "\t");
 
 				// Split content into paragraphs
@@ -40,7 +37,7 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 				// Add paragraphs to PDF
 				paragraphs.forEach((paragraph) => {
 					// Split paragraph into lines if it contains tabs
-					const lines = paragraph.split("\t");
+					const lines = paragraph.split("<br/>");
 					lines.forEach((line) => {
 						doc.text(line);
 					});
@@ -48,9 +45,6 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 				});
 
 				doc.end();
-
-				console.log(response.data, novel_slug, chapter_slug);
-
 				stream.on("finish", () => {
 					const blob = stream.toBlob("application/pdf");
 					resolve(blob);
