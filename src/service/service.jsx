@@ -4,35 +4,40 @@ export async function getNovelDescription(novel_slug,source){
     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/novels/${novel_slug}`);
     const data = response.data.data.data;
     if (data.title === "") {
-       return ;
+       return null;
     }
     return data;
   }
   catch(error)
   {
-    return ;
+    return null;
   }
 }
 
+export async function getChapterByPage(novelId,sourceSlug,page){
+  try{
+    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=${page}`);
+    const data = response.data.data.data;
+    return data;
+  }
+  catch(error)
+  {
+    return null;
+  }
+}
 
 export async function GetAllChapterByNovelId(novelId, sourceSlug) {
   try {
-    const firstResponse = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=1`);
-    const countChapterData = firstResponse.data.data.data.meta;
-    console.log(countChapterData)
-    const totalPages = countChapterData.total_pages;
-    // Tạo mảng các promise cho các yêu cầu lấy dữ liệu từ các trang khác nhau
-    const chapterPromises = Array.from({ length: totalPages }, (_, index) =>
-      axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=${index + 1}`)
+    const first_response = await getChapterByPage(novelId,sourceSlug,1);
+    const count_chapter_data = first_response.meta.total_pages;
+    const chapterPromises = Array.from({ length: count_chapter_data }, (_, index) =>
+      getChapterByPage(novelId,sourceSlug,index+1)
     );
-    // Gửi các yêu cầu và chờ tất cả các promise hoàn thành
     const responses = await Promise.all(chapterPromises);
-    // Lấy danh sách chương từ mỗi phản hồi và hợp nhất thành một mảng
-    const allChapters = responses.flatMap(response => response.data.data.data.chapters);
-    console.log(allChapters)
+    const allChapters = responses.flatMap(response => response!=null?response.chapters:[]);
     return allChapters;
   } catch (error) {
-    console.error('There was an error making the request!', error);
+    return [];
   }
 }
 
@@ -45,6 +50,5 @@ export async function GetChapterOfNovelContent(novelId, chapterId,sourceSlug) {
     return data;
   } catch (error) {
     console.error('There was an error making the request!', error);
-    throw error;
   }
 }

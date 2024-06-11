@@ -1,6 +1,5 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
 import NovelGrid from "../home-page/novel_grid";
-import { hot_story } from "../../data/data";
 import SearchingNovelsManager from "../../data/searching_novels_manager";
 import { useEffect, useState } from "react";
 import CenteredSpinner from "../../spinner/centered_spinner";
