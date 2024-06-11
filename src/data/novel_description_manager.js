@@ -58,8 +58,6 @@ class NovelDescriptionManager extends DataManagementInterface{
         if(this.current_source===''){
             return [];
         }
-        console.log(this.novel_slug,this.current_source)
-
         return await GetAllChapterByNovelId(this.novel_slug,this.current_source).then(res=>{
            
             return res;

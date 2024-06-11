@@ -10,6 +10,7 @@ export default function HomePage(){
     const theme=useTheme();
     const hot_novels_manager=HotNovelManager.getInstance();
     const[hot_novels,setHotNovels]=useState([])
+    const[other_sources_hot_novel,setOtherSourceHotNovel]=useState(null);
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
         setLoading(true);
@@ -17,16 +18,18 @@ export default function HomePage(){
             setHotNovels([...res]);
             setLoading(false); 
         });   
+        hot_novels_manager.getOtherSourceHotNovel().then((res)=>{
+            setOtherSourceHotNovel([...res]);
+        })
     },[])    
     if(loading){
         return <CenteredSpinner/>
     }
-    console.log(hot_novels)
     return (
         <Container >
             <Typography fontSize={20} color={theme.palette.light.main}>Truyện Hot</Typography>
             <NovelGrid novels={hot_novels}></NovelGrid>
-            <NovelTable></NovelTable>
+            <NovelTable novel_data={other_sources_hot_novel}></NovelTable>
         </Container>
     )
 }

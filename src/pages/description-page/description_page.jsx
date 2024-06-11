@@ -16,11 +16,11 @@ export default function DescriptionPage() {
     const novel_description_manager=NovelDescriptionManager.getInstance();
     const [source_data, setSourceData] = useState([]);
     const { novelId } = useParams();
+    
     const [novel, setNovel] = useState(null);
     const [allChapters, setAllChapters] = useState([]);
     const [hotNovels, setHotNovels] = useState([]);
     const [source, setSource] = useState(null)
-
     novel_description_manager.set({novel_slug:novelId})
     useEffect(() => {
         novel_source_manager.get().then(res => {
@@ -37,7 +37,6 @@ export default function DescriptionPage() {
         if (source_data.length > 0) { // Ensure source_data is available
             try {
                 novel_description_manager.get().then(res=>{
-                    console.log(res);
                     setNovel(res);
                     novel_description_manager.getAllChapter().then((res)=>{
                        
