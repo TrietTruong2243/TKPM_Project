@@ -4,7 +4,8 @@ import axios from "axios";
 
 class TangThuVienStrategy extends NovelStrategy {
 	constructor() {
-		super("https://truyen.tangthuvien.vn",
+		super(
+			"https://truyen.tangthuvien.vn",
 			"Tàng Thư Viện",
 			"https://truyen.tangthuvien.vn/images/logo-web.png",
 			20,
@@ -50,7 +51,7 @@ class TangThuVienStrategy extends NovelStrategy {
 					const title = $(element).find("h4 a").text();
 					const slug = $(element).find("h4 a").attr("href").replace(`${this.baseUrl}/doc-truyen/`, "");
 
-					const novel = { title, slug };
+					const novel = { title, slug, image: null };
 					hotNovels.push(novel);
 				});
 
@@ -81,12 +82,14 @@ class TangThuVienStrategy extends NovelStrategy {
 
 			// check if there is no result
 			// if page is out of range, the result is also empty like this but having pagination
-			const firstElement = $('#rank-view-list li').eq(0).children('p');
-			if ($(firstElement).length > 0
-				&& $(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu") {
+			const firstElement = $("#rank-view-list li").eq(0).children("p");
+			if (
+				$(firstElement).length > 0 &&
+				$(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu"
+			) {
 				// check pagination
-				if ($('ul.pagination').length > 0) {
-					const lastPage = parseInt($('ul.pagination li').last().prev().text());
+				if ($("ul.pagination").length > 0) {
+					const lastPage = parseInt($("ul.pagination li").last().prev().text());
 					return this.searchNovels(keyword, lastPage);
 				}
 
@@ -98,7 +101,7 @@ class TangThuVienStrategy extends NovelStrategy {
 						total_pages: 1,
 					},
 					novels,
-				}
+				};
 			}
 
 			$("#rank-view-list li").each((index, element) => {
@@ -148,12 +151,14 @@ class TangThuVienStrategy extends NovelStrategy {
 			const per_page = this.maxNovelsPerPage;
 			let total = novels.length;
 			let total_pages = 1;
-			if ($('ul.pagination').length > 0) {
-				total_pages = parseInt($('ul.pagination li').last().prev().text());
+			if ($("ul.pagination").length > 0) {
+				total_pages = parseInt($("ul.pagination li").last().prev().text());
 
-				const responseFromLastPage = await axios.get(`${this.baseUrl}/ket-qua-tim-kiem?term=${keyword}&page=${total_pages}`);
+				const responseFromLastPage = await axios.get(
+					`${this.baseUrl}/ket-qua-tim-kiem?term=${keyword}&page=${total_pages}`
+				);
 				const $lastPage = load(responseFromLastPage.data);
-				const lastPageLength = $lastPage('#rank-view-list li').length;
+				const lastPageLength = $lastPage("#rank-view-list li").length;
 
 				total = (total_pages - 1) * per_page + lastPageLength;
 			}
@@ -166,7 +171,7 @@ class TangThuVienStrategy extends NovelStrategy {
 					total_pages,
 				},
 				novels,
-			}
+			};
 		} catch (error) {
 			throw error;
 		}
@@ -184,23 +189,25 @@ class TangThuVienStrategy extends NovelStrategy {
 			const novels = [];
 
 			// if page is out of range, the result is empty but having pagination
-			const firstElement = $('#rank-view-list li').eq(0).children('p');
-			if ($(firstElement).length > 0
-				&& $(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu") {
+			const firstElement = $("#rank-view-list li").eq(0).children("p");
+			if (
+				$(firstElement).length > 0 &&
+				$(firstElement).text().trim() == "Không tìm thấy truyện nào theo yêu cầu"
+			) {
 				// check pagination
-				if ($('ul.pagination').length > 0) {
-					const lastPage = parseInt($('ul.pagination li').last().prev().text());
+				if ($("ul.pagination").length > 0) {
+					const lastPage = parseInt($("ul.pagination li").last().prev().text());
 					return this.getNovelsByCategory(categorySlug, lastPage);
-				}
-				else return {
-					meta: {
-						total: 0,
-						per_page: 0,
-						current_page: 1,
-						total_pages: 1,
-					},
-					novels,
-				}
+				} else
+					return {
+						meta: {
+							total: 0,
+							per_page: 0,
+							current_page: 1,
+							total_pages: 1,
+						},
+						novels,
+					};
 			}
 
 			$(".book-img-text ul li").each((index, element) => {
@@ -263,7 +270,7 @@ class TangThuVienStrategy extends NovelStrategy {
 				const lastPageLength = $(".book-img-text ul li").length;
 				total = (total_pages - 1) * per_page + lastPageLength;
 			}
-			
+
 			return {
 				meta: {
 					total,
@@ -292,21 +299,21 @@ class TangThuVienStrategy extends NovelStrategy {
 
 			// check if page is out of range
 			// if page is out of range, the result is empty but having pagination
-			if($('ul.cf li').length == 0) {
+			if ($("ul.cf li").length == 0) {
 				// check pagination
-				if ($('ul.pagination').length > 0) {
-					const lastPage = parseInt($('ul.pagination li').last().text());
+				if ($("ul.pagination").length > 0) {
+					const lastPage = parseInt($("ul.pagination li").last().text());
 					return this.getNovelChapterList(slug, lastPage);
-				}
-				else return {
-					meta: {
-						total: 0,
-						per_page: 0,
-						current_page: 1,
-						total_pages: 1,
-					},
-					chapters,
-				}
+				} else
+					return {
+						meta: {
+							total: 0,
+							per_page: 0,
+							current_page: 1,
+							total_pages: 1,
+						},
+						chapters,
+					};
 			}
 
 			$("ul.cf li").each((index, chapter) => {
@@ -321,7 +328,7 @@ class TangThuVienStrategy extends NovelStrategy {
 					}
 				}
 			});
-			
+
 			const per_page = this.maxNovelsPerPage;
 			let total = chapters.length;
 			let total_pages = 1;
@@ -463,7 +470,7 @@ class TangThuVienStrategy extends NovelStrategy {
 				prevId = "#";
 			}
 
-			return { slug: chapterSlug, title, content, nextId, prevId };
+			return { slug: chapterSlug, title, content, next_slug: nextId, prev_slug: prevId };
 		} catch (error) {
 			throw error;
 		}
