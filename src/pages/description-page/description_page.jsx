@@ -40,6 +40,7 @@ export default function DescriptionPage() {
                     console.log(res);
                     setNovel(res);
                     novel_description_manager.getAllChapter().then((res)=>{
+                       
                         setAllChapters(res);
                     })
                 })

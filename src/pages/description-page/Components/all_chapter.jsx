@@ -9,6 +9,7 @@ export default function AllChapters({ allChapters, source }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         if (allChapters.length > 0) {
             setIsLoading(false);
         }

@@ -74,7 +74,7 @@ const ReadItems = ({ searchValue }) => {
                     <TableCell style={{ color: '#fff' }}>{novelTitle}</TableCell>
                     <TableCell>{source.name}</TableCell>
                     <TableCell>{novelStatus}</TableCell>
-                    <TableCell><a style={{ color: '#fff' }} href={`description/${novelId}/chapter/${chapterId}`}>{chapterTitle}</a></TableCell>
+                    <TableCell><a style={{ color: '#fff' }} href={`description/${novelId}/chapter/${chapterId}?source=${source.slug}`}>{chapterTitle}</a></TableCell>
                 </TableRow>
             )
         )}

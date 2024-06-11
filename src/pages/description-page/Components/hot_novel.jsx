@@ -31,7 +31,7 @@ export default function HotNovel({ hotNovels }) {
                             alignItems="center"
                             sx={{ cursor: "pointer" }}
                             onClick={() => {
-                                navigate(`/description/${related.slug}`);
+                                window.location.href= (`/description/${related.slug}`);
                             }}
                         >
                             <Box mr={2}>

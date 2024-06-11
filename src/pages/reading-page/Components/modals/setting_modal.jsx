@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { ThemeContext } from '../readingTheme';
+import { ThemeContext } from '../../readingTheme';
 
 export default function SettingModal({ show, handleClose }) {
 

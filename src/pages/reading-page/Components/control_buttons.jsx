@@ -2,11 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { Box, Button } from '@mui/material';
 import { Home, Settings, Download } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import SettingModal from './setting_modal';
+import SettingModal from './modals/setting_modal';
 import { jsPDF } from 'jspdf';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
-
+import DownloadModal from './modals/download_modal';
 // Custom MenuList component for react-select with react-window
 const height = 35;
 
@@ -27,11 +27,12 @@ const MenuList = (props) => {
   );
 };
 
-export default function ControlButtons({ novelId, readingNovel, allChapter, sourceValue }) {
+export default function ControlButtons({ novelId, novelTitle,readingNovel, allChapter, sourceValue }) {
   const [content] = useState(readingNovel.content);
   const story = readingNovel.title;
   const [format] = useState('pdf');
   const [showModal, setShowModal] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const navigate = useNavigate();
 
   const downloadContent = () => {
@@ -55,7 +56,8 @@ export default function ControlButtons({ novelId, readingNovel, allChapter, sour
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-
+  const handleDownloadShow = () => setShowDownloadModal(true);
+  const handleDownloadClose = () => setShowDownloadModal(false);
   if (!allChapter) {
     return <div>Loading...</div>;
   }
@@ -157,11 +159,14 @@ export default function ControlButtons({ novelId, readingNovel, allChapter, sour
           width: '48px',
           height: '48px',
         }}
-        onClick={downloadContent}
+        onClick = {handleDownloadShow}
+        // onClick={downloadContent}
+
       >
         <Download />
       </Button>
       <SettingModal show={showModal} handleClose={handleClose} />
+      <DownloadModal open={showDownloadModal} handleClose={handleDownloadClose} sourceValue={sourceValue} novelSlug={novelId} novelName={novelTitle} chapterSlug={readingNovel.chapterId} chapterName={readingNovel.title}></DownloadModal>
     </Box>
   );
 }

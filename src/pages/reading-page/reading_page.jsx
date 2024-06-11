@@ -31,6 +31,7 @@ function ReadingPage () {
   }
   novel_description_manager.set({novel_slug:novelId})
   useEffect(() => {
+    setReadingNovel(null)
     reading_history_manager.saveNewReadingNovel(novelId,chapterId);
     novel_description_manager.get().then(res=>{
       setAllSource(novel_description_manager.available_source)
@@ -57,9 +58,9 @@ function ReadingPage () {
         })
       }
     })
-  }, []);
+  }, [chapterId]);
 
-  if (!readingNovel || !allChapter) {
+  if (!readingNovel ) {
     return <CenteredSpinner></CenteredSpinner>
   }
   else
@@ -69,8 +70,9 @@ function ReadingPage () {
           <Container>
 
             <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} />
-            <Spinner animation="border" />;
             <Source sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} />
+            <Spinner animation="border" />;
+
             <NovelContent readingNovel={readingNovel} />
 
           </Container>
@@ -81,9 +83,9 @@ function ReadingPage () {
       return (
         <Box sx={{ backgroundColor: theme.backgroundColor, color: theme.fontColor, fontFamily: theme.fontFamily, padding: '20px' }}>
           <Container>
-            <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} />
+            <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} novelName={novel_description_manager.novel_info.title} />
             <Source sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} />
-            <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} />
+            <ControlButtons novelId={novelId} novelTitle= {novel_description_manager.novel_info.title}readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} />
             <NovelContent readingNovel={readingNovel} />
             {/* <ControlButtons novelId={novelId} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} /> */}
           </Container>
