@@ -4,8 +4,8 @@ Chỉ mới thực hiện settings cho khung đọc truyện, chưa chỉnh sett
 Cấu hình theme trong src/data/readingTheme .\
 Phần description và reading page được lấy data dựa theo cái của Phúc, nữa chỉnh lại sau .\
 Chưa xử lý phần nguồn truyện, không lấy được truyện cũng như xử lý lỗi \
-Muốn chạy được reading với description phải bật server cũ của Phúc lên \
-Service dùng axios lấy data bên back, tạm thời là port 4000
+Service dùng axios lấy data bên back, tạm thời là port 4000 \
+Đã xong phần download, reading cần chỉnh thêm phần đổi nguồn
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
