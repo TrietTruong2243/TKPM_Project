@@ -60,7 +60,7 @@ class TangThuVienStrategy extends NovelStrategy {
 					const title = $(element).find(".name").text().trim();
 					const slug = $(element).find(".name").attr("href").replace(`${this.baseUrl}/doc-truyen/`, "");
 
-					const novel = { title, slug };
+					const novel = { title, slug, image: null };
 					hotNovels.push(novel);
 				});
 

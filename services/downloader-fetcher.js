@@ -25,7 +25,8 @@ class DownloaderFetcher {
 	}
 
 	async loadStrategyWithPath(pluginPath) {
-		const pluginURL = pathToFileURL(pluginPath).href;
+		let pluginURL = pathToFileURL(pluginPath).href;
+		pluginURL = `${pluginURL}?update=${Date.now()}`;
 		try {
 			const { default: StrategyClass } = await import(pluginURL);
 			if (StrategyClass.prototype instanceof DownLoaderStrategy) {
@@ -59,7 +60,7 @@ class DownloaderFetcher {
 
 	async fetchGetBuffer(strategyName, source, novel_slug, chapter_slug) {
 		const strategy = this.strategies[strategyName];
-		if (!strategy || !typeof strategy.getCategories === "function") {
+		if (!strategy || typeof strategy.getCategories != "function") {
 			throw new Error(`Strategy '${strategyName}' not found.`);
 		}
 		try {

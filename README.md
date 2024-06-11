@@ -1,4 +1,4 @@
-# API nguồn truyện
+# API lấy nguồn truyện và export
 
 ## Một số thông tin
 
@@ -16,6 +16,12 @@
 ```
 npm install
 npm start
+```
+
+### Test
+
+```
+npm test
 ```
 
 ### Api
@@ -77,7 +83,7 @@ http://localhost:4000/api/sources/alternative-novels?source=_&slug=_&title=_
 
 Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
 `targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).
-`chapterSlug`, `chapterSlug`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
+`chapterSlug`, `chapterTitle`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
 
 ```
 http://localhost:4000/api/sources/alternative-chapters?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
@@ -102,13 +108,8 @@ _Chú thích_:\
 
 ## TODO
 
-- [x] Lấy id của cùng một chương truyện ở nhiều nguồn rồi trả về? Xử lý mâu thuẫn?
-- [ ] Xem xét thêm list truyện mới cập nhật, truyện theo trạng thái...
-- [x] Thêm các nguồn truyện khác: metruyenchu, tangthuvien.
+- [ ] Cài đặt getLatestNovels, getNovelsByAuthor.
 - [ ] Thêm test cho các plugin được thêm vào?
 - [ ] Thêm model để tạo cấu trúc cho dữ liệu trả về?
-- [ ] Xử lí lỗi.
-- [ ] Cơ chế Export.
-- [ ] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả)
-- [ ] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm
-- [ ] Cài đặt getNovelsByCategory, getNovelsByAuthor
+- [x] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả) &rarr skip.
+- [x] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm &rarr dùng public image của front để thay thế.

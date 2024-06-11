@@ -31,7 +31,8 @@ class NovelFetcher {
     }
 
     async loadStrategyWithPath(pluginPath) {
-        const pluginURL = pathToFileURL(pluginPath).href;
+        let pluginURL = pathToFileURL(pluginPath).href;
+        pluginURL = `${pluginURL}?update=${Date.now()}`;
         try {
             const { default: StrategyClass } = await import(pluginURL);
             if (StrategyClass.prototype instanceof NovelStrategy) {
@@ -318,14 +319,13 @@ class NovelFetcher {
                     this.loadStrategyWithPath(pluginPath);
                 }
             })
-            // .on('change', pluginPath => {
-            //     console.log(`File ${pluginPath} has been changed`);
-            //     if (pluginPath.endsWith('plugin.js')) {
-            //         const strategyName = path.basename(pluginPath, '-plugin.js');
-            //         this.removeStrategy(strategyName);
-            //         this.loadStrategyWithPath(pluginPath);
-            //     }
-            // })
+            .on('change', pluginPath => {
+                console.log(`File ${pluginPath} has been changed`);
+                if (pluginPath.endsWith('plugin.js')) {
+                    this.loadStrategyWithPath(pluginPath);
+                    console.log('Strategies reloaded.', this.getAvailableStrategies());
+                }
+            })
             .on('unlink', pluginPath => {
                 console.log(`File ${pluginPath} has been removed`);
                 if (pluginPath.endsWith('plugin.js')) {
