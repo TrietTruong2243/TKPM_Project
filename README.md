@@ -3,11 +3,11 @@
 ## Một số thông tin
 
 - Port server: **4000**.
-- Hiện tại sử dụng `chokidar` để watch folder `source-plugins`, cho phép thêm xóa các file plugin mà không cần restart lại server.
+- Sử dụng `chokidar` để watch folder `source-plugins`, cho phép thêm, xóa, sửa các file plugin mà không cần restart lại server.
 - Các nguồn truyện hiện có: Truyện Full (_truyenfull_), Mê Truyện Chữ (_metruyenchu_), Tàng Thư Viện (_tangthuvien_)
-- Dùng hàm `convertNameToSlug` khi không còn cách nào khác, còn lại đều parse từ trang gốc.
-- Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
-- Vị trí của chap hiện tại được parse từ slug hoặc tên.
+- Các thông tin trả về theo cùng 1 kiểu dữ liệu, những thông tin không lấy được cho kết quả null, vd:
+  - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
+  - Hot novels _tangthuvien_ không có image.
 
 ## Hướng dẫn sử dụng
 
@@ -107,9 +107,7 @@ _Chú thích_:\
 `format`: định dạng file cần xuất
 
 ## TODO
-
-- [ ] Cài đặt getLatestNovels, getNovelsByAuthor.
-- [ ] Thêm test cho các plugin được thêm vào?
+- [ ] Test plugin khi được thêm vào, pass test mới add vào hệ thống.
 - [ ] Thêm model để tạo cấu trúc cho dữ liệu trả về?
-- [x] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả) &rarr skip.
-- [x] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm &rarr dùng public image của front để thay thế.
+- [x] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả) ==> skip.
+- [x] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm ==> dùng public image của front để thay thế.
