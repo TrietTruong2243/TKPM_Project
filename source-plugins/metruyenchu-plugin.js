@@ -4,12 +4,7 @@ import axios from "axios";
 
 class MeTruyenChuStrategy extends NovelStrategy {
 	constructor() {
-		super("https://metruyenchu.com.vn", 
-			"Mê Truyện Chữ", 
-			"https://metruyenchu.com.vn/images/logo.png",
-			20, 
-			100
-		);
+		super("https://metruyenchu.com.vn", "Mê Truyện Chữ", "https://metruyenchu.com.vn/images/logo.png", 20, 100);
 		this.hotNovelsPath = "get/hotbook";
 		this.listChapPath = "get/listchap";
 	}
@@ -50,7 +45,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const slug = $(element).find("a").attr("href").trim().replace("/", "");
 
 				const novel = { title, image: this.baseUrl + image, slug };
-				
+
 				hotNovels.push(novel);
 			});
 
@@ -70,7 +65,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			const novels = [];
 
 			// check if there is no result
-			if ($('.title-list p').text().includes("Không có kết quả nào được tìm thấy.")){
+			if ($(".title-list p").text().includes("Không có kết quả nào được tìm thấy.")) {
 				return {
 					meta: {
 						total: 0,
@@ -220,13 +215,13 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				nextPage,
 				nextHtml;
 			while (hasNextPage) {
-				if ($('.phan-trang .btn-page').last().text().includes('❭')) {
+				if ($(".phan-trang .btn-page").last().text().includes("❭")) {
 					// currentPage++;
-					currentPage = parseInt($('.phan-trang .btn-page').last().prev().text());
+					currentPage = parseInt($(".phan-trang .btn-page").last().prev().text());
 				} else {
 					hasNextPage = false;
-					total_pages = parseInt($('.phan-trang .btn-page').last().text());
-					total = $('.truyen-list .item').length; // assign total with last page
+					total_pages = parseInt($(".phan-trang .btn-page").last().text());
+					total = $(".truyen-list .item").length; // assign total with last page
 				}
 
 				nextPage = await axios.get(`${this.baseUrl}/the-loai/${categorySlug}?page=${currentPage}`);
@@ -268,20 +263,19 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const chapterSlug = $(chapter).find("a").attr("href").split("/")[2];
 				chapters.push({ title, slug: chapterSlug });
 			});
-			
+
 			let total_pages = 1;
 			const lastElement = $(".paging a").last();
-			if(lastElement.length > 0){
-				if (lastElement.attr("onclick")){
+			if (lastElement.length > 0) {
+				if (lastElement.attr("onclick")) {
 					total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
 					total_pages = parseInt(total_pages);
-				} 
-				else total_pages = parseInt(lastElement.text());
+				} else total_pages = parseInt(lastElement.text());
 			}
 
 			// if page is out of range, currently it returns the first page, update to get the last page
 			if (page > total_pages) page = 1;
-			
+
 			chapters.forEach((chapter, index) => {
 				chapter.position = index + (page - 1) * this.maxNumChaptersPerPage + 1;
 			});
@@ -306,7 +300,9 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			const html = response.data;
 			const $ = load(html);
 			// Metruyenchu will redirect to home page if the slug is not found => check if the page is home page
-			if ($('.wrap .container').eq(0).text().trim() == "MeTruyenChu - Đọc Truyện Chữ Miễn Phí, Không Quảng Cáo!!!") {
+			if (
+				$(".wrap .container").eq(0).text().trim() == "MeTruyenChu - Đọc Truyện Chữ Miễn Phí, Không Quảng Cáo!!!"
+			) {
 				return null;
 			}
 
@@ -372,13 +368,13 @@ class MeTruyenChuStrategy extends NovelStrategy {
 
 			let prevId = $(".chapter_control .back").attr("href");
 			if (prevId !== "#") prevId = prevId.split("/")[2];
-			
-			return { 
-				slug: chapterSlug, 
-				title, 
-				content, 
-				next_slug: nextId, 
-				prev_slug: prevId 
+
+			return {
+				slug: chapterSlug,
+				title,
+				content,
+				next_slug: nextId,
+				prev_slug: prevId,
 			};
 		} catch (error) {
 			throw error;

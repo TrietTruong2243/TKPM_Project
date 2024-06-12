@@ -81,12 +81,15 @@ const getText = (title, content) => {
 };
 class EPUBDownloaderStrategy extends DownLoaderStrategy {
 	constructor() {
-		super(".epub",'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbU14J11CojjLhE-fVsmhAdSEQA68aeZygIlxkHLGqYXmla7_W8y_hMUnstS3UcZZwSso&usqp=CAU');
+		super(
+			".epub",
+			"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbU14J11CojjLhE-fVsmhAdSEQA68aeZygIlxkHLGqYXmla7_W8y_hMUnstS3UcZZwSso&usqp=CAU"
+		);
 	}
 	async getBuffer(source, novel_slug, chapter_slug) {
 		const response = await novelFetcher.fetchChapterContent(source, novel_slug, chapter_slug);
 		console.log(response);
-        const content = response.data.content;
+		const content = response.data.content;
 
 		const title = response.data.title;
 		const formattedContent = content
