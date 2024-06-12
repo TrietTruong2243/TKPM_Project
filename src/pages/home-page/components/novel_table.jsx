@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@emotion/react";
 import { isOverflown } from "@mui/x-data-grid/utils/domUtils";
 import { useNavigate } from "react-router-dom";
-import CenteredSpinner from "../../components/centered_spinner";
+import CenteredSpinner from "../../../components/centered_spinner";
 const columns=[
     { 
         field: 'title',

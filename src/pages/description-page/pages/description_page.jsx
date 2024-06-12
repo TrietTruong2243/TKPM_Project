@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DescriptionComponent from './components/description_components.jsx';
-import HotNovel from './components/hot_novel_list.jsx';
-import AllChapters from './components/all_chapter_box.jsx';
-import NovelSourceManager from "../../data-manager/novel_source_manager.js";
-import HotNovelManager from "../../data-manager/hot_novels_manager.js";
-import NovelDescriptionManager from '../../data-manager/novel_description_manager.js';
+import DescriptionComponent from '../components/description_components.jsx';
+import HotNovel from '../components/hot_novel_list.jsx';
+import AllChapters from '../components/all_chapter_box.jsx';
+import NovelSourceManager from "../../../data-manager/novel_source_manager.js";
+import HotNovelManager from "../../../data-manager/hot_novels_manager.js";
+import NovelDescriptionManager from '../../../data-manager/novel_description_manager.js';
+
 
 function DescriptionPage() {
     const novel_source_manager = NovelSourceManager.getInstance();

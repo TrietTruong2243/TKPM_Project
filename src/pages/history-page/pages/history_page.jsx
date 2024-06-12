@@ -1,8 +1,8 @@
 // src/App.js
 import React, { useState } from 'react';
-import "../../styles/history_page.css";
+import "../../../styles/history_page.css";
 import { Container, CssBaseline, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import ReadItems from './components/history_reading_list';
+import ReadItems from '../components/history_reading_list';
 function HistoryPage() {
     const [searchValue, setSearchValue] = useState(1);
 

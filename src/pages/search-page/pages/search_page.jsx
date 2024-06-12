@@ -1,8 +1,8 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
-import NovelGrid from "../home-page/novel_grid";
-import SearchingNovelsManager from "../../data-manager/searching_novels_manager";
+import NovelGrid from "../../home-page/components/novel_grid";
+import SearchingNovelsManager from "../../../data-manager/searching_novels_manager";
 import { useEffect, useState } from "react";
-import CenteredSpinner from "../../components/centered_spinner";
+import CenteredSpinner from "../../../components/centered_spinner";
 import { useNavigate } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
 function SearchPage(){

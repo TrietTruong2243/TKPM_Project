@@ -1,10 +1,10 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
-import NovelGrid from "../home-page/novel_grid";
+import NovelGrid from "../../home-page/components/novel_grid";
 import { useEffect, useState } from "react";
-import CenteredSpinner from "../../components/centered_spinner";
+import CenteredSpinner from "../../../components/centered_spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
-import NovelByCategoryManager from "../../data-manager/category_novel_manager";
+import NovelByCategoryManager from "../../../data-manager/category_novel_manager";
 function NovelByCategoryPage(){
     const queryParameters = new URLSearchParams(window.location.search)
     const {category_slug} = useParams()

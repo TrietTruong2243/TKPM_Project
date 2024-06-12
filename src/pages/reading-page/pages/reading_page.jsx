@@ -1,16 +1,16 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Container, Box } from '@mui/material';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import {ThemeContext} from './reading_page_theme.jsx';
-import NovelTitle from './components/novel_title.jsx';
-import NovelContent from './components/novel_content.jsx';
-import Source from './components/source_combo_box.jsx';
-import ControlButtons from './components/control_buttons.jsx';
-import NovelSourceManager from "../../data-manager/novel_source_manager.js";
-import CenteredSpinner from '../../components/centered_spinner.jsx';
-import NovelDescriptionManager from '../../data-manager/novel_description_manager.js';
+import {ThemeContext} from '../reading_page_theme.jsx';
+import NovelTitle from '../components/novel_title.jsx';
+import NovelContent from '../components/novel_content.jsx';
+import Source from '../components/source_combo_box.jsx';
+import ControlButtons from '../components/control_buttons.jsx';
+import NovelSourceManager from "../../../data-manager/novel_source_manager.js";
+import CenteredSpinner from '../../../components/centered_spinner.jsx';
+import NovelDescriptionManager from '../../../data-manager/novel_description_manager.js';
 import { Spinner } from 'react-bootstrap';
-import ReadingHistoryManager from '../../data-manager/reading_history_manager.js';
+import ReadingHistoryManager from '../../../data-manager/reading_history_manager.js';
 
 function ReadingPage () {
     const navigate = useNavigate();
@@ -47,7 +47,7 @@ function ReadingPage () {
             }
             setSource(query_source)
             novel_description_manager.getChapterContent(chapterId).then((res)=>{
-            if(res){
+            if(res!==null){
                 setReadingNovel({...res,chapterId});
                 try{
                     reading_history_manager.saveNewReadingNovel(novelId,chapterId,query_source,novel_description_manager.novel_info,res);

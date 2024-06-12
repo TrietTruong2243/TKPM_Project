@@ -8,7 +8,6 @@ const PolicyPage = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: 'black',
                 color: 'white',
                 padding: 2,
                 maxWidth: '1800px', margin: '0 auto'
