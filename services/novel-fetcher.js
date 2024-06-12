@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // the error of a chapter position in different sources
 // be used to fetch the previous pages and next pages (the number of pages is specific) of the calculated page just in case. These are be able to contain the target chapter.
 // Eg: novel 'Ngạo thế đan thần' in MêTruyệnChữ has chapter 0 but the others do not.
-const pageErrorBetweenSources = 1;
+const pageErrorBetweenSources = 0;
 
 class NovelFetcher {
 	constructor() {
@@ -213,7 +213,6 @@ class NovelFetcher {
 						// double check by compare absolute difference of number of chapters
 						let temp_min = 1000000;
 						candidateNovels.forEach((candidateNovel) => {
-							console.log(candidateNovel.title, candidateNovel.numChapters, sourceNovel.numChapters);
 							if (Math.abs(candidateNovel.numChapters - sourceNovel.numChapters) < temp_min) {
 								temp_min = Math.abs(candidateNovel.numChapters - sourceNovel.numChapters);
 								novel = candidateNovel;
