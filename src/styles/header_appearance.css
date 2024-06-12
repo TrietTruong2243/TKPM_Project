@@ -1,0 +1,9 @@
+.active{
+    transition: 0.3s linear;
+    visibility: "visible"   
+}
+.hidden{
+    visibility: "hidden";
+    transition: "all 0.5s";
+    transform: "translateY(-100%)"
+}
