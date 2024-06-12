@@ -329,7 +329,7 @@ class TangThuVienStrategy extends NovelStrategy {
 				}
 			});
 
-			const per_page = this.maxNovelsPerPage;
+			const per_page = this.maxNumChaptersPerPage;
 			let total = chapters.length;
 			let total_pages = 1;
 			const lastElement = $(".pagination li").last();
@@ -348,6 +348,11 @@ class TangThuVienStrategy extends NovelStrategy {
 				const lastPageChapters = $$(".chapter-list ul li").length;
 				total = (total_pages - 1) * per_page + lastPageChapters;
 			}
+
+			// assign chapter position
+			chapters.forEach((chapter, index) => {
+				chapter.position = index + (page - 1) * per_page + 1;
+			});
 
 			return {
 				meta: {
