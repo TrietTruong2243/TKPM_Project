@@ -1,6 +1,8 @@
 import DataManagementInterface from "./data_management_interface";
 let instance;
 class ReadingHistoryManager extends DataManagementInterface{
+
+    //constructor group
     constructor(){
         if(instance){
             throw new Error('You can only create 1 instance!!')
@@ -14,6 +16,8 @@ class ReadingHistoryManager extends DataManagementInterface{
         }
         return new ReadingHistoryManager();
     }
+
+    //override DataManagementInterface
     async get(){
     }
     async set(params){
@@ -23,6 +27,8 @@ class ReadingHistoryManager extends DataManagementInterface{
     async reload(){
         throw new Error('Missing implementation!!');
     }
+
+    //addtion methods
     async saveNewReadingNovel(novel_slug,chapter_slug,source_slug,novel_info,chapter_content){    
         try{
             const readItems = JSON.parse(localStorage.getItem('readItems')) || {};

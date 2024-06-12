@@ -1,13 +1,16 @@
 import { useTheme } from "@emotion/react";
 import { Stack,Typography,Box, InputBase,IconButton } from "@mui/material";
 import { createSearchParams, useNavigate } from "react-router-dom";
-import { Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown, Layers } from "@mui/icons-material"
+import { Search as SearchIcon} from "@mui/icons-material";
 import { useState } from "react";
+
 import { convertNameToSlug } from "../../utils/name_converter";
+
 function SearchButton(){
     const theme=useTheme();
     const navigate=useNavigate()
     const [keyword,setKeyWord]=useState('');
+
     const handleSearchClick=()=>{
         if(keyword.trim().length<3){
             alert('Từ khoá quá ngắn, hãy nhập từ khoá ít nhất 3 ký tự!');
@@ -19,6 +22,7 @@ function SearchButton(){
             search:`${createSearchParams({keyword:search_key,page:1})}`,
         });
     }
+
     return (
         <Stack
             direction='row'  

@@ -1,65 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { TableRow, TableCell } from '@mui/material';
+
 import CenteredSpinner from '../../../components/centered_spinner';
 import NovelSourceManager from '../../../data-manager/novel_source_manager';
 
-const ReadItems = ({ searchValue }) => {
+const ReadItems = ({ search_value }) => {
     const [novels, setNovels] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [sourceData, setSourceData] = useState([]);
+    const [source_data, setSourceData] = useState([]);
 
-    let novelSourceManager = NovelSourceManager.getInstance();
+    let novel_source_manager = NovelSourceManager.getInstance();
 
     useEffect(() => {
-        novelSourceManager.get().then(res => {
+        novel_source_manager.get().then(res => {
             setSourceData([...res]);
         });
     }, []);
     useEffect(() => {
         setLoading(true); // Set loading to true when searchValue changes
 
-        const storedItems = JSON.parse(localStorage.getItem('readItems')) || {};
-        const novelIds = Object.keys(storedItems);
+        const stored_items = JSON.parse(localStorage.getItem('readItems')) || {};
+        const novel_ids = Object.keys(stored_items);
 
         const fetchNovelData = async () => {
-            const novelDataArray = await Promise.all(
-                novelIds.map(async (novelId) => {
-                    const {novelImage ,novelTitle, sourceSlug, novelStatus,chapterId,  chapterTitle} = storedItems[novelId]; 
+            const novel_data_array = await Promise.all(
+                novel_ids.map(async (novel_id) => {
+                    const {novelImage ,novelTitle, sourceSlug, novelStatus,chapterId,  chapterTitle} = stored_items[novel_id]; 
 
-                    console.log(storedItems[novelId])
+                    console.log(stored_items[novel_id])
                     // const novel = await GetNovelByIdService(novelId, sourceData);
 
-                    const source = sourceData.find((value) => value.slug === sourceSlug);
+                    const source = source_data.find((value) => value.slug === sourceSlug);
                     // const chapter = await GetChapterOfNovelContent(novelId, chapterId, sourceSlug);
-                    return { novelId, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle };
+                    return { novel_id, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle };
                 })
             );
 
             // Sort novels based on searchValue
-            let sortedNovels = [...novelDataArray];
-            switch (searchValue) {
+            let sorted_novels = [...novel_data_array];
+            switch (search_value) {
                 case 1:
-                    sortedNovels.reverse();
+                    sorted_novels.reverse();
                     break;
                 case 3:
-                    sortedNovels.sort((a, b) => a.novelTitle.localeCompare(b.novelTitle));
+                    sorted_novels.sort((a, b) => a.novelTitle.localeCompare(b.novelTitle));
                     break;
                 case 4:
-                    sortedNovels.sort((a, b) => b.novelTitle.localeCompare(a.novelTitle));
+                    sorted_novels.sort((a, b) => b.novelTitle.localeCompare(a.novelTitle));
                     break;
                 default:
                     break;
             }
-            setNovels(sortedNovels);
+            setNovels(sorted_novels);
             setLoading(false);
         };
 
-        if (sourceData.length > 0) {
+        if (source_data.length > 0) {
             fetchNovelData();
         } else {
             setLoading(false);
         }
-    }, [searchValue, sourceData]);
+    }, [search_value, source_data]);
 
     if (loading) {
         return <CenteredSpinner />;
@@ -67,13 +68,13 @@ const ReadItems = ({ searchValue }) => {
 
     return (
         <>
-            {novels.map(({ novelId, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle }, index) => (
+            {novels.map(({ novel_id, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle }, index) => (
                 <TableRow key={index}>
                     <TableCell><img style={{ width: '100px', height: '150px' }} src={novelImage} alt={novelTitle} /></TableCell>
                     <TableCell style={{ color: '#fff' }}>{novelTitle}</TableCell>
                     <TableCell>{source.name}</TableCell>
                     <TableCell>{novelStatus}</TableCell>
-                    <TableCell><a style={{ color: '#fff' }} href={`description/${novelId}/chapter/${chapterId}?source=${source.slug}`}>{chapterTitle}</a></TableCell>
+                    <TableCell><a style={{ color: '#fff' }} href={`description/${novel_id}/chapter/${chapterId}?source=${source.slug}`}>{chapterTitle}</a></TableCell>
                 </TableRow>
             )
         )}

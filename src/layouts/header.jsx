@@ -1,11 +1,10 @@
-import { AppBar, useTheme, useMediaQuery, alpha, Stack, Typography, Button, InputBase, IconButton, Box, Container } from "@mui/material"
+import { AppBar, useTheme, useMediaQuery, alpha, Stack, Typography} from "@mui/material"
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "../styles/header_appearance.css"
 import CategoryButton from "./components/categories_button";
 import SearchButton from "./components/search_button";
-import axios from "axios";
 
 function Header(){
     const navigate=useNavigate()
@@ -21,14 +20,14 @@ function Header(){
         }
     }
     const theme=useTheme();
-    const isNonMobile = useMediaQuery(theme.breakpoints.up('lg'));
+    const is_non_mobile = useMediaQuery(theme.breakpoints.up('lg'));
     const [show, setShow] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const [last_scroll_y, setLastScrollY] = useState(0);
 
     const controlNavbar = () => {
-        if (window.scrollY > lastScrollY) { // if scroll down hide the navbar
+        if (window.scrollY > last_scroll_y) { // if scroll down hide the navbar
             setShow(true); 
-        } else if (window.scrollY < lastScrollY) { // if scroll up show the navbar
+        } else if (window.scrollY < last_scroll_y) { // if scroll up show the navbar
             setShow(false);  
         }
         setLastScrollY(window.scrollY);
@@ -40,7 +39,7 @@ function Header(){
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
-    }, [lastScrollY]);
+    }, [last_scroll_y]);
     
     return (
         <AppBar
@@ -53,7 +52,7 @@ function Header(){
                 }),
                 
                 background: alpha(theme.palette.dark.light, 1),
-                ...(isNonMobile && {
+                ...(is_non_mobile && {
                     width: '100%'
                 })
             }}

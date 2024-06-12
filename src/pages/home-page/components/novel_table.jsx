@@ -1,9 +1,10 @@
-import {Button, Box, Typography } from "@mui/material";
+import {Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@emotion/react";
-import { isOverflown } from "@mui/x-data-grid/utils/domUtils";
 import { useNavigate } from "react-router-dom";
+
 import CenteredSpinner from "../../../components/centered_spinner";
+
 const columns=[
     { 
         field: 'title',
@@ -38,12 +39,15 @@ const columns=[
         renderCell: (params) =>params.row.categories.map(item=><Typography marginLeft={1} color={'white'}>{item.name}</Typography>),
     }    
 ]
+
 function NovelTable({novel_data}){
+
     const theme=useTheme()
     const navigate=useNavigate();
     const handleRowClick=(params)=>{
         navigate(`/description/${params.row.slug}`)
     }
+    
     if(!novel_data){
         return <CenteredSpinner/>
     }

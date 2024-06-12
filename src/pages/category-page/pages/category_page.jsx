@@ -1,19 +1,22 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
-import NovelGrid from "../../home-page/components/novel_grid";
 import { useEffect, useState } from "react";
-import CenteredSpinner from "../../../components/centered_spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
+
+import NovelGrid from "../../home-page/components/novel_grid";
+import CenteredSpinner from "../../../components/centered_spinner";
 import NovelByCategoryManager from "../../../data-manager/category_novel_manager";
+
 function NovelByCategoryPage(){
-    const queryParameters = new URLSearchParams(window.location.search)
+    const query_parameters = new URLSearchParams(window.location.search)
     const {category_slug} = useParams()
     const navigate=useNavigate();
-    const page = queryParameters.get("page")||1
+    const page = query_parameters.get("page")||1
     const [current_page,setCurrentPage]=useState();
     let novel_category_manager=NovelByCategoryManager.getInstance();
     const [category_novels,setCategoryNovel]=useState([]);
     const [loading,setLoading]=useState(true);
+
     const handleChangePageClick=(event,value)=>{
         setCurrentPage(value)
         navigate({
@@ -21,6 +24,7 @@ function NovelByCategoryPage(){
             search:`${createSearchParams({page:value})}`,
         });
     }
+
     novel_category_manager.set({category:category_slug,page:parseInt(page)})
     useEffect(()=>{
             setLoading(true);
@@ -30,6 +34,8 @@ function NovelByCategoryPage(){
             setCurrentPage(parseInt(novel_category_manager.page))
         })
     },[category_slug,page])
+
+
     if (loading){
         return <CenteredSpinner/>;
     }

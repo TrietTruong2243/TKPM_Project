@@ -2,41 +2,41 @@ import React, { useState, useEffect } from 'react';
 import {  Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 
-function AllChapters({ allChapters, source }) {
+function AllChapters({ all_chapters, source }) {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [chaptersPerPage] = useState(15);
-    const [isLoading, setIsLoading] = useState(true);
+    const [current_page, setCurrentPage] = useState(1);
+    const [chapters_per_page] = useState(15);
+    const [is_loading, setIsLoading] = useState(true);
 
     useEffect(() => {
         setIsLoading(true);
-        if (allChapters.length > 0) {
+        if (all_chapters.length > 0) {
             setIsLoading(false);
         }
-    }, [allChapters]);
+    }, [all_chapters]);
 
-    const totalChapters = allChapters.length;
+    const totalChapters = all_chapters.length;
 
-    const getStartingIndex = (currentPage) => {
-        return (currentPage - 1) * chaptersPerPage;
+    const getStartingIndex = (current_page) => {
+        return (current_page - 1) * chapters_per_page;
     };
 
-    const getEndingIndex = (currentPage) => {
-        return Math.min(currentPage * chaptersPerPage, totalChapters);
+    const getEndingIndex = (current_page) => {
+        return Math.min(current_page * chapters_per_page, totalChapters);
     };
 
-    const displayedChapters = allChapters.slice(getStartingIndex(currentPage), getEndingIndex(currentPage));
+    const displayedChapters = all_chapters.slice(getStartingIndex(current_page), getEndingIndex(current_page));
 
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };
 
     useEffect(() => {
-        if (currentPage > Math.ceil(totalChapters / chaptersPerPage)) {
+        if (current_page > Math.ceil(totalChapters / chapters_per_page)) {
             setCurrentPage(1);
         }
-    }, [totalChapters, chaptersPerPage, currentPage]);
-    if (allChapters.length<=0) {
+    }, [totalChapters, chapters_per_page, current_page]);
+    if (all_chapters.length<=0) {
         return (
                 <Box mt={4} sx={{ border: 1 }}>
                     <Paper elevation={2} sx={{ p: 2 }}>
@@ -51,7 +51,7 @@ function AllChapters({ allChapters, source }) {
         <Box mt={4} sx={{ border: 1 }}>
             <Paper elevation={2} sx={{ p: 2 }}>
                 <Typography variant="h6" align="center">Danh sách chương</Typography>
-                {isLoading ? (
+                {is_loading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                         <CircularProgress />
                     </Box>
@@ -65,8 +65,8 @@ function AllChapters({ allChapters, source }) {
                             ))}
                         </List>
                         <Pagination
-                            count={Math.ceil(totalChapters / chaptersPerPage)}
-                            page={currentPage}
+                            count={Math.ceil(totalChapters / chapters_per_page)}
+                            page={current_page}
                             onChange={handleChangePage}
                             color="primary"
                             sx={{ display: 'flex', justifyContent: 'center' }}

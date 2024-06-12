@@ -2,6 +2,8 @@ import getNovelSource from "../service/novel_source_service";
 import DataManagementInterface from "./data_management_interface";
 let instance;
 class NovelSourceManager extends DataManagementInterface{
+
+    //constructor group
     constructor(){
         if(instance){
             throw new Error("You can only create one instance!");
@@ -16,6 +18,8 @@ class NovelSourceManager extends DataManagementInterface{
         }
         return new NovelSourceManager();
     }
+
+    //override DataManagementInterface
     async get(){   
         await this.reload();     
         return this.source_list;
@@ -54,6 +58,8 @@ class NovelSourceManager extends DataManagementInterface{
         }
         this.source_list=[...saved_source]
     }
+
+    //addition method
 
 }
 export default NovelSourceManager;

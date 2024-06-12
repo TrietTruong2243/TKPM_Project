@@ -1,13 +1,15 @@
+import { Navigate, Outlet, useRoutes } from "react-router-dom";
+
 import DescriptionPage from "../pages/description-page/pages/description_page";
 import HomePage from "../pages/home-page/pages/home_page";
 import HistoryPage from "../pages/history-page/pages/history_page";
 import ReadingPage from "../pages/reading-page/pages/reading_page";
-import { Navigate, Outlet, useRoutes } from "react-router-dom";
 import DashBoardLayout from "../layouts/dashboard";
 import SearchPage from "../pages/search-page/pages/search_page";
 import SettingsPage from "../pages/settings-page/pages/settings_page";
 import NovelByCategoryPage from "../pages/category-page/pages/category_page";
 import PolicyPage from "../pages/policy-page/pages/policy_page";
+
 function Router(){
     const routes=useRoutes([
         {
