@@ -128,7 +128,7 @@ function runPluginTest(pluginInstance, pluginFile) {
             const hotNovels = await pluginInstance.getHotNovels();
             const bestNovel = hotNovels[0];
             const chapterList = await pluginInstance.getNovelChapterList(bestNovel.slug, 1);
-            const i = 3;
+            const i = 0;
             let chapter = chapterList.chapters[i].slug;
             chapter = await pluginInstance.getChapterContent(bestNovel.slug, chapter);
 

@@ -2,7 +2,9 @@ import fs from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import path from 'path';
 import chokidar from 'chokidar';
+import jest from 'jest';
 import NovelStrategy from '../source-plugins/plugin-interface.js';
+const { runCLI } = jest;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // the error of a chapter position in different sources
@@ -13,7 +15,6 @@ const pageErrorBetweenSources = 1;
 class NovelFetcher {
     constructor() {
         this.strategies = {};
-
     }
 
     async loadStrategies() {
@@ -271,12 +272,15 @@ class NovelFetcher {
             }
 
             // get chapters in the page that is most likely to contain the target chapter
-            const targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
-            const targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
-            targetChapter = targetChapters.find(chapter => {
-                const searchedTitle = chapter.title.toLowerCase();
-                return (searchedTitle === chapterTitle || searchedTitle.includes(chapterTitle) || chapterTitle.includes(searchedTitle));
-            });
+            let targetChapters;
+            if (!targetChapter) {
+                const targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
+                targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
+                targetChapter = targetChapters.find(chapter => {
+                    const searchedTitle = chapter.title.toLowerCase();
+                    return (searchedTitle === chapterTitle || searchedTitle.includes(chapterTitle) || chapterTitle.includes(searchedTitle));
+                });
+            }
 
             // if the target chapter is not found in the current page, fetch the previous and next pages just in case
             if (!targetChapter) {
@@ -311,19 +315,29 @@ class NovelFetcher {
     }
 
     watchPlugins() {
-        const watcher = chokidar.watch(path.join(__dirname, '../source-plugins'), { persistent: true });
+        const watcher = chokidar.watch(path.join(__dirname, '../source-plugins'), { persistent: true, ignoreInitial: true });
         watcher
-            .on('add', pluginPath => {
+            .on('add', async pluginPath => {
                 console.log(`File ${pluginPath} has been added`);
+                const strategyName = path.basename(pluginPath, '-plugin.js');
                 if (pluginPath.endsWith('plugin.js')) {
-                    this.loadStrategyWithPath(pluginPath);
+                    // test the plugin before loading
+                    try {
+                        const testResult = await this.testPlugin(pluginPath);
+                        if (testResult) {
+                            this.loadStrategyWithPath(pluginPath);
+                        } else {
+                            console.log(`Plugin ${strategyName} failed the test and was not loaded.`);
+                        }
+                    } catch (error) {
+                        console.error(`Error testing plugin ${strategyName}:`, error);
+                    }
                 }
             })
             .on('change', pluginPath => {
                 console.log(`File ${pluginPath} has been changed`);
                 if (pluginPath.endsWith('plugin.js')) {
                     this.loadStrategyWithPath(pluginPath);
-                    console.log('Strategies reloaded.', this.getAvailableStrategies());
                 }
             })
             .on('unlink', pluginPath => {
@@ -335,6 +349,28 @@ class NovelFetcher {
             });
 
         novelFetcher.loadStrategies(); // initial load
+    }
+
+    async testPlugin(pluginPath) {
+        const pluginFileName = path.basename(pluginPath);
+
+        // create test file for each plugin and write test code on it
+        const testCode = `import runPluginTest from './plugin-tester.js';\nimport Plugin from '../source-plugins/${pluginFileName}';\nrunPluginTest(new Plugin(), '${pluginFileName}');`;
+        const testPath = path.join(__dirname, `../test-plugins/${pluginFileName.replace('.js', '.test.js')}`);
+        fs.writeFileSync(testPath, testCode);
+
+        // run test only this plugin
+        console.log(`Testing plugin ${testPath}`);
+        const result = await runCLI({
+                silent: true,
+                testMatch: [testPath],
+            },[__dirname]
+        );
+
+        // clean up test file
+        fs.unlinkSync(testPath);
+
+        return result.results.success;
     }
 }
 
