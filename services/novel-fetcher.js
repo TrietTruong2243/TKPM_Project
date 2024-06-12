@@ -213,6 +213,7 @@ class NovelFetcher {
 						// double check by compare absolute difference of number of chapters
 						let temp_min = 1000000;
 						candidateNovels.forEach((candidateNovel) => {
+							console.log(candidateNovel.title, candidateNovel.numChapters, sourceNovel.numChapters);
 							if (Math.abs(candidateNovel.numChapters - sourceNovel.numChapters) < temp_min) {
 								temp_min = Math.abs(candidateNovel.numChapters - sourceNovel.numChapters);
 								novel = candidateNovel;
@@ -240,6 +241,7 @@ class NovelFetcher {
 		// chapterSlug, chapterTitle, chapterPosition in the current source
 		// NOTE: the targetStrategy and targetSource are available (normally use fetchAlternativeNovels to get them)
 
+		chapterPosition = parseInt(chapterPosition);
 		try {
 			chapterTitle = chapterTitle.toLowerCase();
 
@@ -284,8 +286,8 @@ class NovelFetcher {
 
 			// get chapters in the page that is most likely to contain the target chapter
 			let targetChapters;
+			let targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
 			if (!targetChapter) {
-				const targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
 				targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
 				targetChapter = targetChapters.find((chapter) => {
 					const searchedTitle = chapter.title.toLowerCase();
