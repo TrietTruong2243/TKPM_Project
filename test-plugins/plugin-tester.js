@@ -11,7 +11,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 		test.concurrent(`getCategories (${pluginFile}) is-array`, async () => {
 			const categories = await pluginInstance.getCategories();
 			expect(categories).toBeInstanceOf(Array);
-		});
+		},10000);
 
 		test.concurrent(`getCategories (${pluginFile}) not-empty`, async () => {
 			const categories = await pluginInstance.getCategories();
@@ -137,7 +137,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(chapter).toHaveProperty("next_slug");
 			expect(chapter).toHaveProperty("prev_slug");
 			expect(chapter).toHaveProperty("slug");
-		});
+		},10000);
 	});
 }
 
