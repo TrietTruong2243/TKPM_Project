@@ -8,6 +8,16 @@
 - Các thông tin trả về theo cùng 1 kiểu dữ liệu, những thông tin không lấy được cho kết quả null, vd:
   - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
   - Hot novels _tangthuvien_ không có image.
+- Về các route có tham số page, nếu page sai định dạng thì page = 1, nếu page lớn hơn tổng số trang thì page được chuyển về trang đầu hoặc trang cuối.
+- Về logic lấy truyện ở các nguồn thay thế, duyệt từng nguồn và thực hiện các bước, bước đầu lỗi thì chuyển sang bước sau:
+  - Thử slug của nguồn hiện tại.
+  - Tìm kiếm theo tên, so sánh tên.
+  - Nếu nhiều truyện cùng tên, chọn truyện có số chương gần với truyện hiện tại.
+- Về logic lấy chương thay thế ở một nguồn xác định (nguồn đã được xác nhận có truyện thay thế), tương tự như trên:
+  - Thử slug chương của nguồn hiện tại.
+  - Tìm trong trang có khả năng nhất dựa vào vị trí của chương hiện tại.
+  - Tìm 1-2 trang trước và sau.
+  - Nếu không có truyện nào có tên khớp, lấy chương có vị trí giống chương hiện tại.
 - Về test tự động, plugin khi được đưa vào thư mục source-plugins, file plugin sẽ được kiểm tra và tạo 1 file test tương ứng ở thư mục test-plugins, sau chạy test, file test đó được xóa.
 
 ## Hướng dẫn sử dụng

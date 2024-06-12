@@ -317,6 +317,7 @@ class TangThuVienStrategy extends NovelStrategy {
 			}
 
 			$("ul.cf li").each((index, chapter) => {
+				if ($(chapter).hasClass('divider-chap')) return;
 				let title = $(chapter).find("a").attr("title");
 
 				if (title) {
@@ -333,10 +334,16 @@ class TangThuVienStrategy extends NovelStrategy {
 			let total = chapters.length;
 			let total_pages = 1;
 			const lastElement = $(".pagination li").last();
-			if (lastElement.hasClass("active")) {
-				total_pages = parseInt(lastElement.text());
-			} else {
+			if (lastElement.text().trim() == "»") {
 				total_pages = parseInt(lastElement.prev().text());
+			} else if (lastElement.text().trim() == "Trang cuối") {
+				const funcContainsPage = lastElement.find('a').attr('onclick');
+				if (funcContainsPage) {
+					const page = funcContainsPage.match(/\d+/);
+					if (page) total_pages = parseInt(page[0]) + 1;
+				}
+			} else if (lastElement.hasClass("active")) {
+				total_pages = parseInt(lastElement.text());
 			}
 
 			// get number of chapters from last page
@@ -345,7 +352,7 @@ class TangThuVienStrategy extends NovelStrategy {
 					`${this.baseUrl}/doc-truyen/page/${novel.id}?page=${total_pages - 1}&limit=75&web=1`
 				);
 				const $$ = load(lastPageResponse.data);
-				const lastPageChapters = $$(".chapter-list ul li").length;
+				const lastPageChapters = $$("ul.cf li").filter((index, chapter) => { return !$(chapter).hasClass('divider-chap') }).length;
 				total = (total_pages - 1) * per_page + lastPageChapters;
 			}
 
