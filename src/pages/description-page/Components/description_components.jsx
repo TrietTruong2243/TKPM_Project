@@ -18,7 +18,8 @@ function DescriptionComponent({novel,available_source}) {
             </Grid>
             <Grid item xs={12} md={9}>
                 <Typography variant="h4" gutterBottom>
-                    {novel.title} <DownloadIcon />
+                    {novel.title}
+                     {/* <DownloadIcon /> */}
                 </Typography>
                 <Typography variant="body1"><strong>Tác giả:</strong> {novel.authors.map((genre) => genre.name).join(", ")}</Typography>
                 <Typography variant="body1"><strong>Thể loại:</strong>{ novel.categories.map((genre) => genre.name).join(", ")} </Typography>

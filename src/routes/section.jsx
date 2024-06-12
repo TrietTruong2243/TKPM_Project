@@ -7,6 +7,7 @@ import DashBoardLayout from "../layouts/dashboard";
 import SearchPage from "../pages/search-page/search_page";
 import SettingsPage from "../pages/settings-page/settings_page";
 import NovelByCategoryPage from "../pages/category-page/category_page";
+import PolicyPage from "../pages/policy-page/policy_page";
 function Router(){
     const routes=useRoutes([
         {
@@ -26,7 +27,9 @@ function Router(){
                     ]},                    
                     {path:'search', element:<SearchPage/>},
                     {path:'settings', element:<SettingsPage/>},
-                    {path:'category/:category_slug', element: <NovelByCategoryPage/>}
+                    {path:'category/:category_slug', element: <NovelByCategoryPage/>},
+                    {path: 'policy', element: <PolicyPage/>}
+
 
                 ]
         
