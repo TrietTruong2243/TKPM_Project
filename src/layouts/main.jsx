@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
-export default function Main({children}) {
+function Main({children}) {
     const theme=useTheme()
     return (
         <Box
@@ -10,8 +10,9 @@ export default function Main({children}) {
             display='flex'
             flexDirection='column'
             py='64px'
-            >
-                {children}
+        >
+            {children}
         </Box>
     )
 }
+export default  Main;

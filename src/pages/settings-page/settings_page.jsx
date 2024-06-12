@@ -1,8 +1,8 @@
-import { Container,ButtonGroup,Box } from "@mui/material";
+import { Container} from "@mui/material";
 import { useState,useEffect } from "react";
 import NovelSourceTable from "./components/novel_source_table.jsx";
-import NovelSourceManager from "../../data/novel_source_manager.js";
-import CenteredSpinner from "../../spinner/centered_spinner.jsx";
+import NovelSourceManager from "../../data-manager/novel_source_manager.js";
+import CenteredSpinner from "../../components/centered_spinner.jsx";
 export default function SettingsPage(){
     let novel_source_manager=NovelSourceManager.getInstance();
     const [source_data,setSourceData]= useState([])

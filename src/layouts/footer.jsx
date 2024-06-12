@@ -1,7 +1,7 @@
 import {Typography, Stack,alpha,useTheme,useMediaQuery} from '@mui/material';
 import { useEffect } from 'react';
 
-export default function Footer(){
+function Footer(){
     const theme=useTheme();
     const isNonMobile = useMediaQuery(theme.breakpoints.up('lg'));
     return (
@@ -28,3 +28,5 @@ export default function Footer(){
         </footer>
         )
 }
+
+export default Footer;

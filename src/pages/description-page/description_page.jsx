@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DescriptionComponent from './Components/description_components';
-import HotNovel from './Components/hot_novel';
-import AllChapters from './Components/all_chapter';
-import NovelSourceManager from "../../data/novel_source_manager.js";
-import { GetNovelByIdService, GetAllChapterByNovelId, GetHotNovels } from '../../service/service';
-import HotNovelManager from "../../data/hot_novels_manager.js";
-import NovelDescriptionManager from '../../data/novel_description_manager.js';
+import DescriptionComponent from './components/description_components.jsx';
+import HotNovel from './components/hot_novel_list';
+import AllChapters from './components/all_chapter_box';
+import NovelSourceManager from "../../data-manager/novel_source_manager.js";
+import HotNovelManager from "../../data-manager/hot_novels_manager.js";
+import NovelDescriptionManager from '../../data-manager/novel_description_manager.js';
 
-export default function DescriptionPage() {
+function DescriptionPage() {
     const novel_source_manager = NovelSourceManager.getInstance();
     const hot_novels_manager = HotNovelManager.getInstance();
     const novel_description_manager=NovelDescriptionManager.getInstance();
@@ -79,3 +78,6 @@ export default function DescriptionPage() {
         </ThemeProvider>
     );
 }
+
+
+export default DescriptionPage;

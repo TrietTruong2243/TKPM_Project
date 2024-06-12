@@ -33,7 +33,6 @@ class DownloadTypeManager extends DataManagementInterface{
         }
         let download_types=await getAllDownloadType(this.source_slug);
         this.download_types=[...download_types];
-        alert(download_types)
     }
     async downloadNovel(source_slug, format_slug,novel_slug, chapter_slug,novel_name, chapter_name,extension){
         let download = await getNovelDownload(source_slug,format_slug,novel_slug,chapter_slug,novel_name, chapter_name,extension);

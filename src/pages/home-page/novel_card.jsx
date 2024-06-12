@@ -4,7 +4,7 @@ import { Box, CardContent, IconButton, Stack, Typography, alpha, useTheme } from
 import { redirect, useNavigate } from 'react-router-dom';
 
 
-export default function NovelCard({novel}) {
+function NovelCard({novel}) {
     const theme = useTheme();
     const navigate=useNavigate()
     const onClick=()=>{
@@ -27,3 +27,5 @@ export default function NovelCard({novel}) {
         </Card>
   );
 }
+
+export default NovelCard;

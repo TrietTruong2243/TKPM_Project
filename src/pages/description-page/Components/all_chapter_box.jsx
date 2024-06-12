@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {  Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 
-export default function AllChapters({ allChapters, source }) {
+function AllChapters({ allChapters, source }) {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [chaptersPerPage] = useState(15);
@@ -37,7 +37,8 @@ export default function AllChapters({ allChapters, source }) {
         }
     }, [totalChapters, chaptersPerPage, currentPage]);
     if (allChapters.length<=0) {
-        return (<Box mt={4} sx={{ border: 1 }}>
+        return (
+                <Box mt={4} sx={{ border: 1 }}>
                     <Paper elevation={2} sx={{ p: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />
@@ -78,3 +79,5 @@ export default function AllChapters({ allChapters, source }) {
         </Box>
     );
 }
+
+export default AllChapters;

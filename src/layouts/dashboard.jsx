@@ -4,7 +4,7 @@ import Main from "./main";
 import Footer from "./footer";
 import Header from "./header";
 
-export default function DashBoardLayout({children}){
+function DashBoardLayout({children}){
     return (
         <>
             <Header> </Header>
@@ -14,7 +14,7 @@ export default function DashBoardLayout({children}){
                     display: 'flex',
                     flexDirection: { xs: 'column', lg: 'row'},
                 }}
-                >
+            >
                 <Main>
                     {children}
                 </Main>
@@ -23,3 +23,5 @@ export default function DashBoardLayout({children}){
         </>
     )
 }
+
+export default DashBoardLayout;

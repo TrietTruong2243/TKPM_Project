@@ -7,7 +7,7 @@ import CategoryButton from "./components/categories_button";
 import SearchButton from "./components/search_button";
 import axios from "axios";
 
-export default function Header(){
+function Header(){
     const navigate=useNavigate()
     const styles = {
         active: {
@@ -43,44 +43,37 @@ export default function Header(){
     }, [lastScrollY]);
     
     return (
-    <AppBar
-        style={show?styles.hidden:styles.active}
-        sx={{
-            boxShadow: 'none',
-            height: 64,
-            transition: theme.transitions.create(['height'], {
-                duration: theme.transitions.duration.shorter
-            }),
-            
-            background: alpha(theme.palette.dark.light, 1),
-            ...(isNonMobile && {
-                width: '100%'
-            })
-        }}
-    >
-        <Stack
-            direction='row'    
-            height='100%'
-            width='100%'
-            alignItems={'center'} 
-            display={'flex'}
-            flexDirection={'row'}
-            spacing={8}
+        <AppBar
+            style={show?styles.hidden:styles.active}
+            sx={{
+                boxShadow: 'none',
+                height: 64,
+                transition: theme.transitions.create(['height'], {
+                    duration: theme.transitions.duration.shorter
+                }),
+                
+                background: alpha(theme.palette.dark.light, 1),
+                ...(isNonMobile && {
+                    width: '100%'
+                })
+            }}
         >
-            <Typography style={{cursor: 'pointer'}} fontSize={30} onClick={() => navigate('home')} justifyContent={'center'}>WeNovel</Typography>
-            <CategoryButton/>
-            <Stack direction={'row'} alignItems={'center'}>
-            <SearchButton/>
-            </Stack>  
-            <Button onClick={() => navigate('settings')}
+            <Stack
+                direction='row'    
+                height='100%'
+                width='100%'
+                alignItems={'center'} 
+                display={'flex'}
+                flexDirection={'row'}
+                spacing={8}
             >
-                <Typography fontSize={20} color='white' >Settings</Typography>
-            </Button>
-            <Button onClick={() => navigate('history')}>
-                <Typography fontSize={15} color='white' >Lịch sử</Typography>
-            </Button>
-        </Stack>
-
+                <Typography style={{cursor: 'pointer'}} fontSize={30} onClick={() => navigate('home')}>WeNovel</Typography>
+                <CategoryButton/>
+                <SearchButton/>
+                <Typography style={{cursor: 'pointer'}} fontSize={15} onClick={() => navigate('settings')} color='white' >Settings</Typography>
+                <Typography style={{cursor: 'pointer'}} fontSize={15} onClick={() => navigate('history')} color='white' >Lịch sử</Typography>
+            </Stack>
         </AppBar>
     )
 }
+export default Header;

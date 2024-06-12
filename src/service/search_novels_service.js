@@ -1,13 +1,13 @@
 import axios from "axios";
 async function searchNovel(source,keyword, page) {
     try {
-      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/novels/search?keyword=${keyword}&page=${page}`)
-      if (result.status===200){
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/novels/search?keyword=${keyword}&page=${page}`)
+        if (result.status===200){
             return result.data.data.data;
-      }
-      return [];
+        }
+        return [];
     } catch (error) {
-      return [];
+        return [];
     }
 }
 export default searchNovel;

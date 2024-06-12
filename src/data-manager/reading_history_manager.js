@@ -29,7 +29,6 @@ class ReadingHistoryManager extends DataManagementInterface{
             if (readItems[novel_slug]) {
                 delete readItems[novel_slug]
             }
-            console.log(novel_slug,chapter_slug,source_slug,novel_info,chapter_content)
             readItems[novel_slug] = {
                 novelImage: novel_info.image,
                 novelTitle: novel_info.title, 
@@ -39,9 +38,9 @@ class ReadingHistoryManager extends DataManagementInterface{
                 chapterTitle: chapter_content.title
             };
             localStorage.setItem('readItems', JSON.stringify(readItems));
-    }catch(error){
+        }catch(error){
 
-    }
+        }
     }
 }
 

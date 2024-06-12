@@ -1,5 +1,5 @@
 import getHotNovels from "../service/hot_novel_service";
-import { getNovelDescription } from "../service/service";
+import { getNovelDescription } from "../service/concrete_novel_service";
 import DataManagementInterface from "./data_management_interface";
 import NovelSourceManager from "./novel_source_manager";
 

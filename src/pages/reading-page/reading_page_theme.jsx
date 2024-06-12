@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-export const ThemeContext = createContext();
+const ThemeContext = createContext();
 let initialTheme = {
     backgroundColor: "#FFFFFF",
     fontFamily: "Arial, sans-serif",
@@ -13,7 +13,7 @@ const loadTheme = () => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme ? JSON.parse(savedTheme) : initialTheme;
 };
- export const ReadingTheme = ({ children }) => {
+const ReadingTheme = ({ children }) => {
     const [theme, setTheme] = useState(loadTheme);
     useEffect(() => {
         localStorage.setItem('theme', JSON.stringify(theme));
@@ -49,3 +49,5 @@ const loadTheme = () => {
         </ThemeContext.Provider>
     );
 };
+
+export  {ThemeContext, ReadingTheme};

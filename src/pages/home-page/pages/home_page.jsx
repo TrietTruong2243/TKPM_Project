@@ -3,10 +3,10 @@ import {Container, Typography} from "@mui/material"
 import { useTheme } from "@emotion/react"
 import NovelGrid from "../novel_grid";
 import NovelTable from "../novel_table";
-import HotNovelManager from "../../../data/hot_novels_manager";
-import CenteredSpinner from "../../../spinner/centered_spinner";
+import HotNovelManager from "../../../data-manager/hot_novels_manager";
+import CenteredSpinner from "../../../components/centered_spinner";
 import { useEffect, useState } from "react";
-export default function HomePage(){
+function HomePage(){
     const theme=useTheme();
     const hot_novels_manager=HotNovelManager.getInstance();
     const[hot_novels,setHotNovels]=useState([])
@@ -33,3 +33,6 @@ export default function HomePage(){
         </Container>
     )
 }
+
+
+export default HomePage;

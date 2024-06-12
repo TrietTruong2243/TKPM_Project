@@ -1,8 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import Router from './routes/section';
 import MyThemeProvider from './theme/theme';
-import { ReadingTheme } from './pages/reading-page/readingTheme';
+import {ReadingTheme} from './pages/reading-page/reading_page_theme';
 function App() {
   return (
     <MyThemeProvider>

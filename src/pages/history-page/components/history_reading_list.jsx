@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TableRow, TableCell } from '@mui/material';
-import { GetNovelByIdService, GetChapterOfNovelContent } from '../../../service/service';
-import CenteredSpinner from '../../../spinner/centered_spinner';
-import NovelSourceManager from '../../../data/novel_source_manager';
+import CenteredSpinner from '../../../components/centered_spinner';
+import NovelSourceManager from '../../../data-manager/novel_source_manager';
 
 const ReadItems = ({ searchValue }) => {
     const [novels, setNovels] = useState([]);

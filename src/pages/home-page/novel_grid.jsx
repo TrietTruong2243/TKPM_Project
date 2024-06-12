@@ -2,7 +2,7 @@ import NovelCard from "./novel_card";
 import { Container, Grid, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-export default function NovelGrid({novels}){
+function NovelGrid({novels}){
     const theme=useTheme()
     return (
         <Container maxWidth='xl'>
@@ -19,3 +19,4 @@ export default function NovelGrid({novels}){
         </Container>
     )
 }
+export default NovelGrid;

@@ -1,11 +1,11 @@
 import {Container, Typography, Stack, Pagination} from "@mui/material"
 import NovelGrid from "../home-page/novel_grid";
-import SearchingNovelsManager from "../../data/searching_novels_manager";
+import SearchingNovelsManager from "../../data-manager/searching_novels_manager";
 import { useEffect, useState } from "react";
-import CenteredSpinner from "../../spinner/centered_spinner";
+import CenteredSpinner from "../../components/centered_spinner";
 import { useNavigate } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
-export default function SearchPage(){
+function SearchPage(){
     const queryParameters = new URLSearchParams(window.location.search)
     const keyword = queryParameters.get("keyword")||"anh"
     const navigate=useNavigate();
@@ -47,3 +47,4 @@ export default function SearchPage(){
         </Container>
     )
 }
+export default SearchPage;

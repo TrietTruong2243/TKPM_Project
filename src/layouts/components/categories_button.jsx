@@ -3,9 +3,9 @@ import { ArrowDropDown } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 
 import CategoryDropdownList from "./categories_list"
-import CategoryManager from "../../data/category-manager"
+import CategoryManager from "../../data-manager/category_manager"
 
-export default  function CategoryButton(){
+function CategoryButton(){
     const category_manager=CategoryManager.getInstance();
     const [categories_data,setCategoryData]= useState([])
     const [loading,setLoading]=useState(true)
@@ -38,3 +38,5 @@ export default  function CategoryButton(){
         </IconButton>
     )
 }
+
+export default CategoryButton;

@@ -7,7 +7,7 @@ import DashBoardLayout from "../layouts/dashboard";
 import SearchPage from "../pages/search-page/search_page";
 import SettingsPage from "../pages/settings-page/settings_page";
 import NovelByCategoryPage from "../pages/category-page/category_page";
-export default function Router(){
+function Router(){
     const routes=useRoutes([
         {
             element:(
@@ -20,7 +20,6 @@ export default function Router(){
                     {path:'', element: <Navigate to='home' replace> </Navigate>},
                     {path:'home',element: <HomePage/>},
                     {path:'history', element: <HistoryPage/> },
-                    // {path:'reading/:id',element:<ReadingPage/>},
                     {path:'description/:novelId',children: [
                         {path: '',element:<DescriptionPage/>},
                         {path: 'chapter/:chapterId',element: <ReadingPage/>}
@@ -35,3 +34,4 @@ export default function Router(){
     ]);
     return routes;
 }
+export default Router;

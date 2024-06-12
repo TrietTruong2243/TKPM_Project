@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@emotion/react";
 import { isOverflown } from "@mui/x-data-grid/utils/domUtils";
 import { useNavigate } from "react-router-dom";
-import CenteredSpinner from "../../spinner/centered_spinner";
+import CenteredSpinner from "../../components/centered_spinner";
 const columns=[
     { 
         field: 'title',
@@ -38,7 +38,7 @@ const columns=[
         renderCell: (params) =>params.row.categories.map(item=><Typography marginLeft={1} color={'white'}>{item.name}</Typography>),
     }    
 ]
-export default function NovelTable({novel_data}){
+function NovelTable({novel_data}){
     const theme=useTheme()
     const navigate=useNavigate();
     const handleRowClick=(params)=>{
@@ -84,9 +84,10 @@ export default function NovelTable({novel_data}){
                 '& .MuiDataGrid-cell:focus-within': {
                     outline: 'none',
                 },
-
             }}
           />
         </Box>
       );
 }
+
+export default NovelTable;

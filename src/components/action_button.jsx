@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-export const ActionButton = ({icon, bgcolor, small = false, label, handleClick}) => {
+const ActionButton = ({icon, bgcolor, small = false, label, handleClick}) => {
     return (
         <Button 
             disableElevation
@@ -26,3 +26,5 @@ export const ActionButton = ({icon, bgcolor, small = false, label, handleClick})
         </Button>
     )
 }
+
+export default ActionButton;

@@ -1,10 +1,10 @@
 import { ButtonGroup, Box, Container,Typography , Stack} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react"
-import { ActionButton } from "../../../components/action_button";
+import ActionButton from "../../../components/action_button";
 import { useTheme } from "@emotion/react";
 import { ArrowDownward, ArrowUpward, Visibility } from "@mui/icons-material";
-import NovelSourceManager from "../../../data/novel_source_manager";
+import NovelSourceManager from "../../../data-manager/novel_source_manager";
 const ActionsBox = ({id, source_data,setData}) => {
     let novel_source_manager=NovelSourceManager.getInstance();
     const onMoveUp=()=>{
@@ -37,13 +37,13 @@ const ActionsBox = ({id, source_data,setData}) => {
         }
     }
     return (
-      <ButtonGroup component={Box}  gap={1}>
-        <ActionButton small={true} bgcolor="#181818"  icon={<ArrowUpward/>} handleClick={onMoveUp}/>
-        <ActionButton small bgcolor="#181818" icon={<ArrowDownward/>} handleClick={onMoveDown}/>
-      </ButtonGroup>)
+        <ButtonGroup component={Box}  gap={1}>
+            <ActionButton small={true} bgcolor="#181818"  icon={<ArrowUpward/>} handleClick={onMoveUp}/>
+            <ActionButton small bgcolor="#181818" icon={<ArrowDownward/>} handleClick={onMoveDown}/>
+        </ButtonGroup>)
 }
 
-export default function NovelSourceTable({sources_data}){
+function NovelSourceTable({sources_data}){
     const theme=useTheme();
     const [source_data,setData]=React.useState([...sources_data])
     const columns=[
@@ -119,3 +119,5 @@ export default function NovelSourceTable({sources_data}){
         </Container>
     )
 }
+
+export default NovelSourceTable;

@@ -4,7 +4,7 @@ import { createSearchParams, useNavigate } from "react-router-dom";
 import { Search as SearchIcon, ArrowDownwardRounded, ArrowDropDown, Layers } from "@mui/icons-material"
 import { useState } from "react";
 import { convertNameToSlug } from "../../utils/name_converter";
-export default function SearchButton(){
+function SearchButton(){
     const theme=useTheme();
     const navigate=useNavigate()
     const [keyword,setKeyWord]=useState('');
@@ -28,23 +28,29 @@ export default function SearchButton(){
             spacing={8}
         >
             <Typography fontSize={15} color='white' >Tìm kiếm</Typography>
-            <Box display='flex' alignItems='center'
+            <Box 
+                    display='flex' 
+                    alignItems='center'
                     bgcolor={theme.palette.common.white}
                     borderRadius={4}
                     px={2}
                     marginLeft={2}
                     >
 
-                        <InputBase placeholder="Tìm kiếm..." id="searchName" value={keyword} onChange={(e)=>{setKeyWord(e.target.value)}}
+                        <InputBase 
+                            placeholder="Tên truyện/tác giả..." 
+                            id="searchName" 
+                            value={keyword} 
+                            onChange={(e)=>{setKeyWord(e.target.value)}}
                             sx={{
                                 color: `${theme.palette.primary.main}`
                             }} />
                         <IconButton sx={{
-                            '& .MuiSvgIcon-root': {
-                                color: `${theme.palette.primary.main}`
-                            }
-                        }}
-                            onClick={()=>handleSearchClick()}
+                                        '& .MuiSvgIcon-root': {
+                                            color: `${theme.palette.primary.main}`
+                                        }
+                                    }}
+                                    onClick={()=>handleSearchClick()}
                         >
                             <SearchIcon />
                         </IconButton>
@@ -52,3 +58,5 @@ export default function SearchButton(){
         </Stack>
     )
 }
+
+export default SearchButton;

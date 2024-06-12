@@ -1,4 +1,4 @@
-import { GetAllChapterByNovelId, getNovelDescription,GetChapterOfNovelContent } from "../service/service";
+import { getAllChapterByNovelId, getNovelDescription,getChapterOfNovelContent } from "../service/concrete_novel_service";
 import DataManagementInterface from "./data_management_interface";
 import NovelSourceManager from "./novel_source_manager";
 
@@ -58,13 +58,13 @@ class NovelDescriptionManager extends DataManagementInterface{
         if(this.current_source===''){
             return [];
         }
-        return await GetAllChapterByNovelId(this.novel_slug,this.current_source).then(res=>{
+        return await getAllChapterByNovelId(this.novel_slug,this.current_source).then(res=>{
            
             return res;
         });
     }
     async getChapterContent(chapter_slug){
-        return await GetChapterOfNovelContent(this.novel_slug, chapter_slug, this.current_source).then((res)=>{
+        return await getChapterOfNovelContent(this.novel_slug, chapter_slug, this.current_source).then((res)=>{
             return res;
         })
     }

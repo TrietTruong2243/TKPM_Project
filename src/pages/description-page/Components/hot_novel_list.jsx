@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import CenteredSpinner from '../../../spinner/centered_spinner';
-export default function HotNovel({ hotNovels }) {
+import CenteredSpinner from '../../../components/centered_spinner';
+function HotNovel({ hotNovels }) {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [novels, setNovels] = useState([]);
@@ -45,3 +45,6 @@ export default function HotNovel({ hotNovels }) {
         </Box>
     );
 }
+
+
+export default HotNovel;
