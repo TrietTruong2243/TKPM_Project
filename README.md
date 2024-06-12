@@ -8,6 +8,7 @@
 - Các thông tin trả về theo cùng 1 kiểu dữ liệu, những thông tin không lấy được cho kết quả null, vd:
   - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
   - Hot novels _tangthuvien_ không có image.
+- Về test tự động, plugin khi được đưa vào thư mục source-plugins, file plugin sẽ được kiểm tra và tạo 1 file test tương ứng ở thư mục test-plugins, sau chạy test, file test đó được xóa.
 
 ## Hướng dẫn sử dụng
 
@@ -19,6 +20,7 @@ npm start
 ```
 
 ### Test
+Test toàn bộ source plugin đang có trong hệ thống.\
 
 ```
 npm test
@@ -107,7 +109,6 @@ _Chú thích_:\
 `format`: định dạng file cần xuất
 
 ## TODO
-- [ ] Test plugin khi được thêm vào, pass test mới add vào hệ thống.
-- [ ] Thêm model để tạo cấu trúc cho dữ liệu trả về?
+- [x] Thêm model để tạo cấu trúc cho dữ liệu trả về? ==> skip.
 - [x] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả) ==> skip.
 - [x] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm ==> dùng public image của front để thay thế.
