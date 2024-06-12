@@ -361,10 +361,12 @@ class NovelFetcher {
 
         // run test only this plugin
         console.log(`Testing plugin ${testPath}`);
-        const result = await runCLI({
+        const result = await runCLI(
+            {
                 silent: true,
                 testMatch: [testPath],
-            },[__dirname]
+            }, 
+            [path.join(__dirname, `../`)]
         );
 
         // clean up test file

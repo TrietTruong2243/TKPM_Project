@@ -19,8 +19,11 @@ npm install
 npm start
 ```
 
+_Lưu ý_: Khi khởi động server, các plugin được mặc định là hợp lệ và load thẳng vào hệ thống, do đó nên test các plugin trước khi khởi động.
+
 ### Test
-Test toàn bộ source plugin đang có trong hệ thống.\
+
+Test toàn bộ source plugin đang có trong hệ thống.
 
 ```
 npm test
@@ -84,7 +87,7 @@ http://localhost:4000/api/sources/alternative-novels?source=_&slug=_&title=_
 ```
 
 Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
-`targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).
+`targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).\
 `chapterSlug`, `chapterTitle`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
 
 ```
@@ -109,6 +112,7 @@ _Chú thích_:\
 `format`: định dạng file cần xuất
 
 ## TODO
+
 - [x] Thêm model để tạo cấu trúc cho dữ liệu trả về? ==> skip.
 - [x] Xử lí các trường hợp đặc biệt ko lấy được slug của category ở TangThuVien (Ngôn Tình, Tất cả) ==> skip.
 - [x] Hot novels của TangThuVien không cung cấp image => Cân nhắc lấy image dựa vào slug => Chậm ==> dùng public image của front để thay thế.
