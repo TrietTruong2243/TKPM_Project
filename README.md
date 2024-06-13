@@ -33,10 +33,21 @@ _Lưu ý_: Khi khởi động server, các plugin được mặc định là h�
 
 ### Test
 
-Test toàn bộ source plugin đang có trong hệ thống.
+Test toàn bộ plugin đang có trong hệ thống.
 
 ```
 npm test
+```
+
+Test toàn bộ source plugin đang có trong hệ thống.
+
+```
+npm run test:source
+```
+Test toàn bộ download plugin đang có trong hệ thống.
+
+```
+npm run test:download
 ```
 
 ### Api
