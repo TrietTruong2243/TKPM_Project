@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 function NovelCard({novel}) {
-
-    const navigate=useNavigate()
+    const default_image="images/unkowm_novel.png";
+    const image=novel.image?novel.image:default_image;
+    const navigate=useNavigate();
     const onClick=()=>{
         navigate(`/description/${novel.slug}`)
     }
@@ -19,7 +20,7 @@ function NovelCard({novel}) {
         >
             <CardMedia
             sx={{ flex:1, height:200,objectFit:'contain'}}
-            image={novel.image}
+            image={image}
             title={novel.title}
             />    
             <CardContent sx={{height:100}}>

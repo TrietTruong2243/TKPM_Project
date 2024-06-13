@@ -52,4 +52,5 @@ async function getChapterOfNovelContent(novel_id, chapter_id,source_slug) {
         console.error('There was an error making the request!', error);
     }
 }
+
 export {getNovelDescription,getChapterByPage,getAllChapterByNovelId,getChapterOfNovelContent};

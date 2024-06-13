@@ -24,7 +24,7 @@ function SearchPage(){
             search:`${createSearchParams({keyword:keyword,page:value})}`,
         });
     }
-    if(keyword.length<=3){
+    if(keyword.length<=2){
         alert('Từ khoá quá ngắn (ít nhất 3 ký tự), từ khoá mặc định là "anh"');
     }
     searching_manager.set({keyword:keyword,page:parseInt(page)})

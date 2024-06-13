@@ -26,7 +26,7 @@ function DescriptionComponent({novel,available_source}) {
                 <Typography variant="body1"><strong>Thể loại:</strong>{ novel.categories.map((genre) => genre.name).join(", ")} </Typography>
                 <Typography variant="body1"><strong>Nguồn:</strong> { available_source.map((genre) => genre.name).join(", ")}</Typography>
                 <Typography variant="body1"><strong>Trạng thái:</strong> {novel.status} </Typography>
-                {available_source[0].name&&<Typography variant="body1"><strong>Nguồn hiện tại:</strong> {available_source[0].name} </Typography>}
+                {available_source[0].name!==null&&<Typography variant="body1"><strong>Nguồn hiện tại:</strong> {available_source[0].name} </Typography>}
             </Grid>
         </Grid>
         <Box mt={3}>

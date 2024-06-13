@@ -72,7 +72,6 @@ class HotNovelManager extends DataManagementInterface{
         }
 
         let result =[...new Map(others_hot_novel.map(item =>[item["slug"], item])).values()]
-        console.log(result)
         return result;
     }
 }

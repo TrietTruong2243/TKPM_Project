@@ -42,22 +42,21 @@ class NovelDescriptionManager extends DataManagementInterface{
     async reload(){
         const source_manager=NovelSourceManager.getInstance();
         const sources=await source_manager.get()
+        let available_source=[];
 
         this.novel_info=null;
         for(let i in sources){
             const novel_info=await getNovelDescription(this.novel_slug,sources[i].slug);
             if(novel_info){
-                if (this.current_source===''){
-                    this.current_source=sources[i].slug;
-                }
                 if(this.novel_info===null){
                     this.novel_info=novel_info;
+                    this.current_source=sources[i].slug;
                 }
-                this.available_source.push(sources[i]);
+                available_source.push(sources[i]);
             }
         }
 
-        let result =[...new Map(this.available_source.map(item =>[item["slug"], item])).values()]
+        let result =[...new Map(available_source.map(item =>[item["slug"], item])).values()]
         this.available_source=[...result];
     }
 
