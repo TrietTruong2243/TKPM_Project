@@ -25,36 +25,36 @@ function ReadingPage() {
     const [allSource, setAllSource] = useState(null);
     const [allChapterSourceList, setAllChapterSourceList] = useState([]);
     const [available, setAvailable] = useState(true);
-    const [alertShown, setAlertShown] = useState(false);  // State to track if alert has been shown
+    const [alertShown, setAlertShown] = useState(false); // State to track if alert has been shown
 
     const novel_description_manager = NovelDescriptionManager.getInstance();
     const reading_history_manager = ReadingHistoryManager.getInstance();
 
-    console.log(state);
     const novelSlug = novelId;
     const chapterId = state?.chapterSlug;
     const chapterPosition = state?.chapterPosition;
-    console.log(chapterPosition);
     let sourceSlug = state?.sourceSlug;
 
     if (sourceSlug) {
         novel_description_manager.current_source = sourceSlug;
     }
 
-    novel_description_manager.set({ novel_slug: novelId });
 
     useEffect(() => {
         if (!state) return;
+        novel_description_manager.set({ novel_slug: novelId });
+        novel_description_manager.setSource(sourceSlug)
 
         setAllSource(null);
         setReadingNovel(null);
 
         reading_history_manager.saveNewReadingNovel(novelId, chapterId);
 
-        novel_description_manager.get().then(res => {
-            setAllSource(novel_description_manager.available_source);
+        const fetchNovelDescription = async () => {
+            try {
+                await novel_description_manager.get();
+                setAllSource(novel_description_manager.available_source);
 
-            if (res) {
                 if (!sourceSlug) {
                     const currentSource = novel_description_manager.current_source;
                     if (currentSource) {
@@ -67,24 +67,27 @@ function ReadingPage() {
                         });
                     }
                 } else {
+                    novel_description_manager.setSource(sourceSlug)
                     setSource(sourceSlug);
-                    novel_description_manager.getChapterContent(chapterId).then((res) => {
-                        if (res === null) {
-                            setAvailable(false);
+                    const res = await novel_description_manager.getChapterContent(chapterId);
+                    if (res === null) {
+                        setAvailable(false);
+                    } else {
+                        setReadingNovel({ ...res, chapterId });
+                        try {
+                            reading_history_manager.saveNewReadingNovel(novelId, chapterId, chapterPosition, sourceSlug, novel_description_manager.novel_info, res);
+                        } catch (error) {
+                            console.error(error);
                         }
-                        if (res !== null) {
-                            setReadingNovel({ ...res, chapterId });
-                            try {
-                                reading_history_manager.saveNewReadingNovel(novelId, chapterId, chapterPosition, sourceSlug, novel_description_manager.novel_info, res);
-                            } catch (error) {
-                                console.error(error);
-                            }
-                        }
-                    });
+                    }
                 }
+            } catch (error) {
+                console.error(error);
             }
-        });
-    }, [chapterId]);
+        };
+
+        fetchNovelDescription();
+    }, [chapterId, sourceSlug]);
 
     useEffect(() => {
         const fetchChapterSourceList = async () => {
@@ -105,28 +108,27 @@ function ReadingPage() {
             });
 
             const allData = await Promise.all(allDataPromises);
-
-            setAllChapterSourceList(allData);
+            const uniqueData = allData.filter((value, index, self) =>
+                index === self.findIndex((t) => t.sourceSlug === value.sourceSlug)
+            );
+            setAllChapterSourceList(uniqueData);
         };
 
-        if (chapterId  && allSource) {
+        if (chapterId && readingNovel && allSource) {
             fetchChapterSourceList();
         }
-    }, [chapterId, readingNovel, allSource, chapterPosition]);
+    }, [chapterId, readingNovel, allSource, novelId, chapterPosition]);
 
     useEffect(() => {
         const handleUnavailableSource = async () => {
             if (available === false && !alertShown && allChapterSourceList.length > 0) {
                 alert(`Truyện từ nguồn ${sourceSlug} không khả dụng!`);
-                setAlertShown(true);  // Mark the alert as shown
+                setAlertShown(true); // Mark the alert as shown
                 let check = 0;
 
                 for (let i = 0; i < allChapterSourceList.length; i++) {
-                    alert(!allChapterSourceList[i].error)
                     if (allChapterSourceList[i].error || allChapterSourceList[i].sourceSlug === sourceSlug) {
-                      
                         check++;
-
                     } else {
                         const selectedSource = allChapterSourceList[i];
                         alert(`Chuyển tới nguồn ${selectedSource.sourceSlug}!`);
@@ -143,7 +145,6 @@ function ReadingPage() {
 
                 if (check === allChapterSourceList.length) {
                     alert(`Không có nguồn phù hợp`);
-
                     navigate(`/description/${novelSlug}`);
                 }
             }
@@ -152,13 +153,9 @@ function ReadingPage() {
         handleUnavailableSource();
     }, [available, alertShown, allChapterSourceList, navigate, novelSlug, sourceSlug]);
 
-    if (!chapterId) {
-        return <CenteredSpinner />;
-    }
-    console.log(allChapterSourceList)
-    if (readingNovel === null) {
+    if (readingNovel === null || !novel_description_manager.novel_info) {
         if (available === false) {
-            return null;  // Don't render anything if the alert has been shown and navigation is pending
+            return null; // Don't render anything if the alert has been shown and navigation is pending
         } else {
             return <CenteredSpinner />;
         }
@@ -168,7 +165,7 @@ function ReadingPage() {
                 <Container>
                     <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} novelName={novel_description_manager.novel_info.title} />
                     <SourceComboBox sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} chapterPosition={chapterPosition} chapterTitle={readingNovel.title} allChapterSourceList={allChapterSourceList} />
-                    <ControlButtons novelId={novelId} novelTitle={novel_description_manager.novel_info.title} readingNovel={readingNovel} allChapter={allChapter} sourceValue={source} chapterPosition={chapterPosition} />
+                    <ControlButtons novelId={novelId} novelTitle={novel_description_manager.novel_info.title} readingNovel={readingNovel} sourceValue={source} chapterPosition={chapterPosition} />
                     <NovelContent readingNovel={readingNovel} />
                 </Container>
             </Box>

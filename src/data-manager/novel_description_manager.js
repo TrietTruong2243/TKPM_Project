@@ -97,5 +97,11 @@ class NovelDescriptionManager extends DataManagementInterface{
             return res;
         })
     }
+    async setSource(source){
+this.current_source = source
+    this.novel_info=await getNovelDescription(this.novel_slug,this.current_source);
+   
+
+    }
 }
 export default NovelDescriptionManager;

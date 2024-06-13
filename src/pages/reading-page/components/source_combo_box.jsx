@@ -12,7 +12,6 @@ function SourceComboBox({ novelId, chapterId, sourceList, sourceValue, chapterPo
         return <Spinner animation="border" />;
     }
 
-    console.log(allChapterSourceList);
 
     const handleChange = (event) => {
         const selectedSourceSlug = event.target.value;
