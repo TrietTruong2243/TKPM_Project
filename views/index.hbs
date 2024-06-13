@@ -6,8 +6,8 @@
                 <h3 class="card-title">Source Plugins</h3>
                 <table class="table table-bordered table-striped">
                     <thead>
-                        <tr slug="{{slug}}">
-                            <th>#</th>
+                        <tr>
+                            <th class="text-center align-middle">#</th>
                             <th>Name</th>
                             <th>URL</th>
                             <th></th>
@@ -15,11 +15,16 @@
                     </thead>
                     <tbody>
                         {{#each sourcePlugins}}
-                        <tr slug="{{slug}}">
-                            <td>{{add @index 1}}</td>
-                            <td>{{name}}</td>
-                            <td>{{baseUrl}}</td>
-                            <td><button type="button" class="btn btn-danger" id="removeSourceBtn" onclick="removePlugin('source', '{{slug}}')">Remove</button></td>
+                        <tr>
+                            <td class="text-center align-middle">{{add @index 1}}</td>
+                            <td class="align-middle">
+                                <div class="d-flex px-2 py-1 align-items-center">
+                                    <img src="{{logo}}" style="max-width: 120px;">
+                                    <p class="ps-3 mb-0">{{name}}</p>
+                                </div>
+                            </td>
+                            <td class="align-middle">{{baseUrl}}</td>
+                            <td class="align-middle"><button type="button" class="btn btn-danger" id="removeSourceBtn" plugin-type="source" plugin-name="{{slug}}" data-bs-toggle="modal" data-bs-target="#deleteModal">Remove</button></td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -41,7 +46,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th class="text-center align-middle">#</th>
                             <th>Extension</th>
                             <th></th>
                         </tr>
@@ -49,9 +54,14 @@
                     <tbody>
                         {{#each downloaderPlugins}}
                         <tr slug="{{slug}}">
-                            <td>{{add @index 1}}</td>
-                            <td>{{extension}}</td>
-                            <td><button type="button" class="btn btn-danger" onclick="removePlugin('downloader', '{{slug}}')">Remove</button></td>
+                            <td class=" text-center align-middle">{{add @index 1}}</td>
+                            <td class="ps-2 align-middle">
+                                <div class="d-flex px-2 py-1 align-items-center">
+                                    <img src="{{image}}" style="max-height: 50px;">
+                                    <p class="ps-3 mb-0">{{extension}}</p>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-danger mb-0" plugin-type="downloader" plugin-name="{{slug}}" data-bs-toggle="modal" data-bs-target="#deleteModal">Remove</button></td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -59,11 +69,33 @@
                 <p>Add new downloader plugin file</p>
                 <form action="" id="uploadDownloaderForm">
                     <input type="file" class="form-control mt-3" placeholder="Add new plugin file" id="downloaderFile">
-                    <button type="button" class="btn btn-primary mt-3" onclick="uploadDownloaderFile()">Upload File</button>
+                    <button type="button" class="btn btn-primary mt-3 mb-0" onclick="uploadDownloaderFile()">Upload File</button>
                 </form>
             </div>
         </div>
     </section>
+</div>
+
+{{!-- Modal for delete --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel"></h5>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <span class="font-weight-bold" id="delete-target-name"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                <button id="modal-delete-btn" type="button" class="btn bg-gradient-danger">Delete</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -137,4 +169,20 @@
             alert(`Error: ${error}`)
         })
     }
+
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const pluginName = button.attr('plugin-name');
+        const pluginType = button.attr('plugin-type');
+        console.log(pluginName, pluginType);
+        const modal = $(this);
+        modal.find('.modal-title').text(`Delete ${pluginName}`);
+        modal.find('#delete-target-name').text(`${pluginName}`);
+        $('#modal-delete-btn').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            removePlugin(pluginType, pluginName);
+            $('#deleteModal').modal('hide');
+        });
+    });
 </script>

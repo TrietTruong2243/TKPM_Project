@@ -73,6 +73,7 @@ const removeSourcePlugin = (req, res) => {
 		const pluginPath = path.join(__dirname, `../source-plugins/${pluginName}-plugin.js`);
 
 		if (fs.existsSync(pluginPath)) {
+            NovelFetcher.removeStrategy(pluginName);
 			fs.unlinkSync(pluginPath);
 			res.json({ status: "success", message: `Source plugin ${pluginName} has been removed` });
 			return;
@@ -139,6 +140,7 @@ const removeDownloaderPlugin = (req, res) => {
 		const pluginPath = path.join(__dirname, `../download-plugins/${pluginName}-plugin.js`);
 
 		if (fs.existsSync(pluginPath)) {
+            DownloaderFetcher.removeStrategy(pluginName);
 			fs.unlinkSync(pluginPath);
 			res.json({ status: "success", message: `Downloader plugin ${pluginName} has been removed` });
 			return;
