@@ -60,7 +60,7 @@ class DownloaderFetcher {
 
 	async fetchGetBuffer(strategyName, source, novel_slug, chapter_slug) {
 		const strategy = this.strategies[strategyName];
-		if (!strategy || typeof strategy.getCategories != "function") {
+		if (!strategy || typeof strategy.getBuffer != "function") {
 			throw new Error(`Strategy '${strategyName}' not found.`);
 		}
 		try {
