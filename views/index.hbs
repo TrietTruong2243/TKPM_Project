@@ -15,7 +15,7 @@
                     </thead>
                     <tbody>
                         {{#each sourcePlugins}}
-                        <tr>
+                        <tr slug="{{slug}}">
                             <td class="text-center align-middle">{{add @index 1}}</td>
                             <td class="align-middle">
                                 <div class="d-flex px-2 py-1 align-items-center">
@@ -23,7 +23,7 @@
                                     <p class="ps-3 mb-0">{{name}}</p>
                                 </div>
                             </td>
-                            <td class="align-middle">{{baseUrl}}</td>
+                            <td class="align-middle"><a href="{{baseUrl}}">{{baseUrl}}</a></td>
                             <td class="align-middle"><button type="button" class="btn btn-danger" id="removeSourceBtn" plugin-type="source" plugin-name="{{slug}}" data-bs-toggle="modal" data-bs-target="#deleteModal">Remove</button></td>
                         </tr>
                         {{/each}}

@@ -1,7 +1,6 @@
 import fs from "fs";
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
-import chokidar from "chokidar";
 import jest from "jest";
 import NovelStrategy from "../source-plugins/plugin-interface.js";
 const { runCLI } = jest;
@@ -341,7 +340,7 @@ class NovelFetcher {
 		const pluginFileName = path.basename(pluginPath);
 
 		// create test file for each plugin and write test code on it
-		const testCode = `import runPluginTest from './plugin-tester.js';\nimport Plugin from '../source-plugins/${pluginFileName}';\nrunPluginTest(new Plugin(), '${pluginFileName}');`;
+		const testCode = `import runPluginTest from './source-plugins-tester.js';\nimport Plugin from '../source-plugins/${pluginFileName}';\nrunPluginTest(new Plugin(), '${pluginFileName}');`;
 		const testPath = path.join(__dirname, `../test-plugins/${pluginFileName.replace(".js", ".test.js")}`);
 		fs.writeFileSync(testPath, testCode);
 

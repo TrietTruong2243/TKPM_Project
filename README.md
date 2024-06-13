@@ -3,7 +3,7 @@
 ## Một số thông tin
 
 - Port server: **4000**.
-- Sử dụng `chokidar` để watch folder `source-plugins`, cho phép thêm, xóa, sửa các file plugin mà không cần restart lại server.
+- Server có giao diện để thêm và xóa các file plugin trong hệ thống. 
 - Các nguồn truyện hiện có: Truyện Full (_truyenfull_), Mê Truyện Chữ (_metruyenchu_), Tàng Thư Viện (_tangthuvien_)
 - Các thông tin trả về theo cùng 1 kiểu dữ liệu, những thông tin không lấy được cho kết quả null, vd:
   - Danh sách truyện theo thể loại của _truyenfull_ không lấy được danh sách thể loại với tổng số chương.
@@ -49,6 +49,9 @@ Test toàn bộ download plugin đang có trong hệ thống.
 ```
 npm run test:download
 ```
+
+### Plugin management
+Plugin Management chạy trên `http://localhost:4000`, gồm các bảng hiển thị các plugin hiện hành, cho phép thêm, xóa các plugin trong khi đang chạy.
 
 ### Api
 
@@ -112,7 +115,7 @@ Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
 `chapterSlug`, `chapterTitle`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
 
 ```
-http://localhost:4000/api/sources/alternative-chapters?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
+http://localhost:4000/api/sources/alternative-chapter?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
 ```
 
 Lấy định dạng file hỗ trợ:

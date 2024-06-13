@@ -1,7 +1,6 @@
 import fs from "fs";
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
-import chokidar from "chokidar";
 import DownLoaderStrategy from "../download-plugins/download-plugin-interface.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
