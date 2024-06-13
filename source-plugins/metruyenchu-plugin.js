@@ -267,15 +267,10 @@ class MeTruyenChuStrategy extends NovelStrategy {
 			let total_pages = 1;
 			const lastElement = $(".paging a").last();
 			if (lastElement.length > 0) {
-				if(lastElement.hasClass('active')){
-					total_pages = parseInt(lastElement.text());
-				} else if (lastElement.text().includes('Cuối')){
-					const onclickFuncStr = lastElement.attr('onclick');
-					const lastPage = onclickFuncStr.match(/\((\d+),(\d+)\)/)[1];
-					total_pages = parseInt(lastPage);
-				} else if (lastElement.text().includes('›')) {
-					total_pages = parseInt(lastElement.prev().text());
-				}
+				if (lastElement.attr("onclick")) {
+					total_pages = lastElement.attr("onclick").match(/page\(\d+,\s*(\d+)\);?/)[1];
+					total_pages = parseInt(total_pages);
+				} else total_pages = parseInt(lastElement.text());
 			}
 
 			// if page is out of range, currently it returns the first page, update to get the last page
@@ -331,6 +326,11 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const genreSlug = $(genre).attr("href").replace("/the-loai/", "");
 				categories.push({ name: genreName, slug: genreSlug });
 			});
+
+			// let chapterPerPage = 0;
+			// $("#chapter-list .clearfix ul").each((index, ulEle) => {
+			// 	chapterPerPage += $(ulEle).find("li").length;
+			// });
 
 			const numChapters = $(".mLeftCol .book-info-text li").eq(2).text().replace("Số chương:", "").trim();
 
