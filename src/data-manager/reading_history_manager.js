@@ -27,9 +27,7 @@ class ReadingHistoryManager extends DataManagementInterface{
     async reload(){
         throw new Error('Missing implementation!!');
     }
-
-    //addtion methods
-    async saveNewReadingNovel(novel_slug,chapter_slug,source_slug,novel_info,chapter_content){    
+    async saveNewReadingNovel(novel_slug,chapter_slug,chapterPosition,source_slug,novel_info,chapter_content){    
         try{
             const readItems = JSON.parse(localStorage.getItem('readItems')) || {};
             if (readItems[novel_slug]) {
@@ -41,7 +39,8 @@ class ReadingHistoryManager extends DataManagementInterface{
                 sourceSlug: source_slug, 
                 novelStatus: novel_info.status, 
                 chapterId: chapter_slug, 
-                chapterTitle: chapter_content.title
+                chapterTitle: chapter_content.title,
+                chapterPosition: chapterPosition
             };
             localStorage.setItem('readItems', JSON.stringify(readItems));
         }catch(error){

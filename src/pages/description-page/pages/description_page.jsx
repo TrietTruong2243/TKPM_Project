@@ -18,7 +18,6 @@ function DescriptionPage() {
     const [source_data, setSourceData] = useState([]);
     const { novelId } = useParams();    
     const [novel, setNovel] = useState(null);
-    const [allChapters, setAllChapters] = useState([]);
     const [hotNovels, setHotNovels] = useState([]);
     const [source, setSource] = useState(null)
     const theme = createTheme({
@@ -47,15 +46,12 @@ function DescriptionPage() {
 
     useEffect(() => {      
         setNovel(null)
-        setAllChapters([])
         if (source_data.length > 0) { // Ensure source_data is available
             try {
                 novel_description_manager.get().then(res=>{
                     setNovel(res);
-                    novel_description_manager.getAllChapter().then((res)=>{
-                       
-                        setAllChapters(res);
-                    })
+                    setSource(novel_description_manager.current_source)
+                  
                 })
             } catch (error) {
                 console.error('Error fetching novel and chapters:', error);
@@ -71,7 +67,7 @@ function DescriptionPage() {
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={8}>
                             <DescriptionComponent novel={novel} available_source={novel_description_manager.available_source}></DescriptionComponent>
-                            <AllChapters all_chapters={allChapters} source = {novel_description_manager.current_source}></AllChapters>
+                            <AllChapters source = {novel_description_manager.current_source}></AllChapters>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <HotNovel hotNovels={hotNovels}></HotNovel>

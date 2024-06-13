@@ -18,6 +18,7 @@ async function getChapterByPage(novel_id,source_slug,page){
     try{
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source_slug}/novels/${novel_id}/chapters?page=${page}`);
         const data = response.data.data.data;
+        console.log(data)
         return data;
     }
     catch(error)
@@ -25,7 +26,21 @@ async function getChapterByPage(novel_id,source_slug,page){
         return null;
     }
 }
-
+async function getMetaChapterByNovel(novelId,sourceSlug){
+    try{
+        console.log(novelId, sourceSlug)
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${sourceSlug}/novels/${novelId}/chapters?page=${1}`);
+        console.log(response)
+        const data = response.data.data.data.meta;
+        console.log(data)
+        return data;
+    }
+    catch(error)
+    {
+        console.log(error)
+        return null;
+    }
+}
 async function getAllChapterByNovelId(novel_id, source_slug) {
     try {
         const first_response = await getChapterByPage(novel_id,source_slug,1);
@@ -50,7 +65,7 @@ async function getChapterOfNovelContent(novel_id, chapter_id,source_slug) {
         return data;
     } catch (error) {
         console.error('There was an error making the request!', error);
+        return null
     }
 }
-
-export {getNovelDescription,getChapterByPage,getAllChapterByNovelId,getChapterOfNovelContent};
+export {getNovelDescription,getChapterByPage,getAllChapterByNovelId,getChapterOfNovelContent,getMetaChapterByNovel};

@@ -3,12 +3,13 @@ import { TableRow, TableCell } from '@mui/material';
 
 import CenteredSpinner from '../../../components/centered_spinner';
 import NovelSourceManager from '../../../data-manager/novel_source_manager';
+import { useNavigate } from 'react-router-dom';
 
 const ReadItems = ({ search_value }) => {
     const [novels, setNovels] = useState([]);
     const [loading, setLoading] = useState(true);
     const [source_data, setSourceData] = useState([]);
-
+    const navigate = useNavigate();
     let novel_source_manager = NovelSourceManager.getInstance();
 
     useEffect(() => {
@@ -16,6 +17,7 @@ const ReadItems = ({ search_value }) => {
             setSourceData([...res]);
         });
     }, []);
+
     useEffect(() => {
         setLoading(true); // Set loading to true when searchValue changes
 
@@ -24,15 +26,10 @@ const ReadItems = ({ search_value }) => {
 
         const fetchNovelData = async () => {
             const novel_data_array = await Promise.all(
-                novel_ids.map(async (novel_id) => {
-                    const {novelImage ,novelTitle, sourceSlug, novelStatus,chapterId,  chapterTitle} = stored_items[novel_id]; 
-
-                    console.log(stored_items[novel_id])
-                    // const novel = await GetNovelByIdService(novelId, sourceData);
-
+                novel_ids.map(async (novelId) => {
+                    const { novelImage, novelTitle, sourceSlug, novelStatus, chapterId, chapterTitle, chapterPosition } = stored_items[novelId];
                     const source = source_data.find((value) => value.slug === sourceSlug);
-                    // const chapter = await GetChapterOfNovelContent(novelId, chapterId, sourceSlug);
-                    return { novel_id, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle };
+                    return { novelId, novelImage, novelTitle, source, novelStatus, chapterId, chapterTitle, chapterPosition };
                 })
             );
 
@@ -66,18 +63,34 @@ const ReadItems = ({ search_value }) => {
         return <CenteredSpinner />;
     }
 
+    const handleChapterClick = (novelId, chapterId, chapterPosition, sourceSlug) => {
+        navigate(`/description/${novelId}/chapter`, {
+            state: {
+                chapterSlug: chapterId,
+                chapterPosition: chapterPosition,
+                sourceSlug: sourceSlug,
+            },
+        });
+    };
+
     return (
         <>
-            {novels.map(({ novel_id, novelImage, novelTitle, source,novelStatus, chapterId,  chapterTitle }, index) => (
+            {novels.map(({ novelId, novelImage, novelTitle, source, novelStatus, chapterId, chapterTitle, chapterPosition }, index) => (
                 <TableRow key={index}>
                     <TableCell><img style={{ width: '100px', height: '150px' }} src={novelImage} alt={novelTitle} /></TableCell>
                     <TableCell style={{ color: '#fff' }}>{novelTitle}</TableCell>
                     <TableCell>{source.name}</TableCell>
                     <TableCell>{novelStatus}</TableCell>
-                    <TableCell><a style={{ color: '#fff' }} href={`description/${novel_id}/chapter/${chapterId}?source=${source.slug}`}>{chapterTitle}</a></TableCell>
+                    <TableCell>
+                        <div
+                            onClick={() => handleChapterClick(novelId, chapterId, chapterPosition, source.slug)}
+                            style={{ color: '#fff', cursor: 'pointer' }}
+                        >
+                            {chapterTitle}
+                        </div>
+                    </TableCell>
                 </TableRow>
-            )
-        )}
+            ))}
         </>
     );
 };
