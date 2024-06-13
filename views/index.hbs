@@ -1,0 +1,91 @@
+<div class="container">
+    <!-- Source Plugin Section -->
+    <section class="mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Source Plugins</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr slug="{{slug}}">
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each sourcePlugins}}
+                        <tr slug="{{slug}}">
+                            <td>{{add @index 1}}</td>
+                            <td>{{name}}</td>
+                            <td>{{baseUrl}}</td>
+                            <td><button type="button" class="btn btn-danger" id="removeSourceBtn">Remove</button></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <p>Add new source plugin file</p>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" class="form-control mt-3" placeholder="Add new plugin file" id="sourceFile" name="sourceFile">
+                    <button type="button" class="btn btn-primary mt-3" onclick="uploadFile()">Upload File</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Downloader Plugin Section -->
+    <section>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Downloader Plugin</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Extension</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each downloaderPlugins}}
+                        <tr slug="{{slug}}">
+                            <td>{{add @index 1}}</td>
+                            <td>{{extension}}</td>
+                            <td><button type="button" class="btn btn-danger">Remove</button></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <p>Add new downloader plugin file</p>
+                <form action="" id="uploadDownloaderForm">
+                    <input type="file" class="form-control mt-3" placeholder="Add new plugin file" id="downloaderFile">
+                    <button type="button" class="btn btn-primary mt-3">Upload File</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function uploadFile() {
+        const formData = new FormData();
+        const fileInput = document.getElementById('sourceFile');
+        formData.append('sourceFile', fileInput.files[0]);
+
+        fetch('/api/plugins/sources/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(`${data.message}. Refresh the page to see the changes`);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert('Error');
+            });
+    }
+</script>
