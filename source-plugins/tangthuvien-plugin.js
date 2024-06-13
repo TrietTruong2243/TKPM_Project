@@ -402,7 +402,7 @@ class TangThuVienStrategy extends NovelStrategy {
 				const authorSlug = authorElement.attr("href").replace(`${this.baseUrl}/tac-gia?author=`, "");
 				const authorName = authorElement.text();
 
-				const author = { authorName, authorSlug };
+				const author = { name: authorName, slug: authorSlug };
 				authors.push(author);
 			});
 

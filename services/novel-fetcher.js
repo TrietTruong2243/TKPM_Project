@@ -287,6 +287,7 @@ class NovelFetcher {
 			let targetChapters;
 			let targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
 			if (!targetChapter) {
+				console.log(`Searching for chapter '${chapterTitle}' in page ${targetPage} in '${targetNovelSlug}' of '${targetStrategy}`);
 				targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
 				targetChapter = targetChapters.find((chapter) => {
 					const searchedTitle = chapter.title.toLowerCase();
@@ -300,6 +301,8 @@ class NovelFetcher {
 
 			// if the target chapter is not found in the current page, fetch the previous and next pages just in case
 			if (!targetChapter) {
+				console.log("Chapter not found in the current page. Fetching previous and next pages.");
+
 				const mostPrevPage = Math.max(1, targetPage - pageErrorBetweenSources);
 				const mostNextPage = targetPage + pageErrorBetweenSources; // todo: error handling when mostNextPage > total_pages
 
@@ -322,11 +325,18 @@ class NovelFetcher {
 
 			// if not found again, return the chapter in relative position
 			if (!targetChapter) {
-				console.log("Chapters not found in pages near by. Return the chapter in relative position.");
+				console.log("Chapter not found in pages nearby. Returning chapter in relative position.");
 				targetChapter = targetChapters.find((chapter, index) => {
 					return index + 1 === chapterPosition % strategy.maxNumChaptersPerPage;
 				});
 			}
+
+			// if still not found, return the first chapter
+			// if (!targetChapter) {
+			// 	console.log("Chapter not found in relative position. Returning the first chapter.");
+			// 	targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, 1)).chapters;
+			// 	targetChapter = targetChapters[0];
+			// }
 
 			return targetChapter;
 		} catch (error) {
