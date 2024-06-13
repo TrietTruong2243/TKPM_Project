@@ -254,7 +254,7 @@ class NovelFetcher {
 				throw new Error(`Strategy '${targetStrategy}' not found.`);
 			}
 
-			// check if the target novel exists, if not, return empty array
+			// check if the target novel exists, if not, return null
 			let targetNovel;
 			try {
 				targetNovel = await strategy.getNovelBySlug(targetNovelSlug);
@@ -264,21 +264,14 @@ class NovelFetcher {
 			}
 
 			let targetChapter;
-			// check the chapter slug first
+			// check the chapter slug first, regardless of chapter
 			try {
 				targetChapter = await strategy.getChapterContent(targetNovelSlug, chapterSlug);
-				const searchedTitle = targetChapter.title.toLowerCase();
-				if (
-					searchedTitle === chapterTitle ||
-					searchedTitle.includes(chapterTitle) ||
-					chapterTitle.includes(searchedTitle)
-				) {
-					return {
-						title: targetChapter.title,
-						slug: targetChapter.slug,
-						position: chapterPosition, // not correct position but it is most likely to be correct
-					};
-				}
+				return {
+					title: targetChapter.title,
+					slug: targetChapter.slug,
+					position: chapterPosition, // not correct position but it is most likely to be correct
+				};
 			} catch (error) {
 				console.log(`Chapter '${chapterSlug}' not found in '${targetNovelSlug}' of '${targetStrategy}'.`);
 			}
