@@ -9,6 +9,7 @@ import sourceRouter from "./routes/sources.r.js";
 import categoryRouter from "./routes/categories.r.js";
 import novelRouter from "./routes/novel.r.js";
 import chapterRouter from "./routes/chapters.r.js";
+import pluginRouter from "./routes/plugins.r.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -31,6 +32,7 @@ app.use("/api/:source/novels", novelRouter);
 app.use("/api/:source/categories", categoryRouter);
 app.use("/api/sources", sourceRouter);
 app.use("/api/:source/download", downloaderRouter);
+app.use("/api/plugins", pluginRouter);
 
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
