@@ -337,46 +337,6 @@ class NovelFetcher {
 		}
 	}
 
-	watchPlugins() {
-		const watcher = chokidar.watch(path.join(__dirname, "../source-plugins"), {
-			persistent: true,
-			ignoreInitial: true,
-		});
-		watcher
-			.on("add", async (pluginPath) => {
-				console.log(`File ${pluginPath} has been added`);
-				const strategyName = path.basename(pluginPath, "-plugin.js");
-				if (pluginPath.endsWith("plugin.js")) {
-					// test the plugin before loading
-					try {
-						const testResult = await this.testPlugin(pluginPath);
-						if (testResult) {
-							this.loadStrategyWithPath(pluginPath);
-						} else {
-							console.log(`Plugin ${strategyName} failed the test and was not loaded.`);
-						}
-					} catch (error) {
-						console.error(`Error testing plugin ${strategyName}:`, error);
-					}
-				}
-			})
-			.on("change", (pluginPath) => {
-				console.log(`File ${pluginPath} has been changed`);
-				if (pluginPath.endsWith("plugin.js")) {
-					this.loadStrategyWithPath(pluginPath);
-				}
-			})
-			.on("unlink", (pluginPath) => {
-				console.log(`File ${pluginPath} has been removed`);
-				if (pluginPath.endsWith("plugin.js")) {
-					const strategyName = path.basename(pluginPath, "-plugin.js");
-					this.removeStrategy(strategyName);
-				}
-			});
-
-		novelFetcher.loadStrategies(); // initial load
-	}
-
 	async testPlugin(pluginPath) {
 		const pluginFileName = path.basename(pluginPath);
 
@@ -403,6 +363,6 @@ class NovelFetcher {
 }
 
 const novelFetcher = new NovelFetcher();
-novelFetcher.watchPlugins();
+await novelFetcher.loadStrategies();
 
 export default novelFetcher;
