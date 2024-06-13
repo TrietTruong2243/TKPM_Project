@@ -4,6 +4,8 @@ import NovelSourceManager from "./novel_source_manager";
 
 let instance;
 class CategoryManager extends DataManagementInterface{
+
+    //constructor group
     constructor(){
         if(instance){
             throw new Error("You can only create one instance!");
@@ -18,6 +20,9 @@ class CategoryManager extends DataManagementInterface{
         }
         return new CategoryManager();
     }
+
+
+    //override DataManagementInterface
     async get(){
         await this.reload();
         return this.categories_list;
@@ -37,5 +42,7 @@ class CategoryManager extends DataManagementInterface{
         let result =[...new Map(categories_list.map(item =>[item["slug"], item])).values()]
         this.categories_list=result;
     }
+
+    //addition method
 }
 export default CategoryManager;

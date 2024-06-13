@@ -5,6 +5,8 @@ import NovelSourceManager from "./novel_source_manager";
 
 let instance;
 class HotNovelManager extends DataManagementInterface{
+    
+    //constructor group
     constructor(){
         if(instance){
             throw new Error('You can only create 1 instance!')
@@ -19,6 +21,8 @@ class HotNovelManager extends DataManagementInterface{
         }
         return new HotNovelManager();
     }
+
+    //override DataManagementInterface
     async get(){
         await this.reload();
         return this.hot_novels;
@@ -30,18 +34,25 @@ class HotNovelManager extends DataManagementInterface{
     async reload(){
         let source_manager=NovelSourceManager.getInstance();
         let sources=await source_manager.get();
+
         if (!sources || sources.length<=0){
             return [];
         }
+
         let hot_novels=await getHotNovels(sources[0].slug);
         this.hot_novels=[...new Map(hot_novels.map(item =>[item["slug"], item])).values()];
     }
+
+
+    //addition method
     async getOtherSourceHotNovel(){
         let source_manager=NovelSourceManager.getInstance();
         let sources=await source_manager.get();
+
         if (!sources || sources.length<=1){
             return [];
         }
+
         let others_hot_novel=[];
         for(let i=1;i<sources.length;i++){
             let hot_novels=await getHotNovels(sources[i].slug);
@@ -59,7 +70,7 @@ class HotNovelManager extends DataManagementInterface{
                 }
             }
         }
-        console.log(others_hot_novel)
+
         let result =[...new Map(others_hot_novel.map(item =>[item["slug"], item])).values()]
         console.log(result)
         return result;

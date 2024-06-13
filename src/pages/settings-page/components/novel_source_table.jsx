@@ -1,17 +1,19 @@
 import { ButtonGroup, Box, Container,Typography , Stack} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import * as React from "react"
-import ActionButton from "../../../components/action_button";
 import { useTheme } from "@emotion/react";
-import { ArrowDownward, ArrowUpward, Visibility } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+
+import ActionButton from "../../../components/action_button";
 import NovelSourceManager from "../../../data-manager/novel_source_manager";
 const ActionsBox = ({id, source_data,setData}) => {
+
     let novel_source_manager=NovelSourceManager.getInstance();
+
     const onMoveUp=()=>{
         if (id>1){   
             source_data[id-1].id--
             source_data[id-2].id++
-            console.log(source_data)
             const temp=[...source_data]
             const moved_down_row=temp[id-2]
             temp[id-2]=temp[id-1]
@@ -22,11 +24,9 @@ const ActionsBox = ({id, source_data,setData}) => {
         }
     }
     const onMoveDown=()=>{
-        console.log(id,source_data.length)
         if (id<source_data.length){
             source_data[id-1].id++
             source_data[id].id--
-            console.log(source_data)
             const temp=[...source_data]
             const moved_down_row=temp[id]
             temp[id]=temp[id-1]
@@ -74,6 +74,7 @@ function NovelSourceTable({sources_data}){
 
         }
     ]
+    
     return (
         <Container>
             <Typography fontSize={20}>

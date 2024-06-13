@@ -1,15 +1,16 @@
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import { Box, CardContent, IconButton, Stack, Typography, alpha, useTheme } from '@mui/material';
-import { redirect, useNavigate } from 'react-router-dom';
+import {  CardContent,Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 function NovelCard({novel}) {
-    const theme = useTheme();
+
     const navigate=useNavigate()
     const onClick=()=>{
         navigate(`/description/${novel.slug}`)
     }
+
     return (
         <Card 
             raised

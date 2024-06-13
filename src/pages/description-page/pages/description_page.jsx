@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import DescriptionComponent from '../components/description_components.jsx';
 import HotNovel from '../components/hot_novel_list.jsx';
 import AllChapters from '../components/all_chapter_box.jsx';
@@ -15,12 +16,24 @@ function DescriptionPage() {
     const hot_novels_manager = HotNovelManager.getInstance();
     const novel_description_manager=NovelDescriptionManager.getInstance();
     const [source_data, setSourceData] = useState([]);
-    const { novelId } = useParams();
-    
+    const { novelId } = useParams();    
     const [novel, setNovel] = useState(null);
-    const [allChapters, setAllChapters] = useState([]);
     const [hotNovels, setHotNovels] = useState([]);
     const [source, setSource] = useState(null)
+    const theme = createTheme({
+        palette: {
+            mode: 'dark',
+            background: {
+                default: '#000',
+                paper: '#333',
+            },
+            text: {
+                primary: '#fff',
+            },
+        },
+    });
+
+
     novel_description_manager.set({novel_slug:novelId})
     useEffect(() => {
         novel_source_manager.get().then(res => {
@@ -46,18 +59,7 @@ function DescriptionPage() {
         }        
     }, [novelId, source_data,source]); // Add source_data as a dependency
 
-    const theme = createTheme({
-        palette: {
-            mode: 'dark',
-            background: {
-                default: '#000',
-                paper: '#333',
-            },
-            text: {
-                primary: '#fff',
-            },
-        },
-    });
+    
     return (
         <ThemeProvider theme={theme}>
             <Container maxWidth="lg" sx={{ mt: 4 }}>

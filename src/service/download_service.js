@@ -10,20 +10,22 @@ async function getAllDownloadType(source){
         return [];
     }
 }
-async function getNovelDownload(source,format,novelSlug, chapterSlug,novelName,chapterName,extension) {
+async function getNovelDownload(source,format,novel_slug, chapter_slug,novel_name,chapter_name,extension) {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/download/${format}/${novelSlug}/${chapterSlug}`, { responseType: 'blob' })
-        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        const fileLink = document.createElement('a');
-        fileLink.href = fileURL;
-        const fileName = novelName + " - " + chapterName + extension;
-        fileLink.setAttribute('download', fileName);
-        fileLink.setAttribute('target', '_blank');
-        document.body.appendChild(fileLink);
-        fileLink.click();
-        fileLink.remove();
+        console.log(source,format,novel_slug, chapter_slug,novel_name,chapter_name,extension)
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/${source}/download/${format}/${novel_slug}/${chapter_slug}`, { responseType: 'blob' })
+        const file_url = window.URL.createObjectURL(new Blob([response.data]));
+        const file_link = document.createElement('a');
+        file_link.href = file_url;
+        const fileName = novel_name + " - " + chapter_name + extension;
+        file_link.setAttribute('download', fileName);
+        file_link.setAttribute('target', '_blank');
+        document.body.appendChild(file_link);
+        file_link.click();
+        file_link.remove();
         return true;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }

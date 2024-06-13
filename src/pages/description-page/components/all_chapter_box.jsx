@@ -3,14 +3,14 @@ import { Box, Typography, Paper, List, ListItem, ListItemText, Pagination, Circu
 import { useNavigate } from "react-router-dom";
 import NovelDescriptionManager from '../../../data-manager/novel_description_manager';
 
-function AllChapters({ allChapters, source }) {
+function AllChapters({ all_chapters, source }) {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [displayedChapters, setDisplayedChapters] = useState([]);
     const instance = NovelDescriptionManager.getInstance();
     const [meta, setMeta] = useState(null);
     const [chaptersPerPage, setChaptersPerPage] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+    const [is_loading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchMeta = async () => {
@@ -77,7 +77,7 @@ function AllChapters({ allChapters, source }) {
         <Box mt={4} sx={{ border: 1 }}>
             <Paper elevation={2} sx={{ p: 2 }}>
                 <Typography variant="h6" align="center">Danh sách chương</Typography>
-                {isLoading ? (
+                {is_loading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                         <CircularProgress />
                     </Box>

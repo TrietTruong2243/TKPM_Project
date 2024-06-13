@@ -1,10 +1,13 @@
 // src/App.js
 import React, { useState } from 'react';
-import "../../../styles/history_page.css";
-import { Container, CssBaseline, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Container, CssBaseline, Typography, Box, Grid, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+
 import ReadItems from '../components/history_reading_list';
+import "../../../styles/history_page.css";
+
+
 function HistoryPage() {
-    const [searchValue, setSearchValue] = useState(1);
+    const [search_value, setSearchValue] = useState(1);
 
     const updateSearchType = (event) => {
         setSearchValue(event.target.value);
@@ -29,7 +32,7 @@ function HistoryPage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <ReadItems searchValue={searchValue} />
+                                    <ReadItems search_value={search_value} />
                                 </TableBody>
                             </Table>
                         </TableContainer>

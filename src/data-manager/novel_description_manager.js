@@ -4,6 +4,8 @@ import NovelSourceManager from "./novel_source_manager";
 
 let instance;
 class NovelDescriptionManager extends DataManagementInterface{
+    
+    //constructor group
     constructor(){
         if(instance){
             throw new Error('You can only create 1 instance')
@@ -21,6 +23,8 @@ class NovelDescriptionManager extends DataManagementInterface{
         }
         return new NovelDescriptionManager();
     }
+
+    //override DataManagementInterface
     async get(){
         await this.reload();
         return this.novel_info;
@@ -36,9 +40,10 @@ class NovelDescriptionManager extends DataManagementInterface{
     async save(){
     }
     async reload(){
-        this.novel_info=null;
         const source_manager=NovelSourceManager.getInstance();
         const sources=await source_manager.get()
+
+        this.novel_info=null;
         for(let i in sources){
             const novel_info=await getNovelDescription(this.novel_slug,sources[i].slug);
             if(novel_info){
@@ -51,9 +56,12 @@ class NovelDescriptionManager extends DataManagementInterface{
                 this.available_source.push(sources[i]);
             }
         }
+
         let result =[...new Map(this.available_source.map(item =>[item["slug"], item])).values()]
         this.available_source=[...result];
     }
+
+    //addition method
     async getAllChapter(){
         if(this.current_source===''){
             return [];

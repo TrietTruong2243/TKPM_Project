@@ -1,10 +1,12 @@
-import {Container, Typography, Stack, Pagination} from "@mui/material"
-import NovelGrid from "../../home-page/components/novel_grid";
-import SearchingNovelsManager from "../../../data-manager/searching_novels_manager";
-import { useEffect, useState } from "react";
-import CenteredSpinner from "../../../components/centered_spinner";
+import {Container, Typography, Stack, Pagination} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import NovelGrid from "../../home-page/components/novel_grid";
+import SearchingNovelsManager from "../../../data-manager/searching_novels_manager";
+import CenteredSpinner from "../../../components/centered_spinner";
+
 function SearchPage(){
     const queryParameters = new URLSearchParams(window.location.search)
     const keyword = queryParameters.get("keyword")||"anh"
@@ -14,12 +16,16 @@ function SearchPage(){
     let searching_manager=SearchingNovelsManager.getInstance();
     const [searched_novels,setSearchedNovel]=useState([]);
     const [loading,setLoading]=useState(true);
+
     const handleChangePageClick=(event,value)=>{
         setCurrentPage(value)
         navigate({
             pathname:'/search',
             search:`${createSearchParams({keyword:keyword,page:value})}`,
         });
+    }
+    if(keyword.length<=3){
+        alert('Từ khoá quá ngắn (ít nhất 3 ký tự), từ khoá mặc định là "anh"');
     }
     searching_manager.set({keyword:keyword,page:parseInt(page)})
     useEffect(()=>{
@@ -30,6 +36,7 @@ function SearchPage(){
             setCurrentPage(parseInt(searching_manager.page))
         })
     },[keyword,page])
+    
     if (loading){
         return <CenteredSpinner/>;
     }

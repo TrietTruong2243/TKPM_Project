@@ -1,6 +1,8 @@
 import DataManagementInterface from "./data_management_interface";
 let instance;
 class ReadingHistoryManager extends DataManagementInterface{
+
+    //constructor group
     constructor(){
         if(instance){
             throw new Error('You can only create 1 instance!!')
@@ -14,6 +16,8 @@ class ReadingHistoryManager extends DataManagementInterface{
         }
         return new ReadingHistoryManager();
     }
+
+    //override DataManagementInterface
     async get(){
     }
     async set(params){

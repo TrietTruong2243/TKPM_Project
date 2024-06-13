@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, Typography, Grid} from '@mui/material';
-import DownloadIcon from '@mui/icons-material/Download';
 
 function DescriptionComponent({novel,available_source}) {
     if (!novel) {
-        return <Typography variant="body1">Loading...</Typography>;
+        return (
+            <Typography variant="body1">Loading...</Typography>
+        );
     }
     return (
     <Box>

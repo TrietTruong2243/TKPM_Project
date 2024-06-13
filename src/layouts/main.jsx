@@ -1,7 +1,7 @@
-import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
+
 function Main({children}) {
-    const theme=useTheme()
+
     return (
         <Box
             component='main'

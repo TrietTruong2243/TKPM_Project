@@ -3,6 +3,8 @@ import DataManagementInterface from "./data_management_interface";
 
 let instance;
 class DownloadTypeManager extends DataManagementInterface{
+
+    //constructor group
     constructor(){
         if(instance){
             throw new Error('You can only create 1 instance!')
@@ -18,6 +20,8 @@ class DownloadTypeManager extends DataManagementInterface{
         }
         return new DownloadTypeManager();
     }
+
+    //override DataManagementInterface
     async get(){
         await this.reload();
         return this.download_types;
@@ -34,6 +38,9 @@ class DownloadTypeManager extends DataManagementInterface{
         let download_types=await getAllDownloadType(this.source_slug);
         this.download_types=[...download_types];
     }
+
+
+    //addition method
     async downloadNovel(source_slug, format_slug,novel_slug, chapter_slug,novel_name, chapter_name,extension){
         let download = await getNovelDownload(source_slug,format_slug,novel_slug,chapter_slug,novel_name, chapter_name,extension);
         return download;            

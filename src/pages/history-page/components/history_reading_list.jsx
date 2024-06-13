@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { TableRow, TableCell } from '@mui/material';
+
 import CenteredSpinner from '../../../components/centered_spinner';
 import NovelSourceManager from '../../../data-manager/novel_source_manager';
 import { useNavigate } from 'react-router-dom';
 
-const ReadItems = ({ searchValue }) => {
+const ReadItems = ({ search_value }) => {
     const [novels, setNovels] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [sourceData, setSourceData] = useState([]);
+    const [source_data, setSourceData] = useState([]);
     const navigate = useNavigate();
-    let novelSourceManager = NovelSourceManager.getInstance();
+    let novel_source_manager = NovelSourceManager.getInstance();
 
     useEffect(() => {
-        novelSourceManager.get().then(res => {
+        novel_source_manager.get().then(res => {
             setSourceData([...res]);
         });
     }, []);
@@ -20,43 +21,43 @@ const ReadItems = ({ searchValue }) => {
     useEffect(() => {
         setLoading(true); // Set loading to true when searchValue changes
 
-        const storedItems = JSON.parse(localStorage.getItem('readItems')) || {};
-        const novelIds = Object.keys(storedItems);
+        const stored_items = JSON.parse(localStorage.getItem('readItems')) || {};
+        const novel_ids = Object.keys(stored_items);
 
         const fetchNovelData = async () => {
-            const novelDataArray = await Promise.all(
-                novelIds.map(async (novelId) => {
-                    const { novelImage, novelTitle, sourceSlug, novelStatus, chapterId, chapterTitle, chapterPosition } = storedItems[novelId];
-                    const source = sourceData.find((value) => value.slug === sourceSlug);
+            const novel_data_array = await Promise.all(
+                novel_ids.map(async (novelId) => {
+                    const { novelImage, novelTitle, sourceSlug, novelStatus, chapterId, chapterTitle, chapterPosition } = stored_items[novelId];
+                    const source = source_data.find((value) => value.slug === sourceSlug);
                     return { novelId, novelImage, novelTitle, source, novelStatus, chapterId, chapterTitle, chapterPosition };
                 })
             );
 
             // Sort novels based on searchValue
-            let sortedNovels = [...novelDataArray];
-            switch (searchValue) {
+            let sorted_novels = [...novel_data_array];
+            switch (search_value) {
                 case 1:
-                    sortedNovels.reverse();
+                    sorted_novels.reverse();
                     break;
                 case 3:
-                    sortedNovels.sort((a, b) => a.novelTitle.localeCompare(b.novelTitle));
+                    sorted_novels.sort((a, b) => a.novelTitle.localeCompare(b.novelTitle));
                     break;
                 case 4:
-                    sortedNovels.sort((a, b) => b.novelTitle.localeCompare(a.novelTitle));
+                    sorted_novels.sort((a, b) => b.novelTitle.localeCompare(a.novelTitle));
                     break;
                 default:
                     break;
             }
-            setNovels(sortedNovels);
+            setNovels(sorted_novels);
             setLoading(false);
         };
 
-        if (sourceData.length > 0) {
+        if (source_data.length > 0) {
             fetchNovelData();
         } else {
             setLoading(false);
         }
-    }, [searchValue, sourceData]);
+    }, [search_value, source_data]);
 
     if (loading) {
         return <CenteredSpinner />;
