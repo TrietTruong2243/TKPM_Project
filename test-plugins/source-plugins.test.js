@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import runPluginTest from "./plugin-tester";
+import runPluginTest from "./source-plugins-tester";
 
 // Function to load plugin synchronously
 function loadPluginSync() {
