@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // the error of a chapter position in different sources
 // be used to fetch the previous pages and next pages (the number of pages is specific) of the calculated page just in case. These are be able to contain the target chapter.
 // Eg: novel 'Ngạo thế đan thần' in MêTruyệnChữ has chapter 0 but the others do not.
-const pageErrorBetweenSources = 1;
+const pageErrorBetweenSources = 0;
 
 class NovelFetcher {
 	constructor() {
@@ -240,6 +240,7 @@ class NovelFetcher {
 		// chapterSlug, chapterTitle, chapterPosition in the current source
 		// NOTE: the targetStrategy and targetSource are available (normally use fetchAlternativeNovels to get them)
 
+		chapterPosition = parseInt(chapterPosition);
 		try {
 			chapterTitle = chapterTitle.toLowerCase();
 
@@ -253,7 +254,7 @@ class NovelFetcher {
 				throw new Error(`Strategy '${targetStrategy}' not found.`);
 			}
 
-			// check if the target novel exists, if not, return empty array
+			// check if the target novel exists, if not, return null
 			let targetNovel;
 			try {
 				targetNovel = await strategy.getNovelBySlug(targetNovelSlug);
@@ -263,29 +264,23 @@ class NovelFetcher {
 			}
 
 			let targetChapter;
-			// check the chapter slug first
+			// check the chapter slug first, regardless of chapter
 			try {
 				targetChapter = await strategy.getChapterContent(targetNovelSlug, chapterSlug);
-				const searchedTitle = targetChapter.title.toLowerCase();
-				if (
-					searchedTitle === chapterTitle ||
-					searchedTitle.includes(chapterTitle) ||
-					chapterTitle.includes(searchedTitle)
-				) {
-					return {
-						title: targetChapter.title,
-						slug: targetChapter.slug,
-						position: chapterPosition, // not correct position but it is most likely to be correct
-					};
-				}
+				return {
+					title: targetChapter.title,
+					slug: targetChapter.slug,
+					position: chapterPosition, // not correct position but it is most likely to be correct
+				};
 			} catch (error) {
 				console.log(`Chapter '${chapterSlug}' not found in '${targetNovelSlug}' of '${targetStrategy}'.`);
 			}
 
 			// get chapters in the page that is most likely to contain the target chapter
 			let targetChapters;
+			let targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
 			if (!targetChapter) {
-				const targetPage = Math.ceil(chapterPosition / strategy.maxNumChaptersPerPage);
+				console.log(`Searching for chapter '${chapterTitle}' in page ${targetPage} in '${targetNovelSlug}' of '${targetStrategy}`);
 				targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, targetPage)).chapters;
 				targetChapter = targetChapters.find((chapter) => {
 					const searchedTitle = chapter.title.toLowerCase();
@@ -299,6 +294,8 @@ class NovelFetcher {
 
 			// if the target chapter is not found in the current page, fetch the previous and next pages just in case
 			if (!targetChapter) {
+				console.log("Chapter not found in the current page. Fetching previous and next pages.");
+
 				const mostPrevPage = Math.max(1, targetPage - pageErrorBetweenSources);
 				const mostNextPage = targetPage + pageErrorBetweenSources; // todo: error handling when mostNextPage > total_pages
 
@@ -321,11 +318,18 @@ class NovelFetcher {
 
 			// if not found again, return the chapter in relative position
 			if (!targetChapter) {
-				console.log("Chapters not found in pages near by. Return the chapter in relative position.");
+				console.log("Chapter not found in pages nearby. Returning chapter in relative position.");
 				targetChapter = targetChapters.find((chapter, index) => {
 					return index + 1 === chapterPosition % strategy.maxNumChaptersPerPage;
 				});
 			}
+
+			// if still not found, return the first chapter
+			// if (!targetChapter) {
+			// 	console.log("Chapter not found in relative position. Returning the first chapter.");
+			// 	targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, 1)).chapters;
+			// 	targetChapter = targetChapters[0];
+			// }
 
 			return targetChapter;
 		} catch (error) {

@@ -402,15 +402,15 @@ class TangThuVienStrategy extends NovelStrategy {
 				const authorSlug = authorElement.attr("href").replace(`${this.baseUrl}/tac-gia?author=`, "");
 				const authorName = authorElement.text();
 
-				const author = { authorName, authorSlug };
+				const author = { name: authorName, slug: authorSlug };
 				authors.push(author);
 			});
 
 			const categories = [];
 			$(".book-info .tag a.red").each((index, element) => {
 				const categoryName = $(element).text();
-				const categorySlug = $(element).attr("href").replace(`${this.baseUrl}/the-loai`, "");
-				categories.push({ categoryName, categorySlug });
+				const categorySlug = $(element).attr("href").replace(`${this.baseUrl}/the-loai/`, "");
+				categories.push({ name: categoryName, slug: categorySlug });
 			});
 
 			const numChapters = $(".nav-wrap.fl ul li")

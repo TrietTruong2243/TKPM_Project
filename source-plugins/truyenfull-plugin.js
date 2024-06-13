@@ -78,45 +78,49 @@ class TruyenFullStrategy extends NovelStrategy {
 			});
 			const html = response.data;
 			const $ = load(html);
-			const novelSlugs = $("h3.truyen-title a")
-				.map((index, element) => $(element).attr("href").split("/")[3])
-				.get();
+			const novels = [];
+			
+			$('.row[itemtype="https://schema.org/Book"]').each((index, element) => {
+				const title = $(element).find(".truyen-title a").text().trim();
+				const slug = $(element).find(".truyen-title a").attr("href").split("/")[3];
+				const image = $(element).find("img.cover").attr("src");
+				const authors = [];
+				$(element).find('.author[itemprop="author"]').each((index, author) => {
+					const authorName = $(author).text().trim();
+					authors.push({ name: authorName, slug: convertNameToSlug(authorName) });
+				});
+				const status = $(element).find(".label-full").length ? "Full" : "Updating";
+				const chapterText = $(element).find('a').text();
+				const chapterNumber = parseInt(chapterText.match(/Chương (\d+)/)[1]);
 
-			const responseFromApi = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&order=6&page=${page}`, {
+				novels.push({
+					title,
+					image,
+					slug,
+					authors,
+					categories: [],
+					numChapter: chapterNumber,
+					status,
+				});
+			});
+
+			// use api to get metadata
+			const responseFromApi = await axios.get(`${this.apiUrl}/tim-kiem?title=${keywords}&order=6&page=1`, {
 				headers: {
 					Accept: "application/json",
 					"User-Agent":
 						"Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.178",
 				},
 			});
-			const data = responseFromApi.data;
-			const novels = data.data.map((novel, index) => {
-				const categories = novel.categories.split(", ");
-				categories.forEach((category, index) => {
-					categories[index] = { name: category, slug: convertNameToSlug(category) };
-				});
-				const authors = novel.author.split(", ");
-				authors.forEach((author, index) => {
-					authors[index] = { name: author, slug: convertNameToSlug(author) };
-				});
-
-				return {
-					title: novel.title,
-					image: novel.image,
-					slug: novelSlugs[index],
-					authors,
-					categories,
-					numChapters: novel.total_chapters,
-					status: novel.is_full === true ? "Full" : "Updating",
-				};
-			});
+			const metaData = responseFromApi.data.meta.pagination;
+			if (page > metaData.total_pages) page = metaData.total_pages;
 
 			return {
 				meta: {
-					total: data.meta.pagination.total,
-					per_page: data.meta.pagination.per_page,
-					current_page: data.meta.pagination.current_page,
-					total_pages: data.meta.pagination.total_pages,
+					total: metaData.total,
+					per_page: metaData.per_page,
+					current_page: page,
+					total_pages: metaData.total_pages,
 				},
 				novels,
 			};
