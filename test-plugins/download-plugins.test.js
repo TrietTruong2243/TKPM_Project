@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-import runPluginTest from "./plugin-tester";
+import runPluginTest from "./download-plugins-tester";
 
 // Function to load plugin synchronously
 function loadPluginSync() {
-	const pluginDir = path.join(__dirname, "../source-plugins");
+	const pluginDir = path.join(__dirname, "../download-plugins");
 	const files = fs.readdirSync(pluginDir);
 	const pluginFiles = files.filter((file) => file.endsWith("-plugin.js"));
 

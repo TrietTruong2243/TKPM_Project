@@ -1,4 +1,5 @@
 function runPluginTest(pluginInstance, pluginFile) {
+
 	describe(`Testing Plugin ${pluginFile}`, () => {
 		test.concurrent(`properties (${pluginFile})`, () => {
 			expect(pluginInstance).toHaveProperty("name");
@@ -11,7 +12,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 		test.concurrent(`getCategories (${pluginFile}) is-array`, async () => {
 			const categories = await pluginInstance.getCategories();
 			expect(categories).toBeInstanceOf(Array);
-		},10000);
+		});
 
 		test.concurrent(`getCategories (${pluginFile}) not-empty`, async () => {
 			const categories = await pluginInstance.getCategories();
@@ -64,7 +65,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(result[0]).toHaveProperty("categories");
 			expect(result[0]).toHaveProperty("numChapters");
 			expect(result[0]).toHaveProperty("status");
-		});
+		},10000);
 
 		test.concurrent(`getNovelsByCategory (${pluginFile}) check-properties-of-object`, async () => {
 			const catogories = await pluginInstance.getCategories();
@@ -86,7 +87,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(result.novels[0]).toHaveProperty("categories");
 			expect(result.novels[0]).toHaveProperty("numChapters");
 			expect(result.novels[0]).toHaveProperty("status");
-		});
+		},10000);
 
 		test.concurrent(`getNovelBySlug (${pluginFile})`, async () => {
 			const hotNovels = await pluginInstance.getHotNovels();
@@ -103,7 +104,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(novel).toHaveProperty("slug");
 			expect(novel).toHaveProperty("status");
 			expect(novel).toHaveProperty("title");
-		});
+		},10000);
 
 		test.concurrent(`getNovelChapterList (${pluginFile})`, async () => {
 			const hotNovels = await pluginInstance.getHotNovels();
@@ -122,7 +123,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(result.chapters[0]).toHaveProperty("title");
 			expect(result.chapters[0]).toHaveProperty("slug");
 			expect(result.chapters[0]).toHaveProperty("position");
-		});
+		},10000);
 
 		test.concurrent(`getChapterContent (${pluginFile})`, async () => {
 			const hotNovels = await pluginInstance.getHotNovels();
@@ -137,7 +138,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 			expect(chapter).toHaveProperty("next_slug");
 			expect(chapter).toHaveProperty("prev_slug");
 			expect(chapter).toHaveProperty("slug");
-		},10000);
+		}, 15000);
 	});
 }
 

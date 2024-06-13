@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
+    "test:download": "jest test-plugins/download-plugins.test.js",
+    "test:source": "jest test-plugins/source-plugins.test.js",
     "start": "node index.js"
   },
   "keywords": [],
