@@ -23,7 +23,7 @@ function Router(){
                     {path:'history', element: <HistoryPage/> },
                     {path:'description/:novelId',children: [
                         {path: '',element:<DescriptionPage/>},
-                        {path: 'chapter/:chapterId',element: <ReadingPage/>}
+                        {path: 'chapter',element: <ReadingPage/>}// đổi thành chapter/:reading, với data gồm {chapterSlug, chapterPosition, source hiện tại}
                     ]},                    
                     {path:'search', element:<SearchPage/>},
                     {path:'settings', element:<SettingsPage/>},

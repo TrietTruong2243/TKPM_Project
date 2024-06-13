@@ -1,52 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import {  Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, List, ListItem, ListItemText, Pagination, CircularProgress } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import NovelDescriptionManager from '../../../data-manager/novel_description_manager';
 
 function AllChapters({ allChapters, source }) {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const [chaptersPerPage] = useState(15);
+    const [displayedChapters, setDisplayedChapters] = useState([]);
+    const instance = NovelDescriptionManager.getInstance();
+    const [meta, setMeta] = useState(null);
+    const [chaptersPerPage, setChaptersPerPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setIsLoading(true);
-        if (allChapters.length > 0) {
-            setIsLoading(false);
+        const fetchMeta = async () => {
+            setIsLoading(true);
+            try {
+                await instance.reload();
+                const meta = await instance.getMetaChapterByNovel();
+                setMeta(meta);
+                setChaptersPerPage(meta.per_page);
+                setCurrentPage(1);
+            } catch (error) {
+                console.error('Failed to fetch meta:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchMeta();
+    }, [instance]);
+
+    useEffect(() => {
+        const fetchChapters = async () => {
+            setIsLoading(true);
+            try {
+                const chapters = await instance.getChaptersByPage(currentPage);
+
+                // / Dùng để test cho trường hợp đổi nguồn
+                // for (let i =0 ; i < chapters.length; i++)
+                //     {
+                //         chapters[i].slug = 'rtretert_asdf'
+                //         chapters[i].position = 10000
+                //     }
+                setDisplayedChapters(chapters);
+            } catch (error) {
+                console.error('Failed to fetch chapters:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (meta) {
+            fetchChapters();
         }
-    }, [allChapters]);
-
-    const totalChapters = allChapters.length;
-
-    const getStartingIndex = (currentPage) => {
-        return (currentPage - 1) * chaptersPerPage;
-    };
-
-    const getEndingIndex = (currentPage) => {
-        return Math.min(currentPage * chaptersPerPage, totalChapters);
-    };
-
-    const displayedChapters = allChapters.slice(getStartingIndex(currentPage), getEndingIndex(currentPage));
+    }, [currentPage, meta]);
 
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };
 
-    useEffect(() => {
-        if (currentPage > Math.ceil(totalChapters / chaptersPerPage)) {
-            setCurrentPage(1);
-        }
-    }, [totalChapters, chaptersPerPage, currentPage]);
-    if (allChapters.length<=0) {
+    if (!source) {
         return (
-                <Box mt={4} sx={{ border: 1 }}>
-                    <Paper elevation={2} sx={{ p: 2 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                            <CircularProgress />
-                        </Box>
-                    </Paper>
-                </Box>
-            )
+            <Box mt={4} sx={{ border: 1 }}>
+                <Paper elevation={2} sx={{ p: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                        <CircularProgress />
+                    </Box>
+                </Paper>
+            </Box>
+        );
     }
+    console.log(displayedChapters)
+
     return (
         <Box mt={4} sx={{ border: 1 }}>
             <Paper elevation={2} sx={{ p: 2 }}>
@@ -55,17 +81,23 @@ function AllChapters({ allChapters, source }) {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                         <CircularProgress />
                     </Box>
-                ) : totalChapters > 0 ? (
+                ) : displayedChapters.length > 0 ? (
                     <>
                         <List>
                             {displayedChapters.map((chapter, index) => (
-                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter/${chapter.slug}?source=${source}`)}>
+                                <ListItem key={index} sx={{ cursor: "pointer" }} onClick={() => navigate(`chapter`, {
+                                    state: {
+                                        chapterSlug: chapter.slug,
+                                        chapterPosition: chapter.position,
+                                        sourceSlug: source
+                                    }
+                                })}>
                                     <ListItemText primary={`${chapter.title}`} />
                                 </ListItem>
                             ))}
                         </List>
                         <Pagination
-                            count={Math.ceil(totalChapters / chaptersPerPage)}
+                            count={Math.ceil(meta.total_pages)}
                             page={currentPage}
                             onChange={handleChangePage}
                             color="primary"

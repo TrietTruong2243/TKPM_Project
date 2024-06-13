@@ -1,26 +1,67 @@
-import React, {useContext}  from 'react';
-import { Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import {ThemeContext} from '../reading_page_theme';
+import React, { useContext } from 'react';
+import { Typography, Box, Select, MenuItem, FormControl } from '@mui/material';
+import { ThemeContext } from '../reading_page_theme';
 import { useNavigate } from 'react-router-dom';
-function SourceComboBox({novelId,chapterId, sourceList,sourceValue }) {
-    const  {theme } = useContext(ThemeContext);
-    const navigate = useNavigate()
+import { Spinner } from 'react-bootstrap';
+
+function SourceComboBox({ novelId, chapterId, sourceList, sourceValue, chapterPosition, chapterTitle, allChapterSourceList }) {
+    const { theme } = useContext(ThemeContext);
+    const navigate = useNavigate();
+
+    if (allChapterSourceList.length === 0) {
+        return <Spinner animation="border" />;
+    }
+
+    console.log(allChapterSourceList);
+
+    const handleChange = (event) => {
+        const selectedSourceSlug = event.target.value;
+        const selectedSource = allChapterSourceList.find((source) => source.sourceSlug === selectedSourceSlug);
+        
+        if (selectedSource) {
+            if (selectedSource.error)
+                {
+                    alert("Chương truyện tương ứng từ nguồn này không khả dụng!")
+                }
+                else{
+                    navigate(`/description/${novelId}/chapter`, {
+                        state: {
+                            sourceSlug: selectedSource.sourceSlug,
+                            chapterSlug: selectedSource.slug,
+                            chapterPosition: selectedSource.position
+                        }
+                    });
+                }
+         
+        }
+    };
 
     return (
-    <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
-        <Typography sx = {{color: theme.fontColor}} variant="body1" mr={1}>
-            Nguồn:
-        </Typography>        
-        <FormControl variant="outlined" sx={{ width: '50%', backgroundColor: '#444' }}>
-            <Select labelId="nguon-label" id="nguonSelect" defaultValue={sourceValue} label="Nguồn">
-                {sourceList.map((source) =>(                
-                    <MenuItem value={source.slug} onClick={() => window.location.href = `/description/${novelId}/chapter/${chapterId}?source=${source.slug}`}
-                > {source.name}</MenuItem>
-                ))}
-            </Select>
-        </FormControl>
-    </Box>
-    )
+        <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
+            <Typography sx={{ color: theme.fontColor }} variant="body1" mr={1}>
+                Nguồn:
+            </Typography>
+            <FormControl variant="outlined" sx={{ width: '50%', backgroundColor: '#444' }}>
+                <Select
+                    labelId="nguon-label"
+                    id="nguonSelect"
+                    value={sourceValue}
+                    label="Nguồn"
+                    onChange={handleChange}
+                >
+                    {allChapterSourceList.map((source) => (
+                        <MenuItem
+                            key={source.sourceSlug}
+                            value={source.sourceSlug}
+                            sx={{ color: 'white', fontSize: '1.2rem' }}
+                        >
+                            {source.sourceName}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Box>
+    );
 }
 
 export default SourceComboBox;
