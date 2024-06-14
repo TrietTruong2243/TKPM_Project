@@ -18,7 +18,7 @@
   - Tìm trong trang có khả năng nhất dựa vào vị trí của chương hiện tại.
   - Tìm 1-2 trang trước và sau.
   - Nếu không có truyện nào có tên khớp, lấy chương có vị trí giống chương hiện tại.
-- Về test tự động, plugin khi được đưa vào thư mục source-plugins, file plugin sẽ được kiểm tra và tạo 1 file test tương ứng ở thư mục test-plugins, sau chạy test, file test đó được xóa.
+- Về test tự động, source plugin khi được đưa vào thư mục source-plugins, file source plugin sẽ được kiểm tra và tạo 1 file test tương ứng ở thư mục test-plugins, sau khi chạy test, file đó được xóa.
 
 ## Hướng dẫn sử dụng
 
@@ -33,22 +33,12 @@ _Lưu ý_: Khi khởi động server, các plugin được mặc định là h�
 
 ### Test
 
-Test toàn bộ plugin đang có trong hệ thống.
+Test toàn bộ source plugin đang có trong hệ thống.
 
 ```
 npm test
 ```
 
-Test toàn bộ source plugin đang có trong hệ thống.
-
-```
-npm run test:source
-```
-Test toàn bộ download plugin đang có trong hệ thống.
-
-```
-npm run test:download
-```
 
 ### Plugin management
 Plugin Management chạy trên `http://localhost:4000`, gồm các bảng hiển thị các plugin hiện hành, cho phép thêm, xóa các plugin trong khi đang chạy.
@@ -132,7 +122,7 @@ http://localhost:4000/api/:source/download/:format/:novelSlug/:chapterSlug
 
 _Chú thích_:\
 `source`: tên nguồn viết liền không dấu (vd: truyenfull).\
-`slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than).
+`slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than) (chỉ mang tính tương đối theo nguồn).
 `format`: định dạng file cần xuất
 
 ## TODO
