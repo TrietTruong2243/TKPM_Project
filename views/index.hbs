@@ -1,0 +1,188 @@
+<div class="container">
+    <!-- Source Plugin Section -->
+    <section class="mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Source Plugins</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">#</th>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each sourcePlugins}}
+                        <tr slug="{{slug}}">
+                            <td class="text-center align-middle">{{add @index 1}}</td>
+                            <td class="align-middle">
+                                <div class="d-flex px-2 py-1 align-items-center">
+                                    <img src="{{logo}}" style="max-width: 120px;">
+                                    <p class="ps-3 mb-0">{{name}}</p>
+                                </div>
+                            </td>
+                            <td class="align-middle"><a href="{{baseUrl}}">{{baseUrl}}</a></td>
+                            <td class="align-middle"><button type="button" class="btn btn-danger" id="removeSourceBtn" plugin-type="source" plugin-name="{{slug}}" data-bs-toggle="modal" data-bs-target="#deleteModal">Remove</button></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <p>Add new source plugin file</p>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" class="form-control mt-3" placeholder="Add new plugin file" id="sourceFile" name="sourceFile">
+                    <button type="button" class="btn btn-primary mt-3" onclick="uploadSourceFile()">Upload File</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Downloader Plugin Section -->
+    <section>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Downloader Plugin</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">#</th>
+                            <th>Extension</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each downloaderPlugins}}
+                        <tr slug="{{slug}}">
+                            <td class=" text-center align-middle">{{add @index 1}}</td>
+                            <td class="ps-2 align-middle">
+                                <div class="d-flex px-2 py-1 align-items-center">
+                                    <img src="{{image}}" style="max-height: 50px;">
+                                    <p class="ps-3 mb-0">{{extension}}</p>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-danger mb-0" plugin-type="downloader" plugin-name="{{slug}}" data-bs-toggle="modal" data-bs-target="#deleteModal">Remove</button></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <p>Add new downloader plugin file</p>
+                <form action="" id="uploadDownloaderForm">
+                    <input type="file" class="form-control mt-3" placeholder="Add new plugin file" id="downloaderFile">
+                    <button type="button" class="btn btn-primary mt-3 mb-0" onclick="uploadDownloaderFile()">Upload File</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+{{!-- Modal for delete --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel"></h5>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <span class="font-weight-bold" id="delete-target-name"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                <button id="modal-delete-btn" type="button" class="btn bg-gradient-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function uploadSourceFile() {
+        const formData = new FormData();
+        const fileInput = document.getElementById('sourceFile');
+        formData.append('sourceFile', fileInput.files[0]);
+
+        fetch('/api/plugins/sources/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(`${data.message}. Refresh the page to see the changes`);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert('Error');
+            });
+    }
+
+    function uploadDownloaderFile() {
+        const formData = new FormData();
+        const fileInput = document.getElementById('downloaderFile');
+        formData.append('downloaderFile', fileInput.files[0]);
+
+        fetch('/api/plugins/downloaders/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(`${data.message}. Refresh the page to see the changes`);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert('Error');
+            });
+    }
+
+    function removePlugin(pluginType, pluginName) {
+        const endpoint = pluginType === "source" 
+            ? '/api/plugins/sources/remove'
+            : '/api/plugins/downloaders/remove';
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({pluginName})
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.status === "success") {
+                alert(data.message);
+                document.querySelector(`tr[slug=${pluginName}]`).remove();
+            } else {
+                alert(`Error: ${data.message}`)
+            }
+        })
+        .catch(error => {
+            alert(`Error: ${error}`)
+        })
+    }
+
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const pluginName = button.attr('plugin-name');
+        const pluginType = button.attr('plugin-type');
+        console.log(pluginName, pluginType);
+        const modal = $(this);
+        modal.find('.modal-title').text(`Delete ${pluginName}`);
+        modal.find('#delete-target-name').text(`${pluginName}`);
+        $('#modal-delete-btn').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            removePlugin(pluginType, pluginName);
+            $('#deleteModal').modal('hide');
+        });
+    });
+</script>

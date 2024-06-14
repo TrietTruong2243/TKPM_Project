@@ -1,7 +1,6 @@
 import fs from "fs";
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
-import chokidar from "chokidar";
 import DownLoaderStrategy from "../download-plugins/download-plugin-interface.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,34 +72,9 @@ class DownloaderFetcher {
 		}
 	}
 
-	watchPlugins() {
-		const watcher = chokidar.watch(path.join(__dirname, "../download-plugins"), { persistent: true });
-		watcher
-			.on("add", (pluginPath) => {
-				console.log(`File ${pluginPath} has been added`);
-				if (pluginPath.endsWith("plugin.js")) {
-					this.loadStrategyWithPath(pluginPath);
-				}
-			})
-			.on("change", (pluginPath) => {
-				console.log(`File ${pluginPath} has been changed`);
-				if (pluginPath.endsWith("plugin.js")) {
-					this.loadStrategyWithPath(pluginPath);
-				}
-			})
-			.on("unlink", (pluginPath) => {
-				console.log(`File ${pluginPath} has been removed`);
-				if (pluginPath.endsWith("plugin.js")) {
-					const strategyName = path.basename(pluginPath, "-plugin.js");
-					this.removeStrategy(strategyName);
-				}
-			});
-
-		downloaderFetcher.loadStrategies(); // initial load
-	}
 }
 
 const downloaderFetcher = new DownloaderFetcher();
-downloaderFetcher.watchPlugins();
+await downloaderFetcher.loadStrategies();
 
 export default downloaderFetcher;
