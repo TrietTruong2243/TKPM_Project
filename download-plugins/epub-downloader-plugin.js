@@ -3,6 +3,7 @@ import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 var JSZip = require("jszip");
+
 const getMimetype = () => {
 	return "application/epub+zip";
 };
