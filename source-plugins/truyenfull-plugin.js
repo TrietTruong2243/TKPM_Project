@@ -83,16 +83,19 @@ class TruyenFullStrategy extends NovelStrategy {
 			$('.row[itemtype="https://schema.org/Book"]').each((index, element) => {
 				const title = $(element).find(".truyen-title a").text().trim();
 				const slug = $(element).find(".truyen-title a").attr("href").split("/")[3];
-				const image = $(element).find("img.cover").attr("src");
+				let image = $(element).find("div[data-classname='cover']").attr("data-image");
+				if (image.split("=").pop() == "w60-h85-c") image = image.replace("=w60-h85-c", "");
 				const authors = [];
 				$(element).find('.author[itemprop="author"]').each((index, author) => {
 					const authorName = $(author).text().trim();
 					authors.push({ name: authorName, slug: convertNameToSlug(authorName) });
 				});
 				const status = $(element).find(".label-full").length ? "Full" : "Updating";
-				const chapterText = $(element).find('a').text();
-				const chapterNumber = parseInt(chapterText.match(/Chương (\d+)/)[1]);
-
+				const chapterText = $(element).find('.text-info a').text();
+				let chapterNumber = chapterText.match(/Chương (\d+)/);
+				if (chapterNumber) chapterNumber = parseInt(chapterNumber[1]);
+				else chapterNumber = 0;
+				
 				novels.push({
 					title,
 					image,
@@ -146,7 +149,8 @@ class TruyenFullStrategy extends NovelStrategy {
 			$(".col-truyen-main .list-truyen .row").each((index, element) => {
 				if ($(element).attr("id")) return; // adware =(
 				const title = $(element).find(".truyen-title a").text().trim();
-				const image = $(element).find("img.cover").attr("src");
+				let image = $(element).find("div[data-classname='cover']").attr("data-image");
+				if (image.split("=").pop() === "w60-h85-c") image = image.replace("=w60-h85-c", "");
 				const slug = $(element).find(".truyen-title a").attr("href").split("/")[3];
 				const authors = [];
 				$(element)
