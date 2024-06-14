@@ -10,33 +10,39 @@ import SettingsPage from "../pages/settings-page/pages/settings_page";
 import NovelByCategoryPage from "../pages/category-page/pages/category_page";
 import PolicyPage from "../pages/policy-page/pages/policy_page";
 
-function Router(){
-    const routes=useRoutes([
+function Router() {
+  const routes = useRoutes([
+    {
+      element: (
+        <DashBoardLayout>
+          <Outlet />
+        </DashBoardLayout>
+      ),
+      children: [
         {
-            element:(
-                <DashBoardLayout>
-                    <Outlet />
-                </DashBoardLayout>
-            ),
-            children:
-                [
-                    {path:'', element: <Navigate to='home' replace> </Navigate>},
-                    {path:'home',element: <HomePage/>},
-                    {path:'history', element: <HistoryPage/> },
-                    {path:'description/:novelId',children: [
-                        {path: '',element:<DescriptionPage/>},
-                        {path: 'chapter',element: <ReadingPage/>}// đổi thành chapter/:reading, với data gồm {chapterSlug, chapterPosition, source hiện tại}
-                    ]},                    
-                    {path:'search', element:<SearchPage/>},
-                    {path:'settings', element:<SettingsPage/>},
-                    {path:'category/:category_slug', element: <NovelByCategoryPage/>},
-                    {path: 'policy', element: <PolicyPage/>}
-
-
-                ]
-        
-        }
-    ]);
-    return routes;
+          path: "",
+          element: (
+            <Navigate to="home" replace>
+              {" "}
+            </Navigate>
+          ),
+        },
+        { path: "home", element: <HomePage /> },
+        { path: "history", element: <HistoryPage /> },
+        {
+          path: "description/:novelId",
+          children: [
+            { path: "", element: <DescriptionPage /> },
+            { path: "chapter", element: <ReadingPage /> }, // đổi thành chapter/:reading, với data gồm {chapterSlug, chapterPosition, source hiện tại}
+          ],
+        },
+        { path: "search", element: <SearchPage /> },
+        { path: "settings", element: <SettingsPage /> },
+        { path: "category/:category_slug", element: <NovelByCategoryPage /> },
+        { path: "policy", element: <PolicyPage /> },
+      ],
+    },
+  ]);
+  return routes;
 }
 export default Router;
