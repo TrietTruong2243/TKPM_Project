@@ -29,7 +29,6 @@ const getFile = async (req, res) => {
 		stream.write(buffer);
 		stream.end();
 	} catch (error) {
-		console.log(error)
 		res.status(500).json({
 			message: "error",
 			error: error.message,

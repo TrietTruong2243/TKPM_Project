@@ -27,6 +27,9 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 					.replace(/<\/p>/g, "")
 					.replace(/\n\n/g, "<br/>")
 					.replace(/\t/g, "")
+                    .replace(/<em>/g,"")
+                    .replace(/<\/em>/g,"")
+                    .replace(/&nbsp;/g,"")
 					.replace(/<br>/g, "<br/>");
 ;
 
