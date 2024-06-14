@@ -55,7 +55,7 @@ function runPluginTest(pluginInstance, pluginFile) {
 		test.concurrent(`searchNovels (${pluginFile}) novel-found`, async () => {
 			const hotNovels = await pluginInstance.getHotNovels();
 			const bestNovel = hotNovels[0];
-			const response = await pluginInstance.searchNovels(bestNovel.title.slice(0, 4), 1);
+			const response = await pluginInstance.searchNovels(bestNovel.title, 1);
 			const result = response.novels;
 
 			expect(result[0]).toHaveProperty("slug");

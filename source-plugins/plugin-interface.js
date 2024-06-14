@@ -1,8 +1,6 @@
 // Abstract class for Novel Strategies
 // This class is used to define the structure of the Novel Strategies
 class NovelStrategy {
-	static numImplemented = 0;
-
 	constructor(baseUrl, name, thumbnail, maxNovelsPerPage, maxNumChaptersPerPage) {
 		this.baseUrl = baseUrl;
 		this.name = name;
@@ -10,7 +8,6 @@ class NovelStrategy {
 		// Maximum number of novels and chapters per page, this is constant for each strategy
 		this.maxNovelsPerPage = maxNovelsPerPage;
 		this.maxNumChaptersPerPage = maxNumChaptersPerPage;
-		NovelStrategy.numImplemented++;
 	}
 
 	async getCategories() {

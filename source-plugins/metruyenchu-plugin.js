@@ -284,7 +284,7 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				meta: {
 					total: novel.numChapters,
 					current_page: page,
-					per_page: this.maxNumChapterPerPage,
+					per_page: this.maxNumChaptersPerPage,
 					total_pages,
 				},
 				chapters,
@@ -326,11 +326,6 @@ class MeTruyenChuStrategy extends NovelStrategy {
 				const genreSlug = $(genre).attr("href").replace("/the-loai/", "");
 				categories.push({ name: genreName, slug: genreSlug });
 			});
-
-			// let chapterPerPage = 0;
-			// $("#chapter-list .clearfix ul").each((index, ulEle) => {
-			// 	chapterPerPage += $(ulEle).find("li").length;
-			// });
 
 			const numChapters = $(".mLeftCol .book-info-text li").eq(2).text().replace("Số chương:", "").trim();
 

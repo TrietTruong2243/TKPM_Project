@@ -99,7 +99,7 @@ class TruyenFullStrategy extends NovelStrategy {
 					slug,
 					authors,
 					categories: [],
-					numChapter: chapterNumber,
+					numChapters: chapterNumber,
 					status,
 				});
 			});
