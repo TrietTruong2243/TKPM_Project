@@ -23,9 +23,16 @@ class CategoryManager extends DataManagementInterface{
 
 
     //override DataManagementInterface
-    async get(){
-        await this.reload();
-        return this.categories_list;
+    get(key){
+        switch(key){
+            case 'categories_list':{
+                return this.categories_list;
+            }
+            default :{
+                console.log(`Cannot find property ${key} in category manager!`);
+                return null;
+            }
+        }
     }
     async set(params){        
     }
@@ -34,7 +41,8 @@ class CategoryManager extends DataManagementInterface{
     async reload(){
         let source_manager=NovelSourceManager.getInstance();
         let categories_list=[]
-        const source_list=await source_manager.get();
+        await source_manager.reload();
+        const source_list=source_manager.get('sources');
         for (let i in source_list){
             let current_source_categories= await getAllCategories(source_list[i].slug);
             categories_list=[...categories_list,...current_source_categories]

@@ -23,9 +23,19 @@ class HotNovelManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){
-        await this.reload();
-        return this.hot_novels;
+    get(key){
+        switch(key){
+            case 'hot_novels':{
+                return this.hot_novels;
+            }
+            case 'others_hot_novels':{
+                return this.getOtherSourceHotNovel();
+            }
+            default :{
+                console.log(`Cannot find property ${key} in category manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
     }
@@ -33,7 +43,8 @@ class HotNovelManager extends DataManagementInterface{
     }
     async reload(){
         let source_manager=NovelSourceManager.getInstance();
-        let sources=await source_manager.get();
+        await source_manager.reload();
+        let sources=source_manager.get('sources');
 
         if (!sources || sources.length<=0){
             return [];
@@ -47,7 +58,8 @@ class HotNovelManager extends DataManagementInterface{
     //addition method
     async getOtherSourceHotNovel(){
         let source_manager=NovelSourceManager.getInstance();
-        let sources=await source_manager.get();
+        await source_manager.reload();
+        let sources=source_manager.get('sources');
 
         if (!sources || sources.length<=1){
             return [];

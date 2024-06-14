@@ -1,11 +1,9 @@
-import getHotNovels from "../service/hot_novel_service";
-import { getNovelDescription } from "../service/concrete_novel_service";
 import DataManagementInterface from "./data_management_interface";
-import NovelSourceManager from "./novel_source_manager";
-import { ThirtyFpsSelect } from "@mui/icons-material";
 import getNovelChapterSourceChange from "../service/source_novel_change_service";
 let instance;
-class NovelChapterSourceList extends DataManagementInterface {
+class ChapterSourceChangeManager extends DataManagementInterface {
+
+    //constructor group
     constructor() {
         if (instance) {
             throw new Error('You can only create 1 instance!')
@@ -23,12 +21,25 @@ class NovelChapterSourceList extends DataManagementInterface {
         if (instance) {
             return instance;
         }
-        return new NovelChapterSourceList();
+        return new ChapterSourceChangeManager();
     }
-    async get() {
-        this.allChapterInfo = [];
-        await this.reload();
-        return this.allChapterInfo;
+
+
+
+    //override DataManagentInterface
+    async get(key) {
+        switch (key){
+            case 'all_chapter_info':{
+                this.allChapterInfo = [];
+                await this.reload();
+                return this.allChapterInfo;
+            }
+            default:{
+                console.log(`Cannot find ${key} in change chapter source manager!`)
+                return null;
+            }
+        }
+        
     }
     async set(params) {
         this.sourceList = params.sourceList;
@@ -40,42 +51,6 @@ class NovelChapterSourceList extends DataManagementInterface {
     }
     async save() {
     }
-    async getChapterRelatedBySource(sourceSlug, sourceName) {
-        try {
-            const chapterInfo = await getNovelChapterSourceChange(
-                sourceSlug,
-                this.novelSlug,
-                this.chapterSlug,
-                this.chapterTitle,
-                this.chapterPosition
-            );
-            // Check if chapterInfo is valid and add additional properties
-            if (chapterInfo) {
-                if (!chapterInfo.position) {
-                    chapterInfo.position = this.chapterPosition
-                }
-                chapterInfo.sourceSlug = sourceSlug;
-                chapterInfo.sourceName = sourceName;
-                return chapterInfo;
-            } else {
-                return {
-                    sourceSlug: sourceSlug,
-                    sourceName: sourceName,
-                    error: 'No chapter info found'
-                };
-            }
-        } catch (error) {
-            // Handle errors and return an object with error information
-            console.error(`Error loading chapter info for source: ${sourceSlug}`, error);
-            return {
-                sourceSlug: sourceSlug,
-                sourceName: sourceName,
-                error: error.message
-            };
-        }
-    }
-
-
     async reload() {
         // Khởi tạo một mảng promises để chứa tất cả các promise
         const promises = [];
@@ -143,7 +118,44 @@ class NovelChapterSourceList extends DataManagementInterface {
         }
     }
 
+    
+    //addition method
+
+    async getChapterRelatedBySource(sourceSlug, sourceName) {
+        try {
+            const chapterInfo = await getNovelChapterSourceChange(
+                sourceSlug,
+                this.novelSlug,
+                this.chapterSlug,
+                this.chapterTitle,
+                this.chapterPosition
+            );
+            // Check if chapterInfo is valid and add additional properties
+            if (chapterInfo) {
+                if (!chapterInfo.position) {
+                    chapterInfo.position = this.chapterPosition
+                }
+                chapterInfo.sourceSlug = sourceSlug;
+                chapterInfo.sourceName = sourceName;
+                return chapterInfo;
+            } else {
+                return {
+                    sourceSlug: sourceSlug,
+                    sourceName: sourceName,
+                    error: 'No chapter info found'
+                };
+            }
+        } catch (error) {
+            // Handle errors and return an object with error information
+            console.error(`Error loading chapter info for source: ${sourceSlug}`, error);
+            return {
+                sourceSlug: sourceSlug,
+                sourceName: sourceName,
+                error: error.message
+            };
+        }
+    }
 
 
 }
-export default NovelChapterSourceList;
+export default ChapterSourceChangeManager;

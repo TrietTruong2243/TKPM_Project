@@ -30,11 +30,11 @@ function SearchPage(){
     searching_manager.set({keyword:keyword,page:parseInt(page)})
     useEffect(()=>{
             setLoading(true);
-            searching_manager.get().then(res=>{
-            setSearchedNovel([...res]);
-            setLoading(false);
-            setCurrentPage(parseInt(searching_manager.page))
-        })
+            searching_manager.reload().then(()=>{                
+                setSearchedNovel([...searching_manager.get('novels')]);
+                setCurrentPage(parseInt(searching_manager.get('page')));
+                setLoading(false);
+            })
     },[keyword,page])
     
     if (loading){

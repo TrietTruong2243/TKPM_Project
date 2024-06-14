@@ -16,9 +16,10 @@ function DescriptionPage() {
     const hot_novels_manager = HotNovelManager.getInstance();
     const novel_description_manager=NovelDescriptionManager.getInstance();
     const [source_data, setSourceData] = useState([]);
+    const [available_source,setAvailableSource]=useState([]);
     const { novelId } = useParams();    
     const [novel, setNovel] = useState(null);
-    const [hotNovels, setHotNovels] = useState([]);
+    const [hot_novels, setHotNovels] = useState([]);
     const [source, setSource] = useState(null)
     const theme = createTheme({
         palette: {
@@ -36,11 +37,11 @@ function DescriptionPage() {
 
     novel_description_manager.set({novel_slug:novelId})
     useEffect(() => {
-        novel_source_manager.get().then(res => {
-            setSourceData([...res]);
+        novel_source_manager.reload().then(() => {
+            setSourceData([...novel_source_manager.get('sources')]);
         });
-        hot_novels_manager.get().then(res=>{
-            setHotNovels([...res]);
+        hot_novels_manager.reload().then(()=>{
+            setHotNovels([...hot_novels_manager.get('hot_novels')]);
         });
     }, []);
 
@@ -48,10 +49,10 @@ function DescriptionPage() {
         setNovel(null)
         if (source_data.length > 0) { // Ensure source_data is available
             try {
-                novel_description_manager.get().then(res=>{
-                    setNovel(res);
-                    setSource(novel_description_manager.current_source)
-                  
+                novel_description_manager.reload().then(()=>{
+                    setNovel(novel_description_manager.get('novel_info'));
+                    setSource(novel_description_manager.get('current_source'))
+                    setAvailableSource([...novel_description_manager.get('available_source')]);
                 })
             } catch (error) {
                 console.error('Error fetching novel and chapters:', error);
@@ -66,11 +67,11 @@ function DescriptionPage() {
                 <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={8}>
-                            <DescriptionComponent novel={novel} available_source={novel_description_manager.available_source}></DescriptionComponent>
-                            <AllChapters source = {novel_description_manager.current_source}></AllChapters>
+                            <DescriptionComponent novel={novel} available_source={available_source}></DescriptionComponent>
+                            <AllChapters source = {source}></AllChapters>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <HotNovel hotNovels={hotNovels}></HotNovel>
+                            <HotNovel hotNovels={hot_novels}></HotNovel>
                         </Grid>
                     </Grid>
                 </Paper>

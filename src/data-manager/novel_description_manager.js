@@ -25,9 +25,22 @@ class NovelDescriptionManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){
-        await this.reload();
-        return this.novel_info;
+    get(key){
+        switch(key){
+            case 'novel_info':{
+                return this.novel_info;
+            }
+            case 'available_source':{
+                return this.available_source;
+            }
+            case 'current_source':{
+                return this.current_source;
+            }
+            default:{
+                console.log(`Cannot find property ${key} in novel description manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
         if(params.available_source){
@@ -41,7 +54,8 @@ class NovelDescriptionManager extends DataManagementInterface{
     }
     async reload(){
         const source_manager=NovelSourceManager.getInstance();
-        const sources=await source_manager.get()
+        await source_manager.reload();
+        const sources= source_manager.get('sources')
         let available_source=[];
 
         this.novel_info=null;
@@ -80,7 +94,6 @@ class NovelDescriptionManager extends DataManagementInterface{
     async getChaptersByPage( page)
     {
         return await getChapterByPage(this.novel_slug,this.current_source, page).then((res)=>{
-            console.log(res)
             if (res===null){
                 return null
             }
@@ -97,10 +110,8 @@ class NovelDescriptionManager extends DataManagementInterface{
         })
     }
     async setSource(source){
-this.current_source = source
-    this.novel_info=await getNovelDescription(this.novel_slug,this.current_source);
-   
-
+        this.current_source = source
+        this.novel_info=await getNovelDescription(this.novel_slug,this.current_source);  
     }
 }
 export default NovelDescriptionManager;

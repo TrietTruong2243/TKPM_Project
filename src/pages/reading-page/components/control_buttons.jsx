@@ -1,13 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Box, Button, CircularProgress, Paper } from '@mui/material';
+import { Box, Button} from '@mui/material';
 import { Home, Settings, Download } from '@mui/icons-material';
+import { Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import SettingModal from './modals/setting_modal';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
+
+import SettingModal from './modals/setting_modal';
 import DownloadModal from './modals/download_modal';
 import NovelDescriptionManager from '../../../data-manager/novel_description_manager';
-import { Spinner } from 'react-bootstrap';
 
 const height = 35;
 
@@ -29,25 +30,24 @@ const MenuList = (props) => {
 };
 
 function ControlButtons({ novelId, novelTitle, readingNovel, sourceValue, chapterPosition }) {
-    const [content] = useState(readingNovel.content);
-    const [showModal, setShowModal] = useState(false);
-    const [showDownloadModal, setShowDownloadModal] = useState(false);
+    const [show_modal, setShowModal] = useState(false);
+    const [show_download_modal, setShowDownloadModal] = useState(false);
     const navigate = useNavigate();
     const instance = NovelDescriptionManager.getInstance();
     const [meta, setMeta] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [allChapter, setAllChapter] = useState([]);
+    const [is_loading, setIsLoading] = useState(true);
+    const [all_chapter, setAllChapter] = useState([]);
 
     const chapterOptions = useMemo(() => {
-        if (allChapter.length === 0) return [];
+        if (all_chapter===null || all_chapter.length === 0) return [];
         setIsLoading(false);
 
-        return allChapter.map((chapter) => ({
+        return all_chapter.map((chapter) => ({
             slug: chapter.slug,
             label: chapter.title,
             position: chapter.position
         }));
-    }, [allChapter]);
+    }, [all_chapter]);
 
     const handleShow = () => setShowModal(true);
     const handleClose = () => setShowModal(false);
@@ -98,11 +98,6 @@ function ControlButtons({ novelId, novelTitle, readingNovel, sourceValue, chapte
 
         fetchChapters();
     }, [meta, chapterPosition, instance]);
-
-    if (isLoading) {
-        return <Spinner animation="border" role="status" />;
-    }
-
     return (
         <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
             <Button
@@ -142,7 +137,8 @@ function ControlButtons({ novelId, novelTitle, readingNovel, sourceValue, chapte
             >
                 &laquo;
             </Button>
-            <Select
+            {is_loading && <Spinner animation="border" role="status" />}
+            {!is_loading &&<Select
                 components={{ MenuList }}
                 styles={{
                     control: (base) => ({
@@ -171,7 +167,7 @@ function ControlButtons({ novelId, novelTitle, readingNovel, sourceValue, chapte
                         sourceSlug: sourceValue
                     }
                 })}
-            />
+            />}
             <Button
                 className="btn-custom"
                 sx={{
@@ -222,8 +218,16 @@ function ControlButtons({ novelId, novelTitle, readingNovel, sourceValue, chapte
             >
                 <Download />
             </Button>
-            <SettingModal show={showModal} handleClose={handleClose} />
-            <DownloadModal open={showDownloadModal} handleClose={handleDownloadClose} sourceValue={sourceValue} novelSlug={novelId} novelName={novelTitle} chapterSlug={readingNovel.chapterId} chapterName={readingNovel.title} />
+            <SettingModal show={show_modal} handleClose={handleClose} />
+            <DownloadModal 
+                open={show_download_modal} 
+                handleClose={handleDownloadClose} 
+                sourceValue={sourceValue} 
+                novelSlug={novelId} 
+                novelName={novelTitle} 
+                chapterSlug={readingNovel.chapterId} 
+                chapterName={readingNovel.title} 
+            />
         </Box>
     );
 }

@@ -21,9 +21,12 @@ function CategoryButton(){
 
     useEffect(()=>{
         setLoading(true);
-        category_manager.get().then(res=>{
-            setCategoryData([...res]);
-            setLoading(false);
+        category_manager.reload().then(()=>{
+            let categories=category_manager.get('categories_list');
+            if(categories!==null){
+                setCategoryData([...categories]);
+                setLoading(false);
+            }
         })
     },[])
     return (

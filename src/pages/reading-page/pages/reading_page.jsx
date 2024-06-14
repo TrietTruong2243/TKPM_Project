@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Container, Box } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+
 import { ThemeContext } from '../reading_page_theme.jsx';
 import NovelTitle from '../components/novel_title.jsx';
 import NovelContent from '../components/novel_content.jsx';
@@ -9,8 +10,7 @@ import ControlButtons from '../components/control_buttons.jsx';
 import CenteredSpinner from '../../../components/centered_spinner.jsx';
 import NovelDescriptionManager from '../../../data-manager/novel_description_manager.js';
 import ReadingHistoryManager from '../../../data-manager/reading_history_manager.js';
-import NovelChapterSourceList from '../../../data-manager/novel__chapter_source_change_manager.js';
-import { Spinner } from 'react-bootstrap';
+import ChapterSourceChangeManager from '../../../data-manager/novel_chapter_source_change_manager.js';
 
 function ReadingPage() {
     const { state } = useLocation();
@@ -20,12 +20,11 @@ function ReadingPage() {
 
     // Define hooks at the top level
     const [source, setSource] = useState(null);
-    const [readingNovel, setReadingNovel] = useState(null);
-    const [allChapter, setAllChapter] = useState(null);
-    const [allSource, setAllSource] = useState(null);
-    const [allChapterSourceList, setAllChapterSourceList] = useState([]);
+    const [reading_novel, setReadingNovel] = useState(null);
+    const [all_source, setAllSource] = useState(null);
+    const [all_chapter_source_list, setAllChapterSourceList] = useState([]);
     const [available, setAvailable] = useState(true);
-    const [alertShown, setAlertShown] = useState(false); // State to track if alert has been shown
+    const [alert_shown, setAlertShown] = useState(false); // State to track if alert has been shown
 
     const novel_description_manager = NovelDescriptionManager.getInstance();
     const reading_history_manager = ReadingHistoryManager.getInstance();
@@ -48,15 +47,13 @@ function ReadingPage() {
         setAllSource(null);
         setReadingNovel(null);
 
-        reading_history_manager.saveNewReadingNovel(novelId, chapterId);
-
         const fetchNovelDescription = async () => {
             try {
-                await novel_description_manager.get();
-                setAllSource(novel_description_manager.available_source);
+                await novel_description_manager.reload();
+                setAllSource(novel_description_manager.get('available_source'));
 
                 if (!sourceSlug) {
-                    const currentSource = novel_description_manager.current_source;
+                    const currentSource = novel_description_manager.get('current_source');
                     if (currentSource) {
                         navigate(`/description/${novelId}/chapter`, {
                             state: {
@@ -92,58 +89,58 @@ function ReadingPage() {
     useEffect(() => {
         const fetchChapterSourceList = async () => {
             setAllChapterSourceList([]);
-            const chapterSourceListInstance = NovelChapterSourceList.getInstance();
+            const chapter_source_change_manager = ChapterSourceChangeManager.getInstance();
 
-            await chapterSourceListInstance.set({
-                sourceList: allSource,
+            await chapter_source_change_manager.set({
+                sourceList: all_source,
                 novelSlug: novelId,
                 chapterSlug: chapterId,
-                chapterTitle: readingNovel?.title,
+                chapterTitle: reading_novel?.title,
                 chapterPosition: chapterPosition
             });
 
-            const allDataPromises = allSource.map(async (source) => {
-                const data = await chapterSourceListInstance.getChapterRelatedBySource(source.slug, source.name);
+            const all_data_promises = all_source.map(async (source) => {
+                const data = await chapter_source_change_manager.getChapterRelatedBySource(source.slug, source.name);
                 return data;
             });
 
-            const allData = await Promise.all(allDataPromises);
-            const uniqueData = allData.filter((value, index, self) =>
+            const all_data = await Promise.all(all_data_promises);
+            const unique_data = all_data.filter((value, index, self) =>
                 index === self.findIndex((t) => t.sourceSlug === value.sourceSlug)
             );
-            setAllChapterSourceList(uniqueData);
+            setAllChapterSourceList(unique_data);
         };
 
-        if (chapterId && readingNovel && allSource) {
+        if (chapterId && reading_novel && all_source) {
             fetchChapterSourceList();
         }
-    }, [chapterId, readingNovel, allSource, novelId, chapterPosition]);
+    }, [chapterId, reading_novel, all_source, novelId, chapterPosition]);
 
     useEffect(() => {
         const handleUnavailableSource = async () => {
-            if (available === false && !alertShown && allChapterSourceList.length > 0) {
+            if (available === false && !alert_shown && all_chapter_source_list.length > 0) {
                 alert(`Truyện từ nguồn ${sourceSlug} không khả dụng!`);
                 setAlertShown(true); // Mark the alert as shown
                 let check = 0;
 
-                for (let i = 0; i < allChapterSourceList.length; i++) {
-                    if (allChapterSourceList[i].error || allChapterSourceList[i].sourceSlug === sourceSlug) {
+                for (let i = 0; i < all_chapter_source_list.length; i++) {
+                    if (all_chapter_source_list[i].error || all_chapter_source_list[i].sourceSlug === sourceSlug) {
                         check++;
                     } else {
-                        const selectedSource = allChapterSourceList[i];
-                        alert(`Chuyển tới nguồn ${selectedSource.sourceSlug}!`);
+                        const selected_source = all_chapter_source_list[i];
+                        alert(`Chuyển tới nguồn ${selected_source.sourceSlug}!`);
                         navigate(`/description/${novelSlug}/chapter`, {
                             state: {
-                                sourceSlug: selectedSource.sourceSlug,
-                                chapterSlug: selectedSource.slug,
-                                chapterPosition: selectedSource.position
+                                sourceSlug: selected_source.sourceSlug,
+                                chapterSlug: selected_source.slug,
+                                chapterPosition: selected_source.position
                             }
                         });
                         break;
                     }
                 }
 
-                if (check === allChapterSourceList.length) {
+                if (check === all_chapter_source_list.length) {
                     alert(`Không có nguồn phù hợp`);
                     navigate(`/description/${novelSlug}`);
                 }
@@ -151,9 +148,11 @@ function ReadingPage() {
         };
 
         handleUnavailableSource();
-    }, [available, alertShown, allChapterSourceList, navigate, novelSlug, sourceSlug]);
+    }, [available, alert_shown, all_chapter_source_list, navigate, novelSlug, sourceSlug]);
 
-    if (readingNovel === null || !novel_description_manager.novel_info) {
+
+
+    if (reading_novel === null || !novel_description_manager.get('novel_info')) {
         if (available === false) {
             return null; // Don't render anything if the alert has been shown and navigation is pending
         } else {
@@ -162,12 +161,27 @@ function ReadingPage() {
     } else {
         return (
             <Box sx={{ backgroundColor: theme.backgroundColor, color: theme.fontColor, fontFamily: theme.fontFamily, padding: '20px' }}>
-                <Container>
-                    <NovelTitle sx={{ fontFamily: theme.fontFamily }} readingNovel={readingNovel} novelName={novel_description_manager.novel_info.title} />
-                    <SourceComboBox sourceList={allSource} sourceValue={source} novelId={novelId} chapterId={chapterId} chapterPosition={chapterPosition} chapterTitle={readingNovel.title} allChapterSourceList={allChapterSourceList} />
-                    <ControlButtons novelId={novelId} novelTitle={novel_description_manager.novel_info.title} readingNovel={readingNovel} sourceValue={source} chapterPosition={chapterPosition} />
-                    <NovelContent readingNovel={readingNovel} />
-                </Container>
+                <Stack direction={'column'} alignItems={'center'}>
+                    <NovelTitle 
+                        sx={{ fontFamily: theme.fontFamily }} 
+                        readingNovel={reading_novel} 
+                        novelName={novel_description_manager.novel_info.title} />
+                    <SourceComboBox 
+                        sourceList={all_source} 
+                        sourceValue={source} 
+                        novelId={novelId} 
+                        chapterId={chapterId} 
+                        chapterPosition={chapterPosition} 
+                        chapterTitle={reading_novel.title} 
+                        allChapterSourceList={all_chapter_source_list} />
+                    <ControlButtons 
+                        novelId={novelId} 
+                        novelTitle={novel_description_manager.novel_info.title} 
+                        readingNovel={reading_novel} 
+                        sourceValue={source} 
+                        chapterPosition={chapterPosition} />
+                    <NovelContent readingNovel={reading_novel} />
+                </Stack>
             </Box>
         );
     }

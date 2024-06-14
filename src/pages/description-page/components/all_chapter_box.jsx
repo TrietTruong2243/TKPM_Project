@@ -36,13 +36,6 @@ function AllChapters({ all_chapters, source }) {
             setIsLoading(true);
             try {
                 const chapters = await instance.getChaptersByPage(currentPage);
-
-                // / Dùng để test cho trường hợp đổi nguồn
-                // for (let i =0 ; i < chapters.length; i++)
-                //     {
-                //         chapters[i].slug = 'rtretert_asdf'
-                //         chapters[i].position = 10000
-                //     }
                 setDisplayedChapters(chapters);
             } catch (error) {
                 console.error('Failed to fetch chapters:', error);

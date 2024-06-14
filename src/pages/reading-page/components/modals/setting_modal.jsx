@@ -1,10 +1,27 @@
 import React, { useContext } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
+
 import { ThemeContext } from '../../reading_page_theme';
+
 function SettingModal({ show, handleClose }) {
 
     const { theme } = useContext(ThemeContext);
-    
+    const support_text_color=[{value:"#FFFFFF",name:"Trắng"},
+                              {value:"#000000",name:"Đen"},
+                              {value:"#FF0000",name:"Đỏ"},
+                              {value:"#0000FF",name:"Xanh dương"},
+                              {value:"#00FF00",name:"Xanh lá"},
+                              {value:"#FFFF00",name:"Vàng"},
+                              {value:"#FFA500",name:"Da cam"},
+                              {value:"#800080",name:"Tím"},
+                              {value:"#00FFFF",name:"Xanh lơ"},
+                              {value:"#FFC0CB",name:"Hồng"}];
+    const support_font_family=[{value:"Times New Roman, serif",name:"Times New Roman"},
+                                {value:"Arial, sans-serif",name:"Arial"},
+                                {value:"Verdana, sans-serif",name:"Verdana"},
+                                {value:"Tahoma, sans-serif",name:"Tahoma"},
+                                {value:"Courier New, monospace",name:"Courier New"},];
+    const support_background_color=[...support_text_color];
     const { updateBackgroundColor,
         updateFontFamily,
         updateFontColor,
@@ -44,63 +61,43 @@ function SettingModal({ show, handleClose }) {
                                                         alignItems: 'center',
                                                         flexDirection: 'column',
                                                         padding: '24px 32px'}}>
-            <Modal.Header style={{ backgroundColor: '#000', color: '#fff' }} closeButton>
-            <Modal.Title>Settings</Modal.Title>
+            <Modal.Header style={{ color: '#000' }}  closeButton>
+                <Modal.Title>Settings</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ backgroundColor: '#232323', color: '#fff' }}>
-    <Form.Group controlId="formTextColor">
-        <Form.Label>Màu chữ</Form.Label>
-        <Form.Control as="select" defaultValue={theme.fontColor} onChange={handleFontColorChange}>
-            <option value="#FFFFFF">Trắng</option>
-            <option value="#000000">Đen</option>
-            <option value="#FF0000">Đỏ</option>
-            <option value="#00FF00">Xanh lá</option>
-            <option value="#0000FF">Xanh dương</option>
-            <option value="#FFFF00">Vàng</option>
-            <option value="#FFA500">Cam</option>
-            <option value="#800080">Tím</option>
-            <option value="#00FFFF">Xanh lơ</option>
-            <option value="#FFC0CB">Hồng</option>
-        </Form.Control>
-    </Form.Group>
+                <Form.Group controlId="formTextColor">
+                    <Form.Label>Màu chữ</Form.Label>
+                    <Form.Control as="select" defaultValue={theme.fontColor} onChange={handleFontColorChange}>
+                        {support_text_color.map(color=>{
+                            return <option value={color.value}>{color.name}</option>})
+                        }
+                    </Form.Control>
+                </Form.Group>
 
-    <Form.Group controlId="formFontSize">
-        <Form.Label>Cỡ chữ</Form.Label>
-        <Form.Control type="number" defaultValue={parseInt(theme.fontSize)} onChange={handleFontSizeChange} />
-    </Form.Group>
+                <Form.Group controlId="formFontSize">
+                    <Form.Label>Cỡ chữ</Form.Label>
+                    <Form.Control type="number" defaultValue={parseInt(theme.fontSize)} onChange={handleFontSizeChange} />
+                </Form.Group>
 
-    <Form.Group controlId="formFontFamily">
-        <Form.Label>Font chữ</Form.Label>
-        <Form.Control as="select" defaultValue={theme.fontFamily} onChange={handleFontFamilyChange}>
-            <option value='Times New Roman, serif'>Times New Roman</option>
-            <option value="Arial, sans-serif">Arial</option>
-            <option value="Verdana, sans-serif">Verdana</option>
-            <option value="Tahoma, sans-serif">Tahoma</option>
-            <option value="Courier New, monospace">Courier New</option>
-        </Form.Control>
-    </Form.Group>
+                <Form.Group controlId="formFontFamily">
+                    <Form.Label>Font chữ</Form.Label>
+                    <Form.Control as="select" defaultValue={theme.fontFamily} onChange={handleFontFamilyChange}>
+                        {support_font_family.map(font=>{
+                            return <option value={font.value}>{font.name}</option>
+                        })}
+                    </Form.Control>
+                </Form.Group>
 
-    <Form.Group controlId="formBackgroundColor">
-        <Form.Label>Màu nền</Form.Label>
-        <Form.Control as="select" defaultValue={theme.backgroundColor} onChange={handleBackgroundColorChange}>
-            <option value="#000000">Đen</option>
-            <option value="#FFFFFF">Trắng</option>
-            <option value="#0000FF">Xanh dương</option>
-            <option value="#FF0000">Đỏ</option>
-            <option value="#FFFF00">Vàng</option>
-            <option value="#00FF00">Xanh lá</option>
-            <option value="#FFA500">Cam</option>
-            <option value="#800080">Tím</option>
-            <option value="#00FFFF">Xanh lơ</option>
-            <option value="#FFC0CB">Hồng</option>
-        </Form.Control>
-    </Form.Group>
-</Modal.Body>
-            <Modal.Footer style={{ backgroundColor: '#000', color: '#fff' }}>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
-            </Modal.Footer>
+                <Form.Group controlId="formBackgroundColor">
+                    <Form.Label>Màu nền</Form.Label>
+                    <Form.Control as="select" defaultValue={theme.backgroundColor} onChange={handleBackgroundColorChange}>
+                        {support_background_color.map(color=>{
+                            return <option value={color.value}>{color.name}</option>})
+                        }
+                    </Form.Control>
+                </Form.Group>
+            </Modal.Body>
+            <Modal.Footer style={{ backgroundColor: '#121212', color: '#fff' }}/>
         </Modal>
         </>
     );

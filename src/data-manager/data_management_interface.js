@@ -3,7 +3,7 @@ class DataManagementInterface{
     constructor(){
 
     }
-    async get(){
+    get(key){
         throw new Error('Missing implementation!!');
     }
     async set(params){

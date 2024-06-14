@@ -25,9 +25,19 @@ class SearchingNovelsManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){
-        await this.reload();
-        return this.novels;
+    get(key){
+        switch(key){
+            case 'novels':{
+                return this.novels;
+            }
+            case 'page':{
+                return this.page;
+            }
+            default :{
+                console.log(`Cannot find property ${key} in searching novel by keyword manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
         if (params.page){
@@ -48,7 +58,8 @@ class SearchingNovelsManager extends DataManagementInterface{
     async loadSource(){
         this.sources=[]
         let source_manager=NovelSourceManager.getInstance();
-        let sources=await source_manager.get();
+        await source_manager.reload();
+        let sources=source_manager.get('sources');
 
         for (let i in sources){
             let source_meta=await searchNovel(sources[i].slug,this.keyword,1);

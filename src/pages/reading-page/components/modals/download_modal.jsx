@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Box, Grid, Typography, Button, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+
 import DownloadTypeManager from '../../../../data-manager/download_type_manager';
+
 const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -36,27 +38,35 @@ const selectedBoxStyle = {
 };
 
 const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  chapterSlug, chapterName }) => {
-    const [selectedBox, setSelectedBox] = useState(null);
-    const downloadManager = DownloadTypeManager.getInstance();
+    const [selected_box, setSelectedBox] = useState(null);
+    const download_manager = DownloadTypeManager.getInstance();
     const [downloadType, setDownloadType] = useState([]);
-    downloadManager.set({sourceSlug : sourceValue});
+    download_manager.set({sourceSlug : sourceValue});
     useEffect(()=>{
         setSelectedBox(null)
-        downloadManager.get().then(res =>{
-        setDownloadType([...res]);
+        download_manager.reload().then(res =>{
+            setDownloadType([...download_manager.get('support_types')]);
         })
-    },[downloadManager])
+    },[download_manager])
     const handleBoxClick = (boxIndex) => {
         setSelectedBox(boxIndex);
     };
 
     const downloadNovel = async () => {
-        const extension = (downloadType.find((type)=> type.slug === selectedBox)).extension
-        const res = await downloadManager.downloadNovel(sourceValue, selectedBox,novelSlug,chapterSlug,novelName,chapterName,extension);    
+        const extension = (downloadType.find((type)=> type.slug === selected_box)).extension
+        download_manager.set({source_slug:sourceValue, 
+                              format_slug:selected_box,
+                              novel_slug:novelSlug, 
+                              chapter_slug:chapterSlug,
+                              novel_name:novelName, 
+                              chapter_name:chapterName,
+                              extension:extension})
+        const res = await download_manager.get('file');    
         if(!res){
             alert('Định dạng hiện tại không còn được hỗ trợ !!')
         }
     };
+
     if (!downloadType){
         return 
     }
@@ -73,7 +83,7 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
                     {downloadType.map((box) => (
                         <Grid item key={box.slug}>
                             <Box
-                                sx={selectedBox === box.slug ? selectedBoxStyle : boxStyle}
+                                sx={selected_box === box.slug ? selectedBoxStyle : boxStyle}
                                 textAlign="center"
                                 onClick={() => handleBoxClick(box.slug)}
                             >
@@ -84,7 +94,7 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
                 ))}
                 </Grid>
                 <Box mt={4} textAlign="center">
-                    <Button variant="contained" color="primary" disabled={selectedBox === null} onClick={downloadNovel}>
+                    <Button variant="contained" color="primary" disabled={selected_box === null} onClick={downloadNovel}>
                         Tải xuống
                     </Button>
                 </Box>

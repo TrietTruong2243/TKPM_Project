@@ -20,9 +20,16 @@ class NovelSourceManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){   
-        await this.reload();     
-        return this.source_list;
+    get(key){   
+        switch(key){
+            case 'sources':{
+                return this.source_list;
+            }
+            default :{
+                console.log(`Cannot find property ${key} in source manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
         this.source_list=[...params.sources]

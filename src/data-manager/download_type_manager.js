@@ -22,12 +22,34 @@ class DownloadTypeManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){
-        await this.reload();
-        return this.download_types;
+    get(key){
+        switch(key){
+            case 'support_types':{
+                return this.download_types;
+            }
+            case 'file':{
+                return this.downloadNovel(this.source_slug, 
+                                          this.format_slug,
+                                          this.novel_slug, 
+                                          this.chapter_slug,
+                                          this.novel_name, 
+                                          this.chapter_name,
+                                          this.extension);
+            }
+            default :{
+                console.log(`Cannot find property ${key} in download manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
         this.source_slug = params.source_slug
+        this.format_slug = params.format_slug
+        this.novel_slug = params.novel_slug
+        this.chapter_slug = params.chapter_slug
+        this.novel_name = params.novel_name
+        this.chapter_name = params.chapter_name
+        this.extension = params.extension
     }
     async save(){
     }

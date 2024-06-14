@@ -16,11 +16,11 @@ function HomePage(){
 
     useEffect(()=>{
         setLoading(true);
-        hot_novels_manager.get().then(res=>{
-            setHotNovels([...res]);
-            setLoading(false); 
-        });   
-        hot_novels_manager.getOtherSourceHotNovel().then((res)=>{
+        hot_novels_manager.reload().then(()=>{
+            setHotNovels([...hot_novels_manager.get('hot_novels')]);
+            setLoading(false);
+        })
+        hot_novels_manager.get('others_hot_novels').then(res=>{
             setOtherSourceHotNovel([...res]);
         })
     },[])    

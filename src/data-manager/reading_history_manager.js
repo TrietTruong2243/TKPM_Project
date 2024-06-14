@@ -8,6 +8,7 @@ class ReadingHistoryManager extends DataManagementInterface{
             throw new Error('You can only create 1 instance!!')
         }
         super();
+        this.readItems=[];
         instance=this;
     }
     static getInstance(){
@@ -18,14 +19,23 @@ class ReadingHistoryManager extends DataManagementInterface{
     }
 
     //override DataManagementInterface
-    async get(){
+    get(key){
+        switch(key){
+            case 'readItems':{
+                return this.readItems;
+            }
+            default:{
+                console.log(`Cannot find property ${key} in reading history manager!`);
+                return null;
+            }
+        }
     }
     async set(params){
     }
     async save(){
     }
     async reload(){
-        throw new Error('Missing implementation!!');
+        this.readItems=JSON.parse(localStorage.getItem('readItems')) || {};
     }
     async saveNewReadingNovel(novel_slug,chapter_slug,chapterPosition,source_slug,novel_info,chapter_content){    
         try{

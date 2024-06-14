@@ -1,15 +1,18 @@
 import React, { useContext } from 'react';
 import { Typography, Box, Select, MenuItem, FormControl } from '@mui/material';
-import { ThemeContext } from '../reading_page_theme';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 
-function SourceComboBox({ novelId, chapterId, sourceList, sourceValue, chapterPosition, chapterTitle, allChapterSourceList }) {
+import { ThemeContext } from '../reading_page_theme';
+
+function SourceComboBox({ novelId,sourceValue,allChapterSourceList }) {
     const { theme } = useContext(ThemeContext);
     const navigate = useNavigate();
 
     if (allChapterSourceList.length === 0) {
-        return <Spinner animation="border" />;
+        return (
+            <Spinner animation="border" />
+        );
     }
 
 
@@ -36,7 +39,7 @@ function SourceComboBox({ novelId, chapterId, sourceList, sourceValue, chapterPo
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
+        <Box display="flex" justifyContent="center" alignItems="center" mb={3} sx={{width:'100%'}}>
             <Typography sx={{ color: theme.fontColor }} variant="body1" mr={1}>
                 Nguồn:
             </Typography>

@@ -12,11 +12,11 @@ export default function SettingsPage(){
 
     useEffect(()=>{
         setLoading(true);
-        novel_source_manager.get().then(res=>{
-            setSourceData([...res]);
+        novel_source_manager.reload().then(()=>{
+            setSourceData([...novel_source_manager.get('sources')]);
             setLoading(false); 
             novel_source_manager.save()
-        });   
+        })            
     },[])    
     
     if(loading){

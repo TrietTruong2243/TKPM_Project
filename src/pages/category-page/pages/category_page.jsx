@@ -28,10 +28,11 @@ function NovelByCategoryPage(){
     novel_category_manager.set({category:category_slug,page:parseInt(page)})
     useEffect(()=>{
             setLoading(true);
-            novel_category_manager.get().then(res=>{
-            setCategoryNovel([...res]);
-            setLoading(false);
-            setCurrentPage(parseInt(novel_category_manager.page))
+            novel_category_manager.reload().then(()=>{
+                let novels=novel_category_manager.get('novels');
+                setCategoryNovel([...novels]);
+                setLoading(false);
+                setCurrentPage(parseInt(novel_category_manager.get('page')))
         })
     },[category_slug,page])
 

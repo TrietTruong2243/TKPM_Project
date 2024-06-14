@@ -5,6 +5,7 @@ import CenteredSpinner from '../../../components/centered_spinner';
 
 
 function HotNovel({ hotNovels }) {
+    const default_image="../../images/unkowm_novel.png";
     const [isLoading, setIsLoading] = useState(true);
     const [novels, setNovels] = useState([]);
 
@@ -35,7 +36,7 @@ function HotNovel({ hotNovels }) {
                             }}
                         >
                             <Box mr={2}>
-                                <img src={related.image} alt={related.title} style={{ width: 60, borderRadius: 8 }} />
+                                <img src={related.image?related.image:default_image} alt={related.title} style={{ width: 60, borderRadius: 8 }} />
                             </Box>
                             <Typography variant="body2">{related.title}</Typography>
                         </Box>
