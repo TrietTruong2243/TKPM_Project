@@ -21,7 +21,20 @@ function SettingModal({ show, handleClose }) {
                                 {value:"Verdana, sans-serif",name:"Verdana"},
                                 {value:"Tahoma, sans-serif",name:"Tahoma"},
                                 {value:"Courier New, monospace",name:"Courier New"},];
-    const support_background_color=[...support_text_color];
+    const support_background_color=[{value:"#FFFFFF",name:"Trắng"},
+        {value:"#000000",name:"Đen"},
+        {value:"#F0F8FF",name:"Xanh Alice"},
+        {value:"#F0FFF0",name:"Xanh Mật Ong"},
+        {value:"#AFEEEE",name:"Xanh ngọc nhạt"},
+        {value:"#FFFFE0",name:"Vàng nhạt"},
+        {value:"#FAFAD2",name:"Vàng kim nhạt"},
+        {value:"#FFFACD",name:"Vàng chanh nhạt"},
+        {value:"#FFA500",name:"Da cam"},
+        {value:"#FFDAB9",name:"Hồng đào"},
+        {value:"#FAFAD2",name:"Vàng kim nhẹ"},
+        {value:"#FFC0CB",name:"Hồng phấn"},
+        ];
+
     const { updateBackgroundColor,
         updateFontFamily,
         updateFontColor,
