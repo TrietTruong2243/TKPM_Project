@@ -99,6 +99,9 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 			.replace(/<p>/g, "<br/>")
 			.replace(/<\/p>/g, "")
 			.replace(/\n\n/g, "<br/>")
+            .replace(/<em>/g,"")
+            .replace(/<\/em>/g,"")
+            .replace(/&nbsp;/g,"")
 			.replace(/\t/g, "");
 
 		let zip = new JSZip();
@@ -107,7 +110,7 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 		zip.file("OEBPS/content.opf", getMetaData());
 		zip.file("OEBPS/toc.ncx", getToc(chapter_slug));
 		zip.file("OEBPS/text.xhtml", getText(title, formattedContent));
-
+        console.log(formattedContent)
 		return zip.generateAsync({ type: "blob", mimeType: "application/epub+zip" }).then((content) => {
 			return content;
 		});
