@@ -3,7 +3,7 @@ import { Box, Typography, Paper, List, ListItem, ListItemText, Pagination, Circu
 import { useNavigate } from "react-router-dom";
 import NovelDescriptionManager from '../../../data-manager/novel_description_manager';
 
-function AllChapters({ all_chapters, source }) {
+function AllChapters({ novelId,source }) {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [displayedChapters, setDisplayedChapters] = useState([]);
@@ -29,7 +29,7 @@ function AllChapters({ all_chapters, source }) {
         };
 
         fetchMeta();
-    }, [instance]);
+    }, [instance, novelId]);
 
     useEffect(() => {
         const fetchChapters = async () => {
