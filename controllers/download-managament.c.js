@@ -2,21 +2,22 @@ import downloaderFetcher from "../services/downloader-fetcher.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { PassThrough } = require("stream");
-const getSupportFileFormat=async(req,res)=>{
-	try {
-        const formats = downloaderFetcher.getAvailableStrategies();
-        res.status(200).json({
-            message: 'success',
-            data: formats
-        });
 
-    } catch (error) {
-        res.status(500).json({
-            message: 'error',
-            error: error.message
-        });
-    }
-}
+const getSupportFileFormat = async (req, res) => {
+	try {
+		const formats = downloaderFetcher.getAvailableStrategies();
+		res.status(200).json({
+			message: "success",
+			data: formats,
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: "error",
+			error: error.message,
+		});
+	}
+};
+
 const getFile = async (req, res) => {
 	const { source, format, novelSlug, chapterSlug } = req.params;
 	try {
@@ -36,4 +37,4 @@ const getFile = async (req, res) => {
 	}
 };
 
-export { getFile ,getSupportFileFormat};
+export { getFile, getSupportFileFormat };
