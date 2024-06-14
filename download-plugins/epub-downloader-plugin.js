@@ -1,4 +1,4 @@
-import novelFetcher from "../services/novel-fetcher.js";
+import NovelFetcher from "../services/novel-fetcher.js";
 import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -87,9 +87,11 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 			"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbU14J11CojjLhE-fVsmhAdSEQA68aeZygIlxkHLGqYXmla7_W8y_hMUnstS3UcZZwSso&usqp=CAU"
 		);
 	}
-	async getBuffer(source, novel_slug, chapter_slug) {
-		const response = await novelFetcher.fetchChapterContent(source, novel_slug, chapter_slug);
-		console.log(response);
+	async getBuffer(source, novel_slug, chapter_slug, novelFetcherInstance) {
+		if (!novelFetcherInstance || novelFetcherInstance instanceof NovelFetcher === false) {
+			throw new Error("Invalid NovelFetcher instance provided.");
+		}
+		const response = await novelFetcherInstance.fetchChapterContent(source, novel_slug, chapter_slug);
 		const content = response.data.content;
 
 		const title = response.data.title;

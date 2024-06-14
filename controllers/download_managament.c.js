@@ -1,4 +1,4 @@
-import downloaderFetcher from "../services/downloader-fetcher.js";
+import { downloaderFetcher } from "../services/initialization.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { PassThrough } = require("stream");
@@ -37,4 +37,4 @@ const getFile = async (req, res) => {
 	}
 };
 
-export { getFile ,getSupportFileFormat};
+export { getFile ,getSupportFileFormat };

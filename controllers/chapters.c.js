@@ -1,11 +1,11 @@
-import NovelFetcher from "../services/novel-fetcher.js";
+import { novelFetcher } from "../services/initialization.js";
 
 // [GET] /api/:source/novels/:slug/chapters?page=1
 const getNovelChapterList = async (req, res) => {
     const { source, slug } = req.params;
     try {
         const page = parseInt(req.query.page);
-        const chapters = await NovelFetcher.fetchNovelChapterList(source, slug, page);
+        const chapters = await novelFetcher.fetchNovelChapterList(source, slug, page);
         res.status(200).json({
             message: "success",
             data: chapters,
@@ -22,7 +22,7 @@ const getNovelChapterList = async (req, res) => {
 const getChapterContent = async (req, res) => {
     const { source, slug, chapterSlug } = req.params;
     try {
-        const chapterContent = await NovelFetcher.fetchChapterContent(source, slug, chapterSlug);
+        const chapterContent = await novelFetcher.fetchChapterContent(source, slug, chapterSlug);
         res.status(200).json({
             message: 'success',
             data: chapterContent

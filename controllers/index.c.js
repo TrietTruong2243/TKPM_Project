@@ -1,11 +1,10 @@
-import NovelFetcher from "../services/novel-fetcher.js";
-import DownloaderFetcher from "../services/downloader-fetcher.js";
+import { novelFetcher, downloaderFetcher } from "../services/initialization.js";
 
 // [GET] /
 const showHome = async (req, res) => {
 	try {
-		const sourcePlugins = NovelFetcher.getAvailableStrategies();
-		const downloaderPlugins = DownloaderFetcher.getAvailableStrategies();
+		const sourcePlugins = novelFetcher.getAvailableStrategies();
+		const downloaderPlugins = downloaderFetcher.getAvailableStrategies();
 		res.render("index", { sourcePlugins, downloaderPlugins });
 	} catch (error) {
 		res.status(500).json({

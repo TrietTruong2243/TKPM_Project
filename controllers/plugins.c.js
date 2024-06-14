@@ -3,8 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import NovelFetcher from "../services/novel-fetcher.js";
-import DownloaderFetcher from "../services/downloader-fetcher.js";
+import { novelFetcher, downloaderFetcher } from "../services/initialization.js";
 
 // [POST] /api/plugins/sources/create
 const addSourcePlugin = async (req, res) => {
@@ -40,9 +39,9 @@ const addSourcePlugin = async (req, res) => {
 			fs.writeFileSync(pluginPath, pluginFile.buffer);
 
 			// test the new plugin
-			const testResult = await NovelFetcher.testPlugin(pluginPath);
+			const testResult = await novelFetcher.testPlugin(pluginPath);
 			if (testResult) {
-				await NovelFetcher.loadStrategyWithPath(pluginPath);
+				await novelFetcher.loadStrategyWithPath(pluginPath);
 				res.status(200).json({
 					status: "success",
 					message: `Plugin ${strategy} was loaded successfully`,
@@ -73,7 +72,7 @@ const removeSourcePlugin = (req, res) => {
 		const pluginPath = path.join(__dirname, `../source-plugins/${pluginName}-plugin.js`);
 
 		if (fs.existsSync(pluginPath)) {
-            NovelFetcher.removeStrategy(pluginName);
+            novelFetcher.removeStrategy(pluginName);
 			fs.unlinkSync(pluginPath);
 			res.json({ status: "success", message: `Source plugin ${pluginName} has been removed` });
 			return;
@@ -118,7 +117,7 @@ const addDownloaderPlugin = async (req, res) => {
 			// Write the file to disk
 			fs.writeFileSync(pluginPath, pluginFile.buffer);
 
-			await DownloaderFetcher.loadStrategyWithPath(pluginPath);
+			await downloaderFetcher.loadStrategyWithPath(pluginPath);
 			res.status(200).json({
 				status: "success",
 				message: `Plugin ${strategy} was loaded successfully`,
@@ -140,7 +139,7 @@ const removeDownloaderPlugin = (req, res) => {
 		const pluginPath = path.join(__dirname, `../download-plugins/${pluginName}-plugin.js`);
 
 		if (fs.existsSync(pluginPath)) {
-            DownloaderFetcher.removeStrategy(pluginName);
+            downloaderFetcher.removeStrategy(pluginName);
 			fs.unlinkSync(pluginPath);
 			res.json({ status: "success", message: `Downloader plugin ${pluginName} has been removed` });
 			return;

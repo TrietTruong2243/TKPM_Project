@@ -1,10 +1,10 @@
-import NovelFetcher from '../services/novel-fetcher.js';
+import { novelFetcher } from '../services/initialization.js';
 
 // [GET] /api/:source/categories
 const getCategories = async (req, res) => {
     const { source } = req.params;
     try {
-        const categories = await NovelFetcher.fetchCategories(source);
+        const categories = await novelFetcher.fetchCategories(source);
         res.status(200).json({
             message: 'success',
             data: categories
@@ -23,7 +23,7 @@ const getNovelsByCategory = async (req, res) => {
     const { source, categorySlug } = req.params;
     const page = req.query.page || 1;
     try {
-        const novels = await NovelFetcher.fetchNovelsByCategory(source, categorySlug, page);
+        const novels = await novelFetcher.fetchNovelsByCategory(source, categorySlug, page);
         res.status(200).json({
             message: 'success',
             data: novels

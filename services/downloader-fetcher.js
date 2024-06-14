@@ -2,6 +2,7 @@ import fs from "fs";
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
 import DownLoaderStrategy from "../download-plugins/download-plugin-interface.js";
+import { novelFetcher } from "./initialization.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -63,7 +64,7 @@ class DownloaderFetcher {
 			throw new Error(`Strategy '${strategyName}' not found.`);
 		}
 		try {
-			const blob = await strategy.getBuffer(source, novel_slug, chapter_slug);
+			const blob = await strategy.getBuffer(source, novel_slug, chapter_slug, novelFetcher);
 			return {
 				blob,
 			};
@@ -74,7 +75,4 @@ class DownloaderFetcher {
 
 }
 
-const downloaderFetcher = new DownloaderFetcher();
-await downloaderFetcher.loadStrategies();
-
-export default downloaderFetcher;
+export default DownloaderFetcher;

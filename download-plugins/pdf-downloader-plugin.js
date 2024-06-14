@@ -1,4 +1,4 @@
-import novelFetcher from "../services/novel-fetcher.js";
+import NovelFetcher from "../services/novel-fetcher.js";
 import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -12,14 +12,17 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 			"https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png"
 		);
 	}
-	createPDF(source, novel_slug, chapter_slug) {
+	createPDF(source, novel_slug, chapter_slug, novelFetcherInstance) {
 		return new Promise(async (resolve, reject) => {
 			try {
+				if (!novelFetcherInstance || novelFetcherInstance instanceof NovelFetcher === false) {
+					throw new Error("Invalid NovelFetcher instance provided.");
+				}
 				const doc = new PDFDocument();
 				const stream = doc.pipe(blobStream());
 
 				doc.font("./utils/fonts/arial.ttf");
-				const response = await novelFetcher.fetchChapterContent(source, novel_slug, chapter_slug);
+				const response = await novelFetcherInstance.fetchChapterContent(source, novel_slug, chapter_slug);
 				const title = response.data.title;
 				const content = response.data.content;
 				const formattedContent = content
@@ -28,7 +31,6 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 					.replace(/\n\n/g, "<br/>")
 					.replace(/\t/g, "")
 					.replace(/<br>/g, "<br/>");
-;
 
 				// Split content into paragraphs
 				const paragraphs = formattedContent.split("<br/>");
@@ -64,8 +66,8 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 			}
 		});
 	}
-	async getBuffer(source, novel_slug, chapter_slug) {
-		return await this.createPDF(source, novel_slug, chapter_slug).then((blob) => {
+	async getBuffer(source, novel_slug, chapter_slug, novelFetcherInstance) {
+		return await this.createPDF(source, novel_slug, chapter_slug, novelFetcherInstance).then((blob) => {
 			return blob;
 		});
 	}

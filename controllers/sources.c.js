@@ -1,9 +1,9 @@
-import NovelFetcher from '../services/novel-fetcher.js';
+import { novelFetcher } from '../services/initialization.js';
 
 // [GET] /api/sources
 const getSources = async (req, res) => {
     try {
-        const sources = NovelFetcher.getAvailableStrategies();
+        const sources = novelFetcher.getAvailableStrategies();
         res.status(200).json({
             message: 'success',
             data: sources
@@ -26,7 +26,7 @@ const getAlternativeNovels = async (req, res) => {
             throw new Error('Missing parameters');
         }
 
-        const alternatives = await NovelFetcher.fetchAlternativeNovels(source, slug, title);
+        const alternatives = await novelFetcher.fetchAlternativeNovels(source, slug, title);
         res.status(200).json({
             message: 'success',
             data: alternatives
@@ -49,7 +49,7 @@ const getAlternativeChapter = async (req, res) => {
             throw new Error('Missing parameters');
         }
 
-        const alternatives = await NovelFetcher.fetchAlternativeChapter(targetSource, targetNovelSlug, chapterSlug, chapterTitle, chapterPosition);
+        const alternatives = await novelFetcher.fetchAlternativeChapter(targetSource, targetNovelSlug, chapterSlug, chapterTitle, chapterPosition);
         res.status(200).json({
             message: 'success',
             data: alternatives

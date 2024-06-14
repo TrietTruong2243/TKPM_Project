@@ -323,13 +323,6 @@ class NovelFetcher {
 				});
 			}
 
-			// if still not found, return the first chapter
-			// if (!targetChapter) {
-			// 	console.log("Chapter not found in relative position. Returning the first chapter.");
-			// 	targetChapters = (await strategy.getNovelChapterList(targetNovelSlug, 1)).chapters;
-			// 	targetChapter = targetChapters[0];
-			// }
-
 			return targetChapter;
 		} catch (error) {
 			throw error;
@@ -361,7 +354,4 @@ class NovelFetcher {
 	}
 }
 
-const novelFetcher = new NovelFetcher();
-await novelFetcher.loadStrategies();
-
-export default novelFetcher;
+export default NovelFetcher;
