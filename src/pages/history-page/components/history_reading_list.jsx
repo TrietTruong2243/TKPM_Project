@@ -78,14 +78,16 @@ const ReadItems = ({ search_value }) => {
     return (
         <>
             {novels.map(({ novelId, novelImage, novelTitle, source, novelStatus, chapterId, chapterTitle, chapterPosition }, index) => (
-                <TableRow key={index}>
+                <TableRow key={index}                            onClick={() => handleChapterClick(novelId, chapterId, chapterPosition, source.slug)}
+                style={{ cursor: 'pointer' }}
+
+>
                     <TableCell><img style={{ width: '100px', height: '150px' }} src={novelImage} alt={novelTitle} /></TableCell>
                     <TableCell style={{ color: '#fff' }}>{novelTitle}</TableCell>
                     <TableCell>{source.name}</TableCell>
                     <TableCell>{novelStatus}</TableCell>
                     <TableCell>
                         <div
-                            onClick={() => handleChapterClick(novelId, chapterId, chapterPosition, source.slug)}
                             style={{ color: '#fff', cursor: 'pointer' }}
                         >
                             {chapterTitle}

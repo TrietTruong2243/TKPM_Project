@@ -69,7 +69,6 @@ class NovelDescriptionManager extends DataManagementInterface{
                 available_source.push(sources[i]);
             }
         }
-
         let result =[...new Map(available_source.map(item =>[item["slug"], item])).values()]
         this.available_source=[...result];
     }

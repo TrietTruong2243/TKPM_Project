@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Box, Typography } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import CenteredSpinner from '../../../components/centered_spinner';
 
 
 function HotNovel({ hotNovels }) {
+    const navigate = useNavigate();
     const default_image="../../images/unkowm_novel.png";
     const [isLoading, setIsLoading] = useState(true);
     const [novels, setNovels] = useState([]);
@@ -32,7 +33,7 @@ function HotNovel({ hotNovels }) {
                             alignItems="center"
                             sx={{ cursor: "pointer" }}
                             onClick={() => {
-                                window.location.href= (`/description/${related.slug}`);
+                                navigate(`/description/${related.slug}`);
                             }}
                         >
                             <Box mr={2}>
