@@ -26,7 +26,9 @@ class PDFDownloaderStrategy extends DownLoaderStrategy {
 					.replace(/<p>/g, "<br/>")
 					.replace(/<\/p>/g, "")
 					.replace(/\n\n/g, "<br/>")
-					.replace(/\t/g, "");
+					.replace(/\t/g, "")
+					.replace(/<br>/g, "<br/>");
+;
 
 				// Split content into paragraphs
 				const paragraphs = formattedContent.split("<br/>");
