@@ -41,6 +41,7 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
     const [selected_box, setSelectedBox] = useState(null);
     const download_manager = DownloadTypeManager.getInstance();
     const [downloadType, setDownloadType] = useState([]);
+    const [is_downloading,setIsDownloading]=useState(false);
     download_manager.set({sourceSlug : sourceValue});
     useEffect(()=>{
         setSelectedBox(null)
@@ -53,6 +54,7 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
     };
 
     const downloadNovel = async () => {
+        setIsDownloading(true);
         const extension = (downloadType.find((type)=> type.slug === selected_box)).extension
         download_manager.set({source_slug:sourceValue, 
                               format_slug:selected_box,
@@ -61,7 +63,8 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
                               novel_name:novelName, 
                               chapter_name:chapterName,
                               extension:extension})
-        const res = await download_manager.get('file');    
+        const res = await download_manager.get('file');  
+        setIsDownloading(false)
         if(!res){
             alert('Định dạng hiện tại không còn được hỗ trợ !!')
         }
@@ -93,6 +96,7 @@ const DownloadModal = ({ open, handleClose, sourceValue, novelSlug, novelName,  
                         </Grid>
                 ))}
                 </Grid>
+                {is_downloading&&<Typography color={'white'}>Đang tải...</Typography>}
                 <Box mt={4} textAlign="center">
                     <Button variant="contained" color="primary" disabled={selected_box === null} onClick={downloadNovel}>
                         Tải xuống
