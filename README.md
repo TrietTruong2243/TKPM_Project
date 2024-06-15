@@ -121,9 +121,13 @@ Plugin Management chạy trên `http://localhost:4000`, gồm các bảng hiển
   ```
 
   _Chú thích_:\
-  `source`: tên nguồn viết liền không dấu (vd: truyenfull).\
-  `slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than) (chỉ mang tính tương đối theo nguồn).
-  `format`: định dạng file cần xuất
+  `:source`: tên nguồn viết liền không dấu (vd: truyenfull). 
+    Ex:  "http://localhost:4000/api/truyenfull/download"
+  `:slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than) (chỉ mang tính tương đối theo nguồn). 
+    Ex: "  http://localhost:4000/api/truyenfull/novels/than-dao-dan-ton"
+  `:format`: định dạng file cần xuất viết thường không dấu + "-downloader". Ví dụ:"pdf-downloader"
+    Ex: "http://localhost:4000/api/truyenfull/download/pdf-downloader/than-dao-dan-ton/chuong-9"
+
 
 ## TODO
 
