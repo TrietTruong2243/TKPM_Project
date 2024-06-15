@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "jest --detectOpenHandles",
+    "tests": "jest ./tests",
     "start": "node index.js"
   },
   "keywords": [],

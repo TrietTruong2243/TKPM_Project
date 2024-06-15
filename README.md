@@ -43,87 +43,87 @@ npm test
 ### Plugin management
 Plugin Management chạy trên `http://localhost:4000`, gồm các bảng hiển thị các plugin hiện hành, cho phép thêm, xóa các plugin trong khi đang chạy.
 
-### Api
+  ### Api
 
-Thông tin tất cả các nguồn:
+  Thông tin tất cả các nguồn:
 
-```
-http://localhost:4000/api/sources
-```
+  ```
+  http://localhost:4000/api/sources
+  ```
 
-Tất cả thể loại:
+  Tất cả thể loại:
 
-```
-http://localhost:4000/api/:source/categories
-```
+  ```
+  http://localhost:4000/api/:source/categories
+  ```
 
-Truyện hot:
+  Truyện hot:
 
-```
-http://localhost:4000/api/:source/novels/hot
-```
+  ```
+  http://localhost:4000/api/:source/novels/hot
+  ```
 
-Thông tin một truyện:
+  Thông tin một truyện:
 
-```
-http://localhost:4000/api/:source/novels/:slug
-```
+  ```
+  http://localhost:4000/api/:source/novels/:slug
+  ```
 
-Tìm truyện:
+  Tìm truyện:
 
-```
-http://localhost:4000/api/:source/novels/search?keyword=_&page=_
-```
+  ```
+  http://localhost:4000/api/:source/novels/search?keyword=_&page=_
+  ```
 
-Danh sách truyện theo thể loại:
+  Danh sách truyện theo thể loại:
 
-```
-http://localhost:4000/api/:source/categories/:categorySlug
-```
+  ```
+  http://localhost:4000/api/:source/categories/:categorySlug
+  ```
 
-Danh sách chương của một truyện:
+  Danh sách chương của một truyện:
 
-```
-http://localhost:4000/api/:source/novels/:slug/chapters?page=_
-```
+  ```
+  http://localhost:4000/api/:source/novels/:slug/chapters?page=_
+  ```
 
-Nội dung chương:
+  Nội dung chương:
 
-```
-http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
-```
+  ```
+  http://localhost:4000/api/:source/novels/:slug/chapters/:chapterSlug
+  ```
 
-Lấy thông tin novel thay thế trong tất cả các nguồn:\
-`source`, `slug`, `title` là của novel nguồn hiện tại:
+  Lấy thông tin novel thay thế trong tất cả các nguồn:\
+  `source`, `slug`, `title` là của novel nguồn hiện tại:
 
-```
-http://localhost:4000/api/sources/alternative-novels?source=_&slug=_&title=_
-```
+  ```
+  http://localhost:4000/api/sources/alternative-novels?source=_&slug=_&title=_
+  ```
 
-Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
-`targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).\
-`chapterSlug`, `chapterTitle`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
+  Lấy thông tin chapter thay thế trong một nguồn cụ thể:\
+  `targetSource`, `targetNovelSlug` là của nguồn cần tìm (thông thường lấy từ api trên).\
+  `chapterSlug`, `chapterTitle`, `chapterPosition` là của nguồn hiện tại, dùng làm thông tin cho việc tìm kiếm.
 
-```
-http://localhost:4000/api/sources/alternative-chapter?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
-```
+  ```
+  http://localhost:4000/api/sources/alternative-chapter?targetSource=_&targetNovelSlug=_&chapterSlug=_&chapterTitle=_&chapterPosition=_
+  ```
 
-Lấy định dạng file hỗ trợ:
+  Lấy định dạng file hỗ trợ:
 
-```
-http://localhost:4000/api/:source/download
-```
+  ```
+  http://localhost:4000/api/:source/download
+  ```
 
-Export ra file theo định dạng:
+  Export ra file theo định dạng:
 
-```
-http://localhost:4000/api/:source/download/:format/:novelSlug/:chapterSlug
-```
+  ```
+  http://localhost:4000/api/:source/download/:format/:novelSlug/:chapterSlug
+  ```
 
-_Chú thích_:\
-`source`: tên nguồn viết liền không dấu (vd: truyenfull).\
-`slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than) (chỉ mang tính tương đối theo nguồn).
-`format`: định dạng file cần xuất
+  _Chú thích_:\
+  `source`: tên nguồn viết liền không dấu (vd: truyenfull).\
+  `slug`: tên truyện viết thường không dấu, thay dấu cách bằng `-` (vd: ngao-the-dan-than) (chỉ mang tính tương đối theo nguồn).
+  `format`: định dạng file cần xuất
 
 ## TODO
 
