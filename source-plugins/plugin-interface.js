@@ -18,10 +18,6 @@ class NovelStrategy {
 		throw new Error("You have to implement the method getHotNovels!");
 	}
 
-	async getLatestNovels() {
-		throw new Error("You have to implement the method getLatestNovels!");
-	}
-
 	async searchNovels(keyword, page = 1) {
 		throw new Error("You have to implement the method searchNovels!");
 	}
