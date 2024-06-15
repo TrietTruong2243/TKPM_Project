@@ -1,11 +1,5 @@
-# Một số lưu ý
-Phần lưu lại lịch sử đọc truyện của người dùng, readingTheme được lưu trong localStorage\
-Chỉ mới thực hiện settings cho khung đọc truyện, chưa chỉnh settings cho toàn bộ các trang.\
-Cấu hình theme trong src/data/readingTheme .\
-Phần description và reading page được lấy data dựa theo cái của Phúc, nữa chỉnh lại sau .\
-Chưa xử lý phần nguồn truyện, không lấy được truyện cũng như xử lý lỗi \
-Service dùng axios lấy data bên back, tạm thời là port 4000 \
-Đã xong phần download, reading cần chỉnh thêm phần đổi nguồn
+# Front end for novel app
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
