@@ -3,7 +3,6 @@ import DownLoaderStrategy from "./download-plugin-interface.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 var JSZip = require("jszip");
-
 const getMimetype = () => {
 	return "application/epub+zip";
 };
@@ -92,6 +91,7 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 			throw new Error("Invalid NovelFetcher instance provided.");
 		}
 		const response = await novelFetcherInstance.fetchChapterContent(source, novel_slug, chapter_slug);
+		console.log(response);
 		const content = response.data.content;
 
 		const title = response.data.title;
@@ -99,9 +99,6 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 			.replace(/<p>/g, "<br/>")
 			.replace(/<\/p>/g, "")
 			.replace(/\n\n/g, "<br/>")
-            .replace(/<em>/g,"")
-            .replace(/<\/em>/g,"")
-            .replace(/&nbsp;/g,"")
 			.replace(/\t/g, "");
 
 		let zip = new JSZip();
@@ -110,7 +107,7 @@ class EPUBDownloaderStrategy extends DownLoaderStrategy {
 		zip.file("OEBPS/content.opf", getMetaData());
 		zip.file("OEBPS/toc.ncx", getToc(chapter_slug));
 		zip.file("OEBPS/text.xhtml", getText(title, formattedContent));
-        console.log(formattedContent)
+
 		return zip.generateAsync({ type: "blob", mimeType: "application/epub+zip" }).then((content) => {
 			return content;
 		});
